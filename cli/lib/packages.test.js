@@ -4,9 +4,9 @@ import { PACKAGES, listPackages, getPackage } from './packages.js';
 
 describe('packages', () => {
   describe('listPackages', () => {
-    it('returns all 8 packages', () => {
+    it('returns all 7 packages', () => {
       const packages = listPackages();
-      assert.equal(packages.length, 8);
+      assert.equal(packages.length, 7);
     });
 
     it('returns packages sorted by tier (tier 1 first, then 2, then 3)', () => {
@@ -16,7 +16,7 @@ describe('packages', () => {
         assert.ok(tiers[i] >= tiers[i - 1], `tier at index ${i} (${tiers[i]}) should be >= tier at index ${i - 1} (${tiers[i - 1]})`);
       }
       assert.equal(tiers[0], 1);
-      assert.equal(tiers[tiers.length - 1], 3);
+      assert.equal(tiers[tiers.length - 1], 2);
     });
   });
 
