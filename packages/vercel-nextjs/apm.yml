@@ -1,0 +1,6 @@
+name: "@setupmyai/vercel-nextjs"
+version: 1.0.0
+description: "Vercel/Next.js deployment commands"
+primitives:
+  commands:
+    - commands/*.md

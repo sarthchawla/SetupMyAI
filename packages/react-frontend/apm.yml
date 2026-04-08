@@ -1,0 +1,9 @@
+name: "@setupmyai/react-frontend"
+version: 1.0.0
+description: "React/TypeScript frontend rules, skills, and best practices"
+primitives:
+  rules:
+    - rules/*.md
+    - rules/*.mdc
+  skills:
+    - skills/*/SKILL.md

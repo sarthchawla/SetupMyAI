@@ -1,0 +1,14 @@
+name: setupmyai
+version: 1.0.0
+description: Portable AI agent configuration packages — install once, use everywhere
+author: SarthakChawla
+license: MIT
+
+packages:
+  - packages/universal
+  - packages/react-frontend
+  - packages/kotlin-backend
+  - packages/bdd-testing
+  - packages/vercel-nextjs
+  - packages/auth-security
+  - packages/database

@@ -1,0 +1,12 @@
+name: "@setupmyai/universal"
+version: 1.0.0
+description: "Universal agent commands, rules, hooks, and scripts for any repo"
+primitives:
+  commands:
+    - commands/*.md
+  rules:
+    - rules/*.md
+  hooks:
+    - hooks/*
+  scripts:
+    - scripts/*

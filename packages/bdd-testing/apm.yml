@@ -1,0 +1,12 @@
+name: "@setupmyai/bdd-testing"
+version: 1.0.0
+description: "BDD testing workflow with Playwright - commands, agents, skills, rules"
+primitives:
+  commands:
+    - commands/*.md
+  agents:
+    - agents/*.md
+  skills:
+    - skills/*/SKILL.md
+  rules:
+    - rules/*.md

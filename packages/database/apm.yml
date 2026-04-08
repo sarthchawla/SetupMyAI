@@ -1,0 +1,6 @@
+name: "@setupmyai/database"
+version: 1.0.0
+description: "PostgreSQL design and database migration skills"
+primitives:
+  skills:
+    - skills/*/SKILL.md

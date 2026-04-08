@@ -1,0 +1,7 @@
+name: "@setupmyai/kotlin-backend"
+version: 1.0.0
+description: "Kotlin/Ktor backend coding standards and patterns"
+primitives:
+  rules:
+    - rules/*.md
+    - rules/*.mdc

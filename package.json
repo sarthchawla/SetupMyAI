@@ -1,0 +1,44 @@
+{
+  "name": "@setupmyai/cli",
+  "version": "1.0.0",
+  "description": "CLI for installing portable AI agent configuration packages",
+  "type": "module",
+  "bin": {
+    "setupmyai": "./cli/bin/index.js"
+  },
+  "scripts": {
+    "build": "echo 'No build step needed'",
+    "test": "node --test cli/**/*.test.js",
+    "test:bats": "bats tests/bats/*.bats",
+    "test:validate": "node scripts/validate-packages.js",
+    "test:all": "pnpm test && pnpm test:bats && pnpm test:validate",
+    "lint": "eslint cli/"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "fs-extra": "^11.2.0",
+    "glob": "^10.3.0",
+    "inquirer": "^9.2.0",
+    "yaml": "^2.4.0"
+  },
+  "files": [
+    "cli/",
+    "packages/",
+    "apm.yml",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SarthakChawla/SetupMyAi.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "pnpm@9.0.0",
+  "license": "MIT"
+}

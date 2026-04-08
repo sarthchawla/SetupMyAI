@@ -1,0 +1,79 @@
+# React Frontend Rules
+
+## React Patterns
+
+- Use functional components with hooks
+- Apply proper state management (Redux Toolkit, Zustand, or similar)
+- Implement custom hooks for reusable logic
+- Use React Hook Form or similar for form handling
+
+## TypeScript Style
+
+- Enable strict mode and maintain type safety
+- Use proper interface definitions for props and state
+- Apply generic types where appropriate
+- Prefer type inference over explicit typing when clear
+
+## UI/UX Standards
+
+- Follow your project's design system consistently
+- Use existing component library in `src/components/`
+- Maintain consistent spacing and layout patterns
+- Implement responsive design principles
+
+## API Integration
+
+- Use a data-fetching library (RTK Query, TanStack Query, SWR) for API calls and caching
+- Follow existing API client patterns
+- Implement proper error handling for network requests
+- Apply consistent loading and error states
+
+## State Management
+
+- Use your chosen state management library for global state
+- Apply proper slice/store patterns
+- Implement selectors for derived state
+- Use local state (useState) for component-specific data
+
+## Testing
+
+- Write tests with Vitest and Testing Library
+- Test user interactions and component behavior
+- Mock API calls and external dependencies
+- Maintain good test coverage for critical paths
+- **ALWAYS run after adding or modifying tests:** `pnpm run test --run && pnpm lint && pnpm lint --fix`
+
+## File Organization
+
+- `src/components/` - Reusable UI components
+- `src/pages/` - Page-level components
+- `src/hooks/` - Custom React hooks
+- `src/utils/` - Utility functions and helpers
+
+## Common Commands
+
+- `pnpm dev` - Start development server
+- `pnpm build` - Build for production
+- `pnpm run test --run` - Run tests without watching for changes
+- `pnpm lint` - Run ESLint
+
+## Form Handling
+
+- Use React Hook Form with Zod validation
+- Implement proper form validation and error display
+- Follow existing form component patterns
+- Apply consistent styling with your design system's form components
+
+## Performance
+
+- Use React.memo for expensive components
+- Implement proper key props for lists
+- Apply code splitting for large components
+- Use lazy loading for routes and heavy components
+
+## Accessibility
+
+- Use semantic HTML elements
+- Implement proper ARIA attributes where needed
+- Ensure keyboard navigation works
+- Maintain sufficient color contrast

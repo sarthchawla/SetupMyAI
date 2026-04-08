@@ -1,0 +1,37 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "CronCreate|CronDelete",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/loops-hook.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/notify.sh 'Claude Code' 'Task completed - ready for review'"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/notify.sh 'Claude Code' 'Needs your input'"
+          }
+        ]
+      }
+    ]
+  }
+}

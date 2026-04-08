@@ -1,0 +1,10 @@
+# SetupMyAi Source Manifest
+# Tracks where every file originated from, enabling bidirectional sync.
+# Copy this file from sources.yml.example and fill in your local paths.
+
+repos:
+  example-project:
+    path: /path/to/your/project
+    alias: example-project
+
+files: []

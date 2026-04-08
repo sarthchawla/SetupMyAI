@@ -1,0 +1,6 @@
+{
+  "enabledPlugins": ["code-simplifier"],
+  "hooks": {
+    "PostToolUse": [{ "command": "echo done" }]
+  }
+}

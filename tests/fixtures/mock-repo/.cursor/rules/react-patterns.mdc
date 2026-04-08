@@ -1,0 +1,9 @@
+---
+description: React component patterns
+globs: src/**/*.tsx
+alwaysApply: false
+---
+
+# React Patterns
+
+Use functional components with hooks.

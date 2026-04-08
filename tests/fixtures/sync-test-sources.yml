@@ -1,0 +1,13 @@
+repos:
+  mock:
+    path: ./tests/fixtures/mock-repo
+    alias: mock-repo
+
+files:
+  - local: tests/fixtures/mock-repo/.claude/commands/deploy.md
+    sources:
+      - { repo: mock, path: .claude/commands/deploy.md }
+    package: universal
+    type: command
+    last_synced: "2026-04-08"
+    direction: origin

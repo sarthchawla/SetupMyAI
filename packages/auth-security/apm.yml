@@ -1,0 +1,6 @@
+name: "@setupmyai/auth-security"
+version: 1.0.0
+description: "Authentication and security best practices skills"
+primitives:
+  skills:
+    - skills/*/SKILL.md
