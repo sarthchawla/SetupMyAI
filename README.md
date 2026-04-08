@@ -4,7 +4,7 @@ Portable AI agent configuration packages. Install once, use everywhere.
 
 Stop copy-pasting `.claude/commands/`, `.cursor/rules/`, and agent configs across repos. **SetupMyAi** packages your AI setup into modular, versioned, selectively installable packages that work with **Claude Code**, **Cursor**, and **Codex**.
 
-<video src="assets/SetupMyAIPromo.mp4" controls autoplay muted loop width="100%"></video>
+https://github.com/user-attachments/assets/eb0838d1-8f75-4e3a-aa86-988c8551fbd1
 
 ## Packages
 
