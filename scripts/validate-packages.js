@@ -123,7 +123,7 @@ function checkApmYml() {
 function checkSourcesExist() {
   const sourcesPath = path.join(ROOT, "sources.yml");
   if (!fs.existsSync(sourcesPath)) {
-    fail("sources.yml not found");
+    warn("sources.yml not found (optional — used for bidirectional sync)");
     return [];
   }
 
