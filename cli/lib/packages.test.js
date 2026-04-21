@@ -1,8 +1,25 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { PACKAGES, listPackages, getPackage } from './packages.js';
+import { PACKAGES, SUPPORTED_TOOLS, listPackages, getPackage } from './packages.js';
 
 describe('packages', () => {
+  describe('SUPPORTED_TOOLS', () => {
+    it('contains all 5 supported tools', () => {
+      assert.equal(SUPPORTED_TOOLS.length, 5);
+      assert.ok(SUPPORTED_TOOLS.includes('claude'));
+      assert.ok(SUPPORTED_TOOLS.includes('cursor'));
+      assert.ok(SUPPORTED_TOOLS.includes('codex'));
+      assert.ok(SUPPORTED_TOOLS.includes('opencode'));
+      assert.ok(SUPPORTED_TOOLS.includes('gemini'));
+    });
+
+    it('is an array of strings', () => {
+      for (const tool of SUPPORTED_TOOLS) {
+        assert.equal(typeof tool, 'string');
+      }
+    });
+  });
+
   describe('listPackages', () => {
     it('returns all 7 packages', () => {
       const packages = listPackages();

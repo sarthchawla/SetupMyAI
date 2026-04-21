@@ -1,3 +1,5 @@
+export const SUPPORTED_TOOLS = ['claude', 'cursor', 'codex', 'opencode', 'gemini'];
+
 export const PACKAGES = {
   universal: {
     name: '@setupmyai/universal',

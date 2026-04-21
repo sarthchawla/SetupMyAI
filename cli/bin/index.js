@@ -5,7 +5,7 @@ import chalk from 'chalk';
 import inquirer from 'inquirer';
 import path from 'path';
 import fs from 'fs-extra';
-import { listPackages, getPackage } from '../lib/packages.js';
+import { listPackages, getPackage, SUPPORTED_TOOLS } from '../lib/packages.js';
 import { installPackage } from '../lib/installer.js';
 import { mdToMdc, mdcToMd, mdFilenameToMdc, mdcFilenameToMd } from '../lib/converter.js';
 
@@ -19,11 +19,39 @@ program
 // ── init ────────────────────────────────────────────────────────────────────
 program
   .command('init')
-  .description('Interactive mode: pick packages to install')
-  .option('-t, --tool <tool>', 'Target tool: claude, cursor, or all', 'all')
+  .description('Interactive mode: pick packages and tools to install')
+  .option('-t, --tool <tools>', 'Target tools (comma-separated): claude,cursor,codex,opencode,gemini or all', 'all')
   .option('-d, --dir <dir>', 'Target project directory', process.cwd())
+  .option('-l, --level <level>', 'Install level: user or project', 'project')
   .action(async (opts) => {
     const packages = listPackages();
+
+    const { selectedTools } = await inquirer.prompt([
+      {
+        type: 'checkbox',
+        name: 'selectedTools',
+        message: 'Select AI tools to install for:',
+        choices: SUPPORTED_TOOLS.map((tool) => ({
+          name: tool.charAt(0).toUpperCase() + tool.slice(1),
+          value: tool,
+          checked: opts.tool === 'all' || opts.tool.split(',').includes(tool),
+        })),
+        validate: (answer) => answer.length > 0 ? true : 'Select at least one tool.',
+      },
+    ]);
+
+    const { level } = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'level',
+        message: 'Install level:',
+        choices: [
+          { name: 'Project (current directory)', value: 'project' },
+          { name: 'User (home directory, applies to all projects)', value: 'user' },
+        ],
+        default: opts.level,
+      },
+    ]);
 
     const { selected } = await inquirer.prompt([
       {
@@ -44,11 +72,16 @@ program
     }
 
     const targetDir = path.resolve(opts.dir);
-    console.log(chalk.blue(`\nInstalling ${selected.length} package(s) to ${targetDir}...\n`));
+    const toolLabel = selectedTools.join(', ');
+    const levelLabel = level === 'user' ? '~/ (user-level)' : targetDir;
+    console.log(chalk.blue(`\nInstalling ${selected.length} package(s) for [${toolLabel}] to ${levelLabel}...\n`));
 
     for (const pkgName of selected) {
       try {
-        const count = await installPackage(pkgName, targetDir, { tool: opts.tool });
+        const count = await installPackage(pkgName, targetDir, {
+          tool: selectedTools,
+          level,
+        });
         console.log(chalk.green(`  + ${pkgName}`) + chalk.gray(` (${count} items)`));
       } catch (err) {
         console.log(chalk.red(`  x ${pkgName}: ${err.message}`));
@@ -62,8 +95,9 @@ program
 program
   .command('install <packages...>')
   .description('Install specific packages (e.g., setupmyai install universal react-frontend)')
-  .option('-t, --tool <tool>', 'Target tool: claude, cursor, or all', 'all')
+  .option('-t, --tool <tools>', 'Target tools (comma-separated): claude,cursor,codex,opencode,gemini or all', 'all')
   .option('-d, --dir <dir>', 'Target project directory', process.cwd())
+  .option('-l, --level <level>', 'Install level: user or project', 'project')
   .action(async (packages, opts) => {
     const targetDir = path.resolve(opts.dir);
 
@@ -76,7 +110,10 @@ program
       }
 
       try {
-        const count = await installPackage(pkgName, targetDir, { tool: opts.tool });
+        const count = await installPackage(pkgName, targetDir, {
+          tool: opts.tool,
+          level: opts.level,
+        });
         console.log(chalk.green(`  + ${pkgName}`) + chalk.gray(` (${count} items)`));
       } catch (err) {
         console.log(chalk.red(`  x ${pkgName}: ${err.message}`));
@@ -100,15 +137,18 @@ program
       }
       console.log(`    ${chalk.green(pkg.key.padEnd(20))} ${pkg.description}`);
     }
-    console.log('');
+
+    console.log(chalk.bold('\nSupported tools:'));
+    console.log(`    ${SUPPORTED_TOOLS.join(', ')}\n`);
   });
 
 // ── sync ────────────────────────────────────────────────────────────────────
 program
   .command('sync')
   .description('Re-sync installed packages to latest')
-  .option('-t, --tool <tool>', 'Target tool: claude, cursor, or all', 'all')
+  .option('-t, --tool <tools>', 'Target tools (comma-separated): claude,cursor,codex,opencode,gemini or all', 'all')
   .option('-d, --dir <dir>', 'Target project directory', process.cwd())
+  .option('-l, --level <level>', 'Install level: user or project', 'project')
   .action(async (opts) => {
     const targetDir = path.resolve(opts.dir);
     const packages = listPackages();
@@ -123,7 +163,10 @@ program
       if (!(await fs.pathExists(pkgDir))) continue;
 
       try {
-        const count = await installPackage(pkg.key, targetDir, { tool: opts.tool });
+        const count = await installPackage(pkg.key, targetDir, {
+          tool: opts.tool,
+          level: opts.level,
+        });
         if (count > 0) {
           console.log(chalk.green(`  + ${pkg.key}`) + chalk.gray(` (${count} items)`));
         }
@@ -173,7 +216,6 @@ program
           const mdContent = mdcToMd(content);
           const mdFile = mdcFilenameToMd(file);
           const destPath = path.join(claudeRulesDir, mdFile);
-          // Only write if the .md doesn't already exist (don't overwrite source of truth)
           if (!(await fs.pathExists(destPath))) {
             await fs.writeFile(destPath, mdContent, 'utf-8');
             converted++;
