@@ -2,7 +2,7 @@
 
 Portable AI agent configuration packages. Install once, use everywhere.
 
-Stop copy-pasting `.claude/commands/`, `.cursor/rules/`, and agent configs across repos. **SetupMyAi** packages your AI setup into modular, versioned, selectively installable packages that work with **Claude Code**, **Cursor**, and **Codex**.
+Stop copy-pasting `.claude/commands/`, `.cursor/rules/`, and agent configs across repos. **SetupMyAi** packages your AI setup into modular, versioned, selectively installable packages that work with **Claude Code**, **Cursor**, **Codex**, **OpenCode**, and **Gemini**.
 
 https://github.com/user-attachments/assets/eb0838d1-8f75-4e3a-aa86-988c8551fbd1
 
@@ -20,30 +20,39 @@ https://github.com/user-attachments/assets/eb0838d1-8f75-4e3a-aa86-988c8551fbd1
 
 ## Quick Start
 
-### One-liner install
+### Install the CLI globally (recommended)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/SarthakChawla/SetupMyAi/main/scripts/install.sh | bash
+npm install -g @setupmyai/cli
+# or
+pnpm add -g @setupmyai/cli
 ```
 
-### Via APM (recommended)
+Then run from any project:
 
 ```bash
-# Add the registry
-apm marketplace add SarthakChawla/SetupMyAi
-
-# Install what you need
-apm install @setupmyai/universal @setupmyai/react-frontend
+setupmyai init                               # Interactive picker
+setupmyai install universal react-frontend   # Install specific packages
+setupmyai list                               # Show available & installed
+setupmyai sync                               # Pull latest versions
+setupmyai convert                            # Convert .md rules to .mdc and vice versa
 ```
 
-### Via CLI (interactive)
+### One-off run (no install)
 
 ```bash
 pnpm dlx @setupmyai/cli init
+# or
+npx @setupmyai/cli init
 ```
 
-This launches an interactive picker:
+### Interactive picker
+
+`setupmyai init` launches an interactive picker:
+
 ```
+? Select tools to target: (claude, cursor, codex, opencode, gemini, or all)
+? Install level: (project or user)
 ? Select packages to install:
   [x] universal        — MR/PR commands, CI fixes, worktree, statusline, hooks
   [x] react-frontend   — React/TS rules, frontend skills
@@ -54,15 +63,20 @@ This launches an interactive picker:
   [ ] database         — PostgreSQL & migration skills
 ```
 
-### Via CLI (direct)
+### Targeting specific tools and levels
 
 ```bash
-setupmyai install universal react-frontend bdd-testing
-setupmyai install --tool claude universal    # Claude Code only
-setupmyai install --tool cursor universal    # Cursor only
-setupmyai list                               # Show available & installed
-setupmyai sync                               # Pull latest versions
-setupmyai convert                            # Convert .md rules to .mdc and vice versa
+setupmyai install universal --tool claude            # Claude Code only
+setupmyai install universal --tool cursor,codex      # Multiple tools
+setupmyai install universal --level user             # Install to ~/ (user level)
+setupmyai install universal --level project          # Install to cwd (default)
+```
+
+### Via APM (alternative)
+
+```bash
+apm marketplace add SarthakChawla/SetupMyAi
+apm install @setupmyai/universal @setupmyai/react-frontend
 ```
 
 ## How It Works
@@ -84,7 +98,11 @@ Files are placed into:
 
 - **Claude Code** — Full support (commands, rules, agents, skills, hooks, scripts)
 - **Cursor** — Full support (commands, rules with .mdc format, agents, skills)
-- **Codex** — Commands and instructions (via APM compatibility)
+- **Codex** — Commands and instructions
+- **OpenCode** — Commands and instructions
+- **Gemini** — Commands and instructions
+
+Pick one or more with `--tool claude,cursor,codex,opencode,gemini` or use `--tool all` (default).
 
 ## Adding Your Own Org Package
 
