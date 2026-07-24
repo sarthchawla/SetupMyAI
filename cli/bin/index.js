@@ -5,17 +5,20 @@ import chalk from 'chalk';
 import inquirer from 'inquirer';
 import path from 'path';
 import fs from 'fs-extra';
+import { fileURLToPath } from 'url';
 import { listPackages, getPackage, SUPPORTED_TOOLS } from '../lib/packages.js';
 import { installPackage } from '../lib/installer.js';
 import { mdToMdc, mdcToMd, mdFilenameToMdc, mdcFilenameToMd } from '../lib/converter.js';
 import { getInventory, summarizeInstalled, updateInventory } from '../lib/inventory.js';
+import { getCliUpdateStatus, resolveSelfUpdateCommand, runSelfUpdate } from '../lib/self-update.js';
 
 const program = new Command();
+const packageJson = fs.readJsonSync(fileURLToPath(new URL('../../package.json', import.meta.url)));
 
 program
   .name('setupmyai')
   .description('CLI for SetupMyAi -- install AI coding assistant packages')
-  .version('0.1.0');
+  .version(packageJson.version);
 
 // ── init ────────────────────────────────────────────────────────────────────
 program
@@ -128,6 +131,7 @@ program
   .description('List available packages')
   .option('--installed', 'Show installed packages instead of available packages')
   .option('-t, --tool <tools>', 'Target tools (comma-separated): claude,cursor,codex,opencode,gemini or all', 'all')
+  .option('-p, --package <packages>', 'Installed package keys (comma-separated)')
   .option('-d, --dir <dir>', 'Target project directory', process.cwd())
   .option('-l, --level <level>', 'Install level: user, project, or all', 'project')
   .option('--json', 'Print JSON output')
@@ -136,6 +140,7 @@ program
       const targetDir = path.resolve(opts.dir);
       const inventory = await getInventory(targetDir, {
         tool: opts.tool,
+        package: opts.package,
         level: opts.level,
         includeUnmanaged: false,
       });
@@ -183,6 +188,7 @@ program
   .command('status')
   .description('Show installed SetupMyAi inventory and drift status')
   .option('-t, --tool <tools>', 'Target tools (comma-separated): claude,cursor,codex,opencode,gemini or all', 'all')
+  .option('-p, --package <packages>', 'Installed package keys (comma-separated)')
   .option('-d, --dir <dir>', 'Target project directory', process.cwd())
   .option('-l, --level <level>', 'Install level: user, project, or all', 'all')
   .option('--json', 'Print JSON output')
@@ -190,15 +196,17 @@ program
     const targetDir = path.resolve(opts.dir);
     const inventory = await getInventory(targetDir, {
       tool: opts.tool,
+      package: opts.package,
       level: opts.level,
     });
+    const cli = await getCliUpdateStatus();
 
     if (opts.json) {
-      console.log(JSON.stringify(inventory, null, 2));
+      console.log(JSON.stringify({ ...inventory, cli }, null, 2));
       return;
     }
 
-    printInventory(inventory);
+    printInventory(inventory, cli);
   });
 
 // ── sync ────────────────────────────────────────────────────────────────────
@@ -206,61 +214,32 @@ program
   .command('update')
   .description('Update installed SetupMyAi-managed files to current package content')
   .option('-t, --tool <tools>', 'Target tools (comma-separated): claude,cursor,codex,opencode,gemini or all', 'all')
+  .option('-p, --package <packages>', 'Installed package keys (comma-separated)')
   .option('-d, --dir <dir>', 'Target project directory', process.cwd())
   .option('-l, --level <level>', 'Install level: user, project, or all', 'all')
   .option('--check', 'Exit non-zero if updates are needed')
   .option('--dry-run', 'Show what would update without writing changes')
   .option('--force', 'Overwrite locally modified managed files')
+  .option('-y, --yes', 'Skip confirmation prompts')
   .option('--json', 'Print JSON output')
   .action(async (opts) => {
-    const targetDir = path.resolve(opts.dir);
-    const result = await updateInventory(targetDir, {
-      tool: opts.tool,
-      level: opts.level,
-      dryRun: opts.dryRun,
-      force: opts.force,
-    });
-
-    if (opts.json) {
-      console.log(JSON.stringify(result, null, 2));
-    } else {
-      printUpdateResults(result.results, opts.dryRun);
-    }
-
-    if (opts.check && result.needsUpdate) {
-      process.exitCode = 1;
-    }
+    await runManagedUpdate(opts);
   });
 
 program
   .command('sync')
   .description('Alias for update')
   .option('-t, --tool <tools>', 'Target tools (comma-separated): claude,cursor,codex,opencode,gemini or all', 'all')
+  .option('-p, --package <packages>', 'Installed package keys (comma-separated)')
   .option('-d, --dir <dir>', 'Target project directory', process.cwd())
   .option('-l, --level <level>', 'Install level: user, project, or all', 'all')
   .option('--check', 'Exit non-zero if updates are needed')
   .option('--dry-run', 'Show what would update without writing changes')
   .option('--force', 'Overwrite locally modified managed files')
+  .option('-y, --yes', 'Skip confirmation prompts')
   .option('--json', 'Print JSON output')
   .action(async (opts) => {
-    const targetDir = path.resolve(opts.dir);
-    const result = await updateInventory(targetDir, {
-      tool: opts.tool,
-      level: opts.level,
-      dryRun: opts.dryRun,
-      force: opts.force,
-    });
-
-    if (opts.json) {
-      console.log(JSON.stringify(result, null, 2));
-    } else {
-      console.log(chalk.gray('sync is an alias for update.\n'));
-      printUpdateResults(result.results, opts.dryRun);
-    }
-
-    if (opts.check && result.needsUpdate) {
-      process.exitCode = 1;
-    }
+    await runManagedUpdate(opts, { syncAlias: true });
   });
 
 // ── convert ─────────────────────────────────────────────────────────────────
@@ -319,8 +298,86 @@ program
 
 program.parse();
 
-function printInventory(inventory) {
+async function runManagedUpdate(opts, { syncAlias = false } = {}) {
+  const targetDir = path.resolve(opts.dir);
+  const cliStatus = await getCliUpdateStatus();
+  const result = await updateInventory(targetDir, {
+    tool: opts.tool,
+    package: opts.package,
+    level: opts.level,
+    dryRun: Boolean(opts.dryRun || opts.check),
+    force: opts.force,
+  });
+
+  if (opts.json) {
+    console.log(JSON.stringify({ ...result, cli: cliStatus }, null, 2));
+  } else {
+    if (syncAlias) {
+      console.log(chalk.gray('sync is an alias for update.\n'));
+    }
+    printUpdateResults(result.results, Boolean(opts.dryRun || opts.check));
+    if (opts.check && cliStatus.updateAvailable) {
+      console.log(chalk.yellow(`CLI update available: ${cliStatus.current} -> ${cliStatus.latest}\n`));
+    }
+  }
+
+  if (opts.check) {
+    if (result.needsUpdate || cliStatus.updateAvailable) {
+      process.exitCode = 1;
+    }
+    return;
+  }
+
+  if (!opts.json) {
+    await maybeUpdateSelf(opts, cliStatus);
+  }
+}
+
+async function maybeUpdateSelf(opts, cliStatus) {
+  if (!cliStatus.updateAvailable) {
+    if (cliStatus.error && !opts.json) {
+      console.log(chalk.yellow(`CLI update check skipped: ${cliStatus.error}\n`));
+    }
+    return;
+  }
+
+  const command = await resolveSelfUpdateCommand();
+  if (!opts.json) {
+    console.log(chalk.yellow(`SetupMyAi CLI ${cliStatus.latest} is available (current ${cliStatus.current}).`));
+    console.log(chalk.gray(`Self-update command: ${command.command} ${command.args.join(' ')}\n`));
+  }
+
+  if (opts.dryRun) return;
+
+  let shouldUpdateSelf = Boolean(opts.yes);
+  if (!shouldUpdateSelf) {
+    const answer = await inquirer.prompt([
+      {
+        type: 'confirm',
+        name: 'shouldUpdateSelf',
+        message: 'Update the SetupMyAi CLI now?',
+        default: false,
+      },
+    ]);
+    shouldUpdateSelf = answer.shouldUpdateSelf;
+  }
+
+  if (shouldUpdateSelf) {
+    await runSelfUpdate();
+  }
+}
+
+function printInventory(inventory, cli) {
   console.log(chalk.bold('\nSetupMyAi status:\n'));
+
+  if (cli) {
+    const marker = cli.updateAvailable ? 'update available' : 'current';
+    console.log(`  CLI: ${cli.current}${cli.latest ? ` (latest ${cli.latest}, ${marker})` : ''}`);
+    if (cli.error) {
+      console.log(chalk.yellow(`  CLI update check: ${cli.error}`));
+    }
+    console.log('');
+  }
 
   if (inventory.items.length === 0) {
     console.log(chalk.yellow('  No installed or unmanaged AI config found.\n'));
@@ -329,7 +386,7 @@ function printInventory(inventory) {
 
   const grouped = new Map();
   for (const item of inventory.items) {
-    const key = `${item.level}/${item.tool}/${item.packageKey || 'unmanaged'}`;
+    const key = `${item.level}/${item.tool}/${item.packageKey || 'unmanaged'}/${item.status}`;
     if (!grouped.has(key)) grouped.set(key, []);
     grouped.get(key).push(item);
   }
@@ -371,6 +428,9 @@ function printUpdateResults(results, dryRun) {
     for (const result of actionable) {
       const label = result.result === 'would-update' ? 'would update' : 'updated';
       console.log(`  ${chalk.green(label.padEnd(12))} ${chalk.gray(result.status.padEnd(8))} ${result.destinationPath}`);
+      if (result.status === 'modified' && result.sourcePath) {
+        console.log(chalk.gray(`              source: ${result.sourcePath}`));
+      }
     }
   }
 

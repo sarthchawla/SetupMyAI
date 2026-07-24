@@ -1,11 +1,11 @@
 import fs from 'fs-extra';
 import path from 'path';
-import os from 'os';
 import { mdToMdc, mdFilenameToMdc } from './converter.js';
 import { mergeSettings, mergeMcpConfig } from './merger.js';
 import {
   buildManagedRecord,
   getToolRoot,
+  prepareSettingsConfig,
   recordInstall,
   resolveTools,
 } from './inventory.js';
@@ -21,6 +21,7 @@ const CONTENT_DIRS = {
   skills: 'skills',
   '{skills}': 'skills',
   '{rules}': 'rules',
+  plugins: 'plugins',
 };
 
 /**
@@ -33,7 +34,7 @@ const CONTENT_DIRS = {
 export async function installPackage(packageName, targetDir, options = {}) {
   const tools = resolveTools(options.tool || 'all');
   const level = options.level || 'project';
-  const pkgDir = path.join(PACKAGES_ROOT, packageName);
+  const pkgDir = path.join(options.packagesRoot || PACKAGES_ROOT, packageName);
 
   if (!(await fs.pathExists(pkgDir))) {
     throw new Error(`Package "${packageName}" not found at ${pkgDir}`);
@@ -54,7 +55,14 @@ export async function installPackage(packageName, targetDir, options = {}) {
     }
 
     if (dirName === 'scripts') {
-      const installed = await installScripts(pkgDir, targetDir, level, packageName, records);
+      const installed = await installScripts(
+        pkgDir,
+        targetDir,
+        tools,
+        level,
+        packageName,
+        records
+      );
       filesInstalled += installed;
       continue;
     }
@@ -74,11 +82,16 @@ export async function installPackage(packageName, targetDir, options = {}) {
       for (const tool of tools) {
         const contentDir = CONTENT_DIRS[dirName];
         if (!contentDir) continue;
+        if (dirName === 'plugins' && tool !== 'codex') continue;
 
         const toolRoot = getToolRoot(targetDir, level, tool);
         const isRule = dirName === 'rules' || dirName === '{rules}';
         const isMdFile = relativeFile.endsWith('.md');
         const needsMdcConvert = tool === 'cursor' && isRule && isMdFile;
+        const hasExplicitMdcSource = needsMdcConvert
+          && await fs.pathExists(path.join(srcDir, mdFilenameToMdc(relativeFile)));
+
+        if (hasExplicitMdcSource) continue;
 
         if (needsMdcConvert) {
           const content = await fs.readFile(srcFile, 'utf-8');
@@ -117,7 +130,13 @@ export async function installPackage(packageName, targetDir, options = {}) {
     }
   }
 
-  await recordInstall(targetDir, level, records);
+  for (const recordLevel of new Set(records.map((record) => record.level))) {
+    await recordInstall(
+      targetDir,
+      recordLevel,
+      records.filter((record) => record.level === recordLevel)
+    );
+  }
   return filesInstalled;
 }
 
@@ -150,7 +169,13 @@ async function installHooks(pkgDir, targetDir, tools, level, packageName, record
   for (const file of files) {
     if (!file.endsWith('.json')) continue;
     const sourcePath = path.join(hooksDir, file);
-    const hooksConfig = await fs.readJson(path.join(hooksDir, file));
+    const installMode = level === 'project'
+      ? 'merge-settings-project'
+      : 'merge-settings';
+    const hooksConfig = prepareSettingsConfig(
+      await fs.readJson(path.join(hooksDir, file)),
+      installMode
+    );
 
     for (const tool of tools) {
       if (tool !== 'claude') continue;
@@ -164,7 +189,7 @@ async function installHooks(pkgDir, targetDir, tools, level, packageName, record
         type: 'hook',
         sourcePath,
         destinationPath: settingsPath,
-        installMode: 'merge-settings',
+        installMode,
         targetDir,
       }));
       installed++;
@@ -174,16 +199,18 @@ async function installHooks(pkgDir, targetDir, tools, level, packageName, record
   return installed;
 }
 
-async function installScripts(pkgDir, targetDir, level, packageName, records) {
+async function installScripts(pkgDir, targetDir, tools, level, packageName, records) {
+  if (!tools.includes('claude')) return 0;
+
   const scriptsDir = path.join(pkgDir, 'scripts');
-  const userScriptsDir = path.join(os.homedir(), '.claude', 'scripts');
+  const scriptsDestinationDir = path.join(getToolRoot(targetDir, level, 'claude'), 'scripts');
   const files = await listFiles(scriptsDir);
   let installed = 0;
 
-  await fs.ensureDir(userScriptsDir);
+  await fs.ensureDir(scriptsDestinationDir);
   for (const sourcePath of files) {
     const relativeFile = path.relative(scriptsDir, sourcePath);
-    const destinationPath = path.join(userScriptsDir, relativeFile);
+    const destinationPath = path.join(scriptsDestinationDir, relativeFile);
     await fs.ensureDir(path.dirname(destinationPath));
     await fs.copy(sourcePath, destinationPath, { overwrite: false });
     records.push(await buildManagedRecord({

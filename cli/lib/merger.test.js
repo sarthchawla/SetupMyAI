@@ -78,6 +78,80 @@ describe('mergeSettings', () => {
     assert.equal(preHooks[1].command, 'brand-new-cmd');
   });
 
+  it('keeps distinct nested commands that share the same matcher', async () => {
+    const settingsPath = path.join(tmpDir, 'same-matcher-hooks', 'settings.json');
+    await fs.ensureDir(path.dirname(settingsPath));
+    await fs.writeJson(settingsPath, {
+      theme: 'keep-me',
+      hooks: {
+        Stop: [
+          {
+            matcher: '',
+            hooks: [{ type: 'command', command: 'first-command' }],
+          },
+          {
+            matcher: 'custom',
+            hooks: [{ type: 'command', command: 'custom-command' }],
+          },
+        ],
+      },
+    });
+
+    const config = {
+      hooks: {
+        Stop: [
+          {
+            matcher: '',
+            hooks: [{ type: 'command', command: 'second-command' }],
+          },
+        ],
+      },
+    };
+
+    const result = await mergeSettings(settingsPath, config);
+
+    assert.equal(result.theme, 'keep-me');
+    assert.deepStrictEqual(
+      result.hooks.Stop.map((entry) => entry.hooks[0].command),
+      ['first-command', 'custom-command', 'second-command']
+    );
+  });
+
+  it('replaces only an entry with the same matcher and nested command identity', async () => {
+    const settingsPath = path.join(tmpDir, 'overwrite-same-hook', 'settings.json');
+    await fs.ensureDir(path.dirname(settingsPath));
+    await fs.writeJson(settingsPath, {
+      hooks: {
+        Stop: [
+          {
+            matcher: '',
+            hooks: [{ type: 'command', command: 'same-command' }],
+            timeout: 10,
+          },
+        ],
+      },
+    });
+
+    const result = await mergeSettings(
+      settingsPath,
+      {
+        hooks: {
+          Stop: [
+            {
+              matcher: '',
+              hooks: [{ type: 'command', command: 'same-command' }],
+              timeout: 30,
+            },
+          ],
+        },
+      },
+      { overwriteManaged: true }
+    );
+
+    assert.equal(result.hooks.Stop.length, 1);
+    assert.equal(result.hooks.Stop[0].timeout, 30);
+  });
+
   it('preserves existing non-hooks keys', async () => {
     const settingsPath = path.join(tmpDir, 'preserve-keys', 'settings.json');
     await fs.ensureDir(path.dirname(settingsPath));
@@ -216,6 +290,30 @@ describe('mergeMcpConfig', () => {
     const result = await mergeMcpConfig(mcpPath, config);
 
     assert.equal(result.mcpServers.myServer.command, 'original');
+  });
+
+  it('can replace a managed server without clobbering unrelated servers', async () => {
+    const mcpPath = path.join(tmpDir, 'overwrite-managed', 'mcp.json');
+    await fs.ensureDir(path.dirname(mcpPath));
+    await fs.writeJson(mcpPath, {
+      mcpServers: {
+        myServer: { command: 'original' },
+        unrelated: { command: 'keep-me' },
+      },
+    });
+
+    const result = await mergeMcpConfig(
+      mcpPath,
+      {
+        mcpServers: {
+          myServer: { command: 'replacement' },
+        },
+      },
+      { overwriteManaged: true }
+    );
+
+    assert.equal(result.mcpServers.myServer.command, 'replacement');
+    assert.equal(result.mcpServers.unrelated.command, 'keep-me');
   });
 
   it('preserves all existing config keys', async () => {

@@ -42,6 +42,9 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       - run: pnpm install --frozen-lockfile
-      - run: pnpm publish --no-git-checks --access public
+      - name: Verify tag matches package version
+        run: node -e "if (process.env.GITHUB_REF_NAME !== 'v' + require('./package.json').version) process.exit(1)"
+      - run: pnpm release:pack
+      - run: pnpm release:publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
