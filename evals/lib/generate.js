@@ -21,6 +21,33 @@ function renderYaml(value) {
   })}`;
 }
 
+async function assertSymlinkFreeEvalsTree(evalsDirectory) {
+  const rootStats = await fs.lstat(evalsDirectory);
+  if (!rootStats.isDirectory() || rootStats.isSymbolicLink()) {
+    throw new Error('evals tree must be a real directory, not a symbolic link');
+  }
+
+  async function visit(directoryPath) {
+    const entries = await fs.readdir(directoryPath, {
+      withFileTypes: true,
+    });
+
+    for (const entry of entries) {
+      const entryPath = path.join(directoryPath, entry.name);
+      if (entry.isSymbolicLink()) {
+        throw new Error(
+          `evals tree must not contain symbolic links: ${entryPath}`
+        );
+      }
+      if (entry.isDirectory()) {
+        await visit(entryPath);
+      }
+    }
+  }
+
+  await visit(evalsDirectory);
+}
+
 async function isGeneratedSuiteDirectory(directoryPath) {
   const generatedFiles = ['eval.yaml', 'mock.eval.yaml'];
 
@@ -39,7 +66,10 @@ async function isGeneratedSuiteDirectory(directoryPath) {
 }
 
 export async function generateWazaSuites(repositoryRoot) {
-  const casePath = path.join(repositoryRoot, 'evals', 'cases.yaml');
+  const evalsDirectory = path.join(repositoryRoot, 'evals');
+  await assertSymlinkFreeEvalsTree(evalsDirectory);
+
+  const casePath = path.join(evalsDirectory, 'cases.yaml');
   const caseSet = YAML.parse(await fs.readFile(casePath, 'utf8'));
   const inventory = await loadSkillInventory(repositoryRoot);
   const inventoryByName = new Map(

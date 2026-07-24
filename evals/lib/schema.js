@@ -23,13 +23,8 @@ function formatErrors(filePath, errors) {
 }
 
 export async function validatePinnedWazaSchemas(
-  repositoryRoot,
-  { fetchImpl = globalThis.fetch } = {}
+  repositoryRoot
 ) {
-  if (typeof fetchImpl !== 'function') {
-    throw new Error('A Fetch-compatible implementation is required');
-  }
-
   const lock = YAML.parse(
     await fs.readFile(
       path.join(repositoryRoot, 'evals', 'waza.lock.yaml'),
@@ -41,17 +36,34 @@ export async function validatePinnedWazaSchemas(
 
   for (const [schemaName, patterns] of Object.entries(SCHEMA_PATTERNS)) {
     const pin = lock.schemas?.[schemaName];
-    if (!pin?.url || !pin?.sha256) {
+    if (!pin?.url || !pin?.path || !pin?.sha256) {
       throw new Error(`waza.lock.yaml is missing the ${schemaName} schema pin`);
     }
 
-    const response = await fetchImpl(pin.url);
-    if (!response.ok) {
+    const schemasDirectory = path.resolve(
+      repositoryRoot,
+      'evals',
+      'schemas'
+    );
+    const schemaPath = path.resolve(repositoryRoot, pin.path);
+    if (
+      schemaPath !== schemasDirectory &&
+      !schemaPath.startsWith(`${schemasDirectory}${path.sep}`)
+    ) {
       throw new Error(
-        `Failed to fetch ${schemaName} schema: HTTP ${response.status}`
+        `${schemaName} schema path must stay within evals/schemas`
       );
     }
-    const schemaText = await response.text();
+    const schemaStats = await fs.lstat(schemaPath);
+    if (schemaStats.isSymbolicLink()) {
+      throw new Error(
+        `${schemaName} schema must be a regular file, not a symbolic link`
+      );
+    }
+    if (!schemaStats.isFile()) {
+      throw new Error(`${schemaName} schema must be a regular file`);
+    }
+    const schemaText = await fs.readFile(schemaPath, 'utf8');
     const actualHash = sha256(schemaText);
     if (actualHash !== pin.sha256) {
       throw new Error(

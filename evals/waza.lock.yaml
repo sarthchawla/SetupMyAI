@@ -10,7 +10,9 @@ checksums:
 schemas:
   eval:
     url: "https://raw.githubusercontent.com/microsoft/waza/v0.38.3/schemas/eval.schema.json"
+    path: "evals/schemas/eval.schema.json"
     sha256: "f9ae5730c4170695a700ce927c0fa26d3c75c00d901e46115ec4d123f87b5565"
   task:
     url: "https://raw.githubusercontent.com/microsoft/waza/v0.38.3/schemas/task.schema.json"
+    path: "evals/schemas/task.schema.json"
     sha256: "28466d3b205b68fab9eb1de55d87d3643ebd3835a8eb4cb990907483487cf6d1"

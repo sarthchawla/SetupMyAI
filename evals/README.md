@@ -27,8 +27,9 @@ pnpm test:waza-schema
 
 Generated Waza files carry a header directing contributors back to
 `cases.yaml`; do not edit them directly. Generation also removes suite
-directories no longer present in the canonical inventory. CI regenerates the
-suite and fails if any tracked or untracked eval artifact changes.
+directories no longer present in the canonical inventory. CI snapshots the
+eval tree, regenerates the suite, and fails if generation creates, removes, or
+changes any eval artifact.
 
 ## Execution modes
 
@@ -70,17 +71,18 @@ share an output directory with another concurrent writer.
 ## Waza version
 
 `waza.lock.yaml` pins Waza `v0.38.3` and the release checksums for each
-supported binary. It also pins the immutable official eval and task schemas;
-`pnpm test:waza-schema` downloads them, verifies their SHA-256 checksums, and
-validates every generated Waza artifact. Before invoking `--version`, the runner
-maps the current platform and architecture to the release asset and verifies
-the binary against the matching lockfile checksum. It removes stale result
-files and the prior summary only after validating the output directory's
-runner-owned manifest, then requires a fresh parseable artifact whose skill,
-eval, engine, task IDs, task statuses, and task counts match the loaded suite.
-Result filenames include a deterministic suite-identity hash so normalized
-skill-name collisions cannot overwrite one another. Download the matching
-binary from the official [Waza releases](https://github.com/microsoft/waza/releases/tag/v0.38.3)
+supported binary. It also pins local byte-exact copies of the official eval and
+task schemas by immutable upstream URL and SHA-256 checksum;
+`pnpm test:waza-schema` verifies those vendored schemas before validating every
+generated Waza artifact. Before invoking `--version`, the runner maps the
+current platform and architecture to the release asset and verifies the binary
+against the matching lockfile checksum. It removes stale result files and the
+prior summary only after validating the output directory's runner-owned
+manifest, then requires a fresh parseable artifact whose skill, eval, engine,
+task IDs, task statuses, and task counts match the loaded suite. Result
+filenames include a deterministic suite-identity hash so normalized skill-name
+collisions cannot overwrite one another. Download the matching binary from the
+official [Waza releases](https://github.com/microsoft/waza/releases/tag/v0.38.3)
 and make it executable.
 
 Example for Apple Silicon:

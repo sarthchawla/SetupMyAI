@@ -285,6 +285,36 @@ describe('generateWazaSuites', () => {
     );
   });
 
+  it('rejects symlinked generated directories without mutating their targets', async () => {
+    const repositoryRoot = await createRepositoryFixture();
+    await generateWazaSuites(repositoryRoot);
+
+    const tasksDirectory = path.join(
+      repositoryRoot,
+      'evals',
+      'demo',
+      'demo-skill',
+      'tasks'
+    );
+    const externalDirectory = await fs.mkdtemp(
+      path.join(os.tmpdir(), 'setupmyai-waza-external-')
+    );
+    temporaryRoots.push(externalDirectory);
+    const sentinelPath = path.join(externalDirectory, 'sentinel.txt');
+    await fs.writeFile(sentinelPath, 'preserve this external file');
+    await fs.remove(tasksDirectory);
+    await fs.symlink(externalDirectory, tasksDirectory, 'dir');
+
+    await assert.rejects(
+      generateWazaSuites(repositoryRoot),
+      /evals tree must not contain symbolic links/
+    );
+    assert.equal(
+      await fs.readFile(sentinelPath, 'utf8'),
+      'preserve this external file'
+    );
+  });
+
   it('prunes removed suite directories without touching eval support files', async () => {
     const repositoryRoot = await createRepositoryFixture();
     const staleSuite = path.join(
