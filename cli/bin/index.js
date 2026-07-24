@@ -8,6 +8,7 @@ import fs from 'fs-extra';
 import { listPackages, getPackage, SUPPORTED_TOOLS } from '../lib/packages.js';
 import { installPackage } from '../lib/installer.js';
 import { mdToMdc, mdcToMd, mdFilenameToMdc, mdcFilenameToMd } from '../lib/converter.js';
+import { getInventory, summarizeInstalled, updateInventory } from '../lib/inventory.js';
 
 const program = new Command();
 
@@ -125,7 +126,42 @@ program
 program
   .command('list')
   .description('List available packages')
-  .action(() => {
+  .option('--installed', 'Show installed packages instead of available packages')
+  .option('-t, --tool <tools>', 'Target tools (comma-separated): claude,cursor,codex,opencode,gemini or all', 'all')
+  .option('-d, --dir <dir>', 'Target project directory', process.cwd())
+  .option('-l, --level <level>', 'Install level: user, project, or all', 'project')
+  .option('--json', 'Print JSON output')
+  .action(async (opts) => {
+    if (opts.installed) {
+      const targetDir = path.resolve(opts.dir);
+      const inventory = await getInventory(targetDir, {
+        tool: opts.tool,
+        level: opts.level,
+        includeUnmanaged: false,
+      });
+      const installed = summarizeInstalled(inventory);
+
+      if (opts.json) {
+        console.log(JSON.stringify(installed, null, 2));
+        return;
+      }
+
+      console.log(chalk.bold('\nInstalled packages:\n'));
+      if (installed.length === 0) {
+        console.log(chalk.yellow('  No SetupMyAi-managed packages found.\n'));
+        return;
+      }
+
+      for (const pkg of installed) {
+        const statuses = Object.entries(pkg.statuses)
+          .map(([status, count]) => `${status}:${count}`)
+          .join(', ');
+        console.log(`  ${chalk.green(pkg.packageKey.padEnd(20))} ${chalk.gray(`${pkg.level}/${pkg.tool}`)} ${statuses}`);
+      }
+      console.log('');
+      return;
+    }
+
     const packages = listPackages();
     console.log(chalk.bold('\nAvailable packages:\n'));
 
@@ -142,40 +178,89 @@ program
     console.log(`    ${SUPPORTED_TOOLS.join(', ')}\n`);
   });
 
-// ── sync ────────────────────────────────────────────────────────────────────
+// ── status ─────────────────────────────────────────────────────────────────
 program
-  .command('sync')
-  .description('Re-sync installed packages to latest')
+  .command('status')
+  .description('Show installed SetupMyAi inventory and drift status')
   .option('-t, --tool <tools>', 'Target tools (comma-separated): claude,cursor,codex,opencode,gemini or all', 'all')
   .option('-d, --dir <dir>', 'Target project directory', process.cwd())
-  .option('-l, --level <level>', 'Install level: user or project', 'project')
+  .option('-l, --level <level>', 'Install level: user, project, or all', 'all')
+  .option('--json', 'Print JSON output')
   .action(async (opts) => {
     const targetDir = path.resolve(opts.dir);
-    const packages = listPackages();
+    const inventory = await getInventory(targetDir, {
+      tool: opts.tool,
+      level: opts.level,
+    });
 
-    console.log(chalk.blue('Syncing all packages...\n'));
-
-    for (const pkg of packages) {
-      const pkgDir = path.resolve(
-        new URL('../../packages', import.meta.url).pathname,
-        pkg.key
-      );
-      if (!(await fs.pathExists(pkgDir))) continue;
-
-      try {
-        const count = await installPackage(pkg.key, targetDir, {
-          tool: opts.tool,
-          level: opts.level,
-        });
-        if (count > 0) {
-          console.log(chalk.green(`  + ${pkg.key}`) + chalk.gray(` (${count} items)`));
-        }
-      } catch (err) {
-        console.log(chalk.red(`  x ${pkg.key}: ${err.message}`));
-      }
+    if (opts.json) {
+      console.log(JSON.stringify(inventory, null, 2));
+      return;
     }
 
-    console.log(chalk.green('\nSync complete!'));
+    printInventory(inventory);
+  });
+
+// ── sync ────────────────────────────────────────────────────────────────────
+program
+  .command('update')
+  .description('Update installed SetupMyAi-managed files to current package content')
+  .option('-t, --tool <tools>', 'Target tools (comma-separated): claude,cursor,codex,opencode,gemini or all', 'all')
+  .option('-d, --dir <dir>', 'Target project directory', process.cwd())
+  .option('-l, --level <level>', 'Install level: user, project, or all', 'all')
+  .option('--check', 'Exit non-zero if updates are needed')
+  .option('--dry-run', 'Show what would update without writing changes')
+  .option('--force', 'Overwrite locally modified managed files')
+  .option('--json', 'Print JSON output')
+  .action(async (opts) => {
+    const targetDir = path.resolve(opts.dir);
+    const result = await updateInventory(targetDir, {
+      tool: opts.tool,
+      level: opts.level,
+      dryRun: opts.dryRun,
+      force: opts.force,
+    });
+
+    if (opts.json) {
+      console.log(JSON.stringify(result, null, 2));
+    } else {
+      printUpdateResults(result.results, opts.dryRun);
+    }
+
+    if (opts.check && result.needsUpdate) {
+      process.exitCode = 1;
+    }
+  });
+
+program
+  .command('sync')
+  .description('Alias for update')
+  .option('-t, --tool <tools>', 'Target tools (comma-separated): claude,cursor,codex,opencode,gemini or all', 'all')
+  .option('-d, --dir <dir>', 'Target project directory', process.cwd())
+  .option('-l, --level <level>', 'Install level: user, project, or all', 'all')
+  .option('--check', 'Exit non-zero if updates are needed')
+  .option('--dry-run', 'Show what would update without writing changes')
+  .option('--force', 'Overwrite locally modified managed files')
+  .option('--json', 'Print JSON output')
+  .action(async (opts) => {
+    const targetDir = path.resolve(opts.dir);
+    const result = await updateInventory(targetDir, {
+      tool: opts.tool,
+      level: opts.level,
+      dryRun: opts.dryRun,
+      force: opts.force,
+    });
+
+    if (opts.json) {
+      console.log(JSON.stringify(result, null, 2));
+    } else {
+      console.log(chalk.gray('sync is an alias for update.\n'));
+      printUpdateResults(result.results, opts.dryRun);
+    }
+
+    if (opts.check && result.needsUpdate) {
+      process.exitCode = 1;
+    }
   });
 
 // ── convert ─────────────────────────────────────────────────────────────────
@@ -233,3 +318,77 @@ program
   });
 
 program.parse();
+
+function printInventory(inventory) {
+  console.log(chalk.bold('\nSetupMyAi status:\n'));
+
+  if (inventory.items.length === 0) {
+    console.log(chalk.yellow('  No installed or unmanaged AI config found.\n'));
+    return;
+  }
+
+  const grouped = new Map();
+  for (const item of inventory.items) {
+    const key = `${item.level}/${item.tool}/${item.packageKey || 'unmanaged'}`;
+    if (!grouped.has(key)) grouped.set(key, []);
+    grouped.get(key).push(item);
+  }
+
+  for (const [key, items] of [...grouped.entries()].sort()) {
+    console.log(chalk.blue(`  ${key}`));
+    for (const item of items.sort((a, b) => a.destinationPath.localeCompare(b.destinationPath))) {
+      const statusColor = {
+        current: chalk.green,
+        outdated: chalk.yellow,
+        modified: chalk.red,
+        missing: chalk.red,
+        unmanaged: chalk.gray,
+        orphaned: chalk.red,
+      }[item.status] || chalk.white;
+      console.log(`    ${statusColor(item.status.padEnd(10))} ${chalk.gray(item.type.padEnd(8))} ${item.destinationPath}`);
+      if (item.status === 'modified' && item.sourcePath) {
+        console.log(chalk.gray(`      source: ${item.sourcePath}`));
+      }
+    }
+    console.log('');
+  }
+
+  const statusSummary = Object.entries(inventory.summary.byStatus)
+    .map(([status, count]) => `${status}:${count}`)
+    .join(', ');
+  console.log(chalk.gray(`  Total: ${inventory.summary.total} item(s)${statusSummary ? ` (${statusSummary})` : ''}\n`));
+}
+
+function printUpdateResults(results, dryRun) {
+  const actionable = results.filter((result) => result.result === 'updated' || result.result === 'would-update');
+  const modified = results.filter((result) => result.result === 'skipped-modified');
+
+  console.log(chalk.bold(dryRun ? '\nSetupMyAi update dry run:\n' : '\nSetupMyAi update:\n'));
+
+  if (actionable.length === 0) {
+    console.log(chalk.green('  No managed updates to apply.'));
+  } else {
+    for (const result of actionable) {
+      const label = result.result === 'would-update' ? 'would update' : 'updated';
+      console.log(`  ${chalk.green(label.padEnd(12))} ${chalk.gray(result.status.padEnd(8))} ${result.destinationPath}`);
+    }
+  }
+
+  if (modified.length > 0) {
+    console.log(chalk.yellow('\n  Modified managed files were skipped. Use --force to overwrite:'));
+    for (const result of modified) {
+      console.log(`  ${chalk.yellow('skipped'.padEnd(12))} ${result.destinationPath}`);
+      console.log(chalk.gray(`              source: ${result.sourcePath}`));
+    }
+  }
+
+  const skipped = results.filter((result) => result.result?.startsWith('skipped-') && result.result !== 'skipped-current' && result.result !== 'skipped-modified');
+  if (skipped.length > 0) {
+    console.log(chalk.gray('\n  Other skipped items:'));
+    for (const result of skipped) {
+      console.log(chalk.gray(`  ${result.result.padEnd(18)} ${result.destinationPath}`));
+    }
+  }
+
+  console.log('');
+}
