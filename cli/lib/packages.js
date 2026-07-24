@@ -4,7 +4,7 @@ export const PACKAGES = {
   universal: {
     name: '@setupmyai/universal',
     tier: 1,
-    description: 'MR commands, CI fixes, worktree, statusline, hooks',
+    description: 'MR commands, CI fixes, worktree, Codex migration, statusline, hooks',
   },
   'react-frontend': {
     name: '@setupmyai/react-frontend',
