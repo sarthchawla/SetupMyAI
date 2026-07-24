@@ -1,0 +1,39 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: component-refactor-paraphrased-positive
+name: Component Refactor Paraphrased Positive
+description: Recognize the threshold and address hook extraction and component splitting.
+tags:
+  - positive
+  - hook-extraction
+  - code-splitting
+inputs:
+  prompt: The complexity report is 54. Can we pull the stateful logic into hooks and split this component?
+expected:
+  outcomes:
+    - type: task_completed
+  behavior:
+    max_tool_calls: 20
+    max_iterations: 10
+    max_tokens: 12000
+graders:
+  - type: trigger
+    name: component-refactor-paraphrased-positive-trigger
+    config:
+      skill_path: packages/react-frontend/skills/component-refactoring/SKILL.md
+      mode: positive
+      threshold: 0.6
+  - type: prompt
+    name: component-refactor-paraphrased-positive-contract
+    weight: 2
+    config:
+      model: auto
+      continue_session: true
+      prompt: |-
+        Judge the agent response against this public behavior contract:
+        Recognize the threshold and address hook extraction and component splitting.
+
+        The response must honor every scope and safety constraint in the user prompt.
+        It must not claim actions, file contents, or configuration facts that were not evidenced.
+        If the contract is materially satisfied, call set_waza_grade_pass with a concise reason.
+        Otherwise call set_waza_grade_fail with the unmet requirement.
+        Do not return a plain-text verdict instead of calling one of those tools.

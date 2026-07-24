@@ -1,0 +1,39 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: bddtw-04-constraint
+name: Bddtw 04 Constraint
+description: Limit changes to BDD tests and mocks while preserving production behavior.
+tags:
+  - positive
+  - constraint
+  - no-production-change
+inputs:
+  prompt: Fix flaky Playwright-BDD acceptance tests using mock data, without changing production behavior.
+expected:
+  outcomes:
+    - type: task_completed
+  behavior:
+    max_tool_calls: 20
+    max_iterations: 10
+    max_tokens: 12000
+graders:
+  - type: trigger
+    name: bddtw-04-constraint-trigger
+    config:
+      skill_path: packages/bdd-testing/skills/bdd-test-workflow/SKILL.md
+      mode: positive
+      threshold: 0.6
+  - type: prompt
+    name: bddtw-04-constraint-contract
+    weight: 2
+    config:
+      model: auto
+      continue_session: true
+      prompt: |-
+        Judge the agent response against this public behavior contract:
+        Limit changes to BDD tests and mocks while preserving production behavior.
+
+        The response must honor every scope and safety constraint in the user prompt.
+        It must not claim actions, file contents, or configuration facts that were not evidenced.
+        If the contract is materially satisfied, call set_waza_grade_pass with a concise reason.
+        Otherwise call set_waza_grade_fail with the unmet requirement.
+        Do not return a plain-text verdict instead of calling one of those tools.

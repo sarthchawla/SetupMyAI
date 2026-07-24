@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: node-backend-clear-positive
+name: Node Backend Clear Positive
+description: Cover the requested Node service and API concerns without drifting into frontend work.
+tags:
+  - positive
+  - fastify
+  - rest
+inputs:
+  prompt: Build a production-ready Fastify REST API with middleware, authentication, and consistent
+    error handling.
+expected: {}
+graders:
+  - type: trigger
+    name: node-backend-clear-positive-trigger
+    config:
+      skill_path: packages/react-frontend/skills/nodejs-backend-patterns/SKILL.md
+      mode: positive
+      threshold: 0.6

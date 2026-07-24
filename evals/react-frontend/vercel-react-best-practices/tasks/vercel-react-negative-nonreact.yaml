@@ -1,0 +1,39 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: vercel-react-negative-nonreact
+name: Vercel React Negative Nonreact
+description: Do not apply React or Next.js advice to a Python command-line tool.
+tags:
+  - negative-trigger
+  - boundary
+  - non-react
+inputs:
+  prompt: Optimize the runtime performance of this Python command-line tool.
+expected:
+  outcomes:
+    - type: task_completed
+  behavior:
+    max_tool_calls: 20
+    max_iterations: 10
+    max_tokens: 12000
+graders:
+  - type: trigger
+    name: vercel-react-negative-nonreact-trigger
+    config:
+      skill_path: packages/react-frontend/skills/vercel-react-best-practices/SKILL.md
+      mode: negative
+      threshold: 0.6
+  - type: prompt
+    name: vercel-react-negative-nonreact-contract
+    weight: 2
+    config:
+      model: auto
+      continue_session: true
+      prompt: |-
+        Judge the agent response against this public behavior contract:
+        Do not apply React or Next.js advice to a Python command-line tool.
+
+        The response must honor every scope and safety constraint in the user prompt.
+        It must not claim actions, file contents, or configuration facts that were not evidenced.
+        If the contract is materially satisfied, call set_waza_grade_pass with a concise reason.
+        Otherwise call set_waza_grade_fail with the unmet requirement.
+        Do not return a plain-text verdict instead of calling one of those tools.

@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: organization-clear-positive
+name: Organization Clear Positive
+description: Give Better Auth organization guidance scoped to organizations, teams, and RBAC.
+tags:
+  - positive
+  - better-auth
+  - rbac
+inputs:
+  prompt: Implement multi-tenant organizations, teams, and role-based access control with Better
+    Auth's organization plugin.
+expected: {}
+graders:
+  - type: trigger
+    name: organization-clear-positive-trigger
+    config:
+      skill_path: packages/react-frontend/skills/organization-best-practices/SKILL.md
+      mode: positive
+      threshold: 0.6

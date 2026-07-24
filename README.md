@@ -101,8 +101,12 @@ mkdir -p packages/my-org-workflows/{commands,agents,rules,skills,mcp}
 
 1. Add/modify files in the relevant `packages/<name>/` directory
 2. Update the package's `apm.yml` if adding new primitive types
-3. Test with `setupmyai install <package> --dry-run`
-4. Submit a pull request
+3. Add or update its metadata-derived cases in
+   [`evals/cases.yaml`](evals/cases.yaml)
+4. Run `pnpm test:all` and the appropriate
+   [Waza skill evaluations](evals/README.md)
+5. Test with `setupmyai install <package> --dry-run`
+6. Submit a pull request
 
 ### Adding a New Package
 

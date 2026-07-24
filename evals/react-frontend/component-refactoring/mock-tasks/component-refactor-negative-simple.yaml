@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: component-refactor-negative-simple
+name: Component Refactor Negative Simple
+description: Do not force a high-complexity workflow onto a simple component.
+tags:
+  - negative-trigger
+  - boundary
+  - simple-component
+inputs:
+  prompt: Refactor this simple, well-structured 80-line React component even though no complexity
+    issue has been identified.
+expected: {}
+graders:
+  - type: trigger
+    name: component-refactor-negative-simple-trigger
+    config:
+      skill_path: packages/react-frontend/skills/component-refactoring/SKILL.md
+      mode: negative
+      threshold: 0.6

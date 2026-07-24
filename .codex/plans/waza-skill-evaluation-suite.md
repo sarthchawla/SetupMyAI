@@ -18,9 +18,11 @@ target the sync branch and link to the sync pull request.
   instructions until the first failing evaluation baseline is recorded.
 - Keep prompts, fixtures, transcripts, and reports public-safe and free of
   credentials, private paths, internal hosts, and organization-only workflows.
-- Keep shared/public infrastructure and cases mirrorable into the private
-  sibling repository; private-only cases and fixes stay there.
+- Keep shared/public infrastructure and cases reusable by downstream
+  repositories; downstream-only cases and fixes stay outside this repository.
 - Pin Waza and verify its published checksum before execution.
+- Generate an offline `mock`/trigger-only layer so routing can be evaluated
+  locally without transmitting skill bodies to an external model.
 - Run model-backed evaluations only with sanitized fixtures. Deterministic
   schema, inventory, and coverage checks must remain runnable without secrets.
 
@@ -39,7 +41,8 @@ target the sync branch and link to the sync pull request.
    - Add Waza `eval.yaml` and task files generated from the blind metadata-only
      case designs.
 3. RED — Waza baseline
-   - Validate every suite with Waza `v0.38.3`.
+   - Validate every suite with Waza `v0.38.3`, first through the local mock
+     executor and trigger grader, then through the approval-gated model path.
    - Run all suites against the real skill behavior and save a sanitized
      baseline summary before reading any skill body.
    - Commit the cases and failing-baseline evidence as a dedicated checkpoint.
@@ -63,7 +66,9 @@ evals/
   lib/
   <package>/<skill>/
     eval.yaml
+    mock.eval.yaml
     tasks/*.yaml
+    mock-tasks/*.yaml
 scripts/
   waza-evals.js
 ```
@@ -81,7 +86,7 @@ pnpm test:bats
 pnpm test:validate
 pnpm test:all
 waza coverage --format markdown
+node scripts/waza-evals.js run --mode offline --waza /path/to/pinned/waza
 node scripts/waza-evals.js run --waza /path/to/pinned/waza
 git diff --check
 ```
-

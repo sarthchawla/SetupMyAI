@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: frontend-review-paraphrased-positive
+name: Frontend Review Paraphrased Positive
+description: Recognize the implied frontend review and limit findings to the supplied diff.
+tags:
+  - positive
+  - focused-review
+inputs:
+  prompt: Is there anything concerning in this React component diff?
+expected: {}
+graders:
+  - type: trigger
+    name: frontend-review-paraphrased-positive-trigger
+    config:
+      skill_path: packages/react-frontend/skills/frontend-code-review/SKILL.md
+      mode: positive
+      threshold: 0.6

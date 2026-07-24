@@ -1,0 +1,32 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+name: vercel-react-best-practices-eval
+description: Behavior and routing evaluation for vercel-react-best-practices.
+skill: vercel-react-best-practices
+schemaVersion: "1.2"
+version: "1.0"
+config:
+  trials_per_task: 1
+  timeout_seconds: 300
+  parallel: false
+  executor: copilot-sdk
+  model: auto
+  skill_directories:
+    - ../../../packages/react-frontend/skills
+metrics:
+  - name: behavior-contract
+    weight: 1
+    threshold: 0.6
+graders:
+  - type: code
+    name: substantive-response
+    config:
+      language: javascript
+      assertions:
+        - output.trim().length > 40
+  - type: text
+    name: no-fatal-errors
+    config:
+      regex_not_match:
+        - (?i)fatal error|crashed|unhandled exception
+tasks:
+  - tasks/*.yaml

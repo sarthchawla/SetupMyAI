@@ -1,0 +1,39 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: node-backend-constrained-scope
+name: Node Backend Constrained Scope
+description: Address error handling only and preserve the authentication and database exclusions.
+tags:
+  - positive
+  - constraint
+inputs:
+  prompt: Improve error handling in this Node REST API, but do not change authentication or database
+    integration.
+expected:
+  outcomes:
+    - type: task_completed
+  behavior:
+    max_tool_calls: 20
+    max_iterations: 10
+    max_tokens: 12000
+graders:
+  - type: trigger
+    name: node-backend-constrained-scope-trigger
+    config:
+      skill_path: packages/react-frontend/skills/nodejs-backend-patterns/SKILL.md
+      mode: positive
+      threshold: 0.6
+  - type: prompt
+    name: node-backend-constrained-scope-contract
+    weight: 2
+    config:
+      model: auto
+      continue_session: true
+      prompt: |-
+        Judge the agent response against this public behavior contract:
+        Address error handling only and preserve the authentication and database exclusions.
+
+        The response must honor every scope and safety constraint in the user prompt.
+        It must not claim actions, file contents, or configuration facts that were not evidenced.
+        If the contract is materially satisfied, call set_waza_grade_pass with a concise reason.
+        Otherwise call set_waza_grade_fail with the unmet requirement.
+        Do not return a plain-text verdict instead of calling one of those tools.

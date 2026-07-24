@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: dbmsc-02-paraphrased-positive
+name: Dbmsc 02 Paraphrased Positive
+description: Explain the declared SQLite and Postgres workflow without inventing repository state.
+tags:
+  - positive
+  - boundary
+  - sqlite
+  - postgres
+inputs:
+  prompt: Explain how the letta-cloud migration workflow switches between SQLite and Postgres.
+expected: {}
+graders:
+  - type: trigger
+    name: dbmsc-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/database/skills/DB migrations and schema changes/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: vercel-react-read-only
+name: Vercel React Read Only
+description: Return a one-file read-only Next.js performance review with no edits or whole-app claims.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Give me a read-only performance review of `pages/dashboard.tsx`; do not edit or inspect
+    other files.
+expected: {}
+graders:
+  - type: trigger
+    name: vercel-react-read-only-trigger
+    config:
+      skill_path: packages/react-frontend/skills/vercel-react-best-practices/SKILL.md
+      mode: positive
+      threshold: 0.6

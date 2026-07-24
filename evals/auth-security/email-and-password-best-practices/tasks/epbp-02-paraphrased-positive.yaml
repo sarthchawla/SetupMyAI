@@ -1,0 +1,38 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: epbp-02-paraphrased-positive
+name: Epbp 02 Paraphrased Positive
+description: Review the email and password flow and limit claims to the supplied context.
+tags:
+  - positive
+  - review
+inputs:
+  prompt: Review our Better Auth sign-up and password login flow for secure implementation.
+expected:
+  outcomes:
+    - type: task_completed
+  behavior:
+    max_tool_calls: 20
+    max_iterations: 10
+    max_tokens: 12000
+graders:
+  - type: trigger
+    name: epbp-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/auth-security/skills/email-and-password-best-practices/SKILL.md
+      mode: positive
+      threshold: 0.6
+  - type: prompt
+    name: epbp-02-paraphrased-positive-contract
+    weight: 2
+    config:
+      model: auto
+      continue_session: true
+      prompt: |-
+        Judge the agent response against this public behavior contract:
+        Review the email and password flow and limit claims to the supplied context.
+
+        The response must honor every scope and safety constraint in the user prompt.
+        It must not claim actions, file contents, or configuration facts that were not evidenced.
+        If the contract is materially satisfied, call set_waza_grade_pass with a concise reason.
+        Otherwise call set_waza_grade_fail with the unmet requirement.
+        Do not return a plain-text verdict instead of calling one of those tools.

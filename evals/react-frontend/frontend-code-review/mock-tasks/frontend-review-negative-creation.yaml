@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: frontend-review-negative-creation
+name: Frontend Review Negative Creation
+description: Do not invent review findings for a creation request.
+tags:
+  - negative-trigger
+  - boundary
+  - creation
+inputs:
+  prompt: Create a new React component from this product description.
+expected: {}
+graders:
+  - type: trigger
+    name: frontend-review-negative-creation-trigger
+    config:
+      skill_path: packages/react-frontend/skills/frontend-code-review/SKILL.md
+      mode: negative
+      threshold: 0.6

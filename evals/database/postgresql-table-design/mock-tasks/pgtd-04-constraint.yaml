@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pgtd-04-constraint
+name: Pgtd 04 Constraint
+description: Return a design proposal only, with no DDL execution or applied-performance claims.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Propose a PostgreSQL schema and indexes as review-only output; do not execute DDL or modify
+    a database.
+expected: {}
+graders:
+  - type: trigger
+    name: pgtd-04-constraint-trigger
+    config:
+      skill_path: packages/database/skills/postgresql-table-design/SKILL.md
+      mode: positive
+      threshold: 0.6

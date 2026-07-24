@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: organization-negative-unrelated-auth
+name: Organization Negative Unrelated Auth
+description: Do not apply plugin-specific guidance to an unrelated authentication provider.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Design generic application roles for an auth provider that does not use Better Auth's
+    organization plugin.
+expected: {}
+graders:
+  - type: trigger
+    name: organization-negative-unrelated-auth-trigger
+    config:
+      skill_path: packages/react-frontend/skills/organization-best-practices/SKILL.md
+      mode: negative
+      threshold: 0.6

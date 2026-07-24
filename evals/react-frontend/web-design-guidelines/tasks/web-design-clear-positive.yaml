@@ -1,0 +1,39 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: web-design-clear-positive
+name: Web Design Clear Positive
+description: Review the named UI file for accessibility and interface-guideline concerns.
+tags:
+  - positive
+  - accessibility
+  - ui-review
+inputs:
+  prompt: Audit `Checkout.tsx` for accessibility and Web Interface Guidelines compliance.
+expected:
+  outcomes:
+    - type: task_completed
+  behavior:
+    max_tool_calls: 20
+    max_iterations: 10
+    max_tokens: 12000
+graders:
+  - type: trigger
+    name: web-design-clear-positive-trigger
+    config:
+      skill_path: packages/react-frontend/skills/web-design-guidelines/SKILL.md
+      mode: positive
+      threshold: 0.6
+  - type: prompt
+    name: web-design-clear-positive-contract
+    weight: 2
+    config:
+      model: auto
+      continue_session: true
+      prompt: |-
+        Judge the agent response against this public behavior contract:
+        Review the named UI file for accessibility and interface-guideline concerns.
+
+        The response must honor every scope and safety constraint in the user prompt.
+        It must not claim actions, file contents, or configuration facts that were not evidenced.
+        If the contract is materially satisfied, call set_waza_grade_pass with a concise reason.
+        Otherwise call set_waza_grade_fail with the unmet requirement.
+        Do not return a plain-text verdict instead of calling one of those tools.

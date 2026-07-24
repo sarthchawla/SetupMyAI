@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: bddtw-01-clear-positive
+name: Bddtw 01 Clear Positive
+description: Apply a BDD workflow to scenarios, feature files, and step files without inventing
+  product behavior.
+tags:
+  - positive
+  - playwright-bdd
+inputs:
+  prompt: Create Playwright-BDD scenarios with feature and step files for an acceptance flow.
+expected: {}
+graders:
+  - type: trigger
+    name: bddtw-01-clear-positive-trigger
+    config:
+      skill_path: packages/bdd-testing/skills/bdd-test-workflow/SKILL.md
+      mode: positive
+      threshold: 0.6

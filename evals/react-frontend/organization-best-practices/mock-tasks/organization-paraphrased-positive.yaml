@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: organization-paraphrased-positive
+name: Organization Paraphrased Positive
+description: Recognize organization-plugin team and role work and remain Better Auth-specific.
+tags:
+  - positive
+  - teams
+  - roles
+inputs:
+  prompt: Our Better Auth app needs team membership and different roles inside each organization. Help
+    us model that.
+expected: {}
+graders:
+  - type: trigger
+    name: organization-paraphrased-positive-trigger
+    config:
+      skill_path: packages/react-frontend/skills/organization-best-practices/SKILL.md
+      mode: positive
+      threshold: 0.6

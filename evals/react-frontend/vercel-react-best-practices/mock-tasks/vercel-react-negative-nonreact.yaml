@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: vercel-react-negative-nonreact
+name: Vercel React Negative Nonreact
+description: Do not apply React or Next.js advice to a Python command-line tool.
+tags:
+  - negative-trigger
+  - boundary
+  - non-react
+inputs:
+  prompt: Optimize the runtime performance of this Python command-line tool.
+expected: {}
+graders:
+  - type: trigger
+    name: vercel-react-negative-nonreact-trigger
+    config:
+      skill_path: packages/react-frontend/skills/vercel-react-best-practices/SKILL.md
+      mode: negative
+      threshold: 0.6

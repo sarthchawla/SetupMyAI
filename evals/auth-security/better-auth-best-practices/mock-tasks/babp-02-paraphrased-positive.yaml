@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: babp-02-paraphrased-positive
+name: Babp 02 Paraphrased Positive
+description: Recognize Better Auth adoption and stay framework-specific.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Help us adopt Better Auth as the authentication framework in our TypeScript service.
+expected: {}
+graders:
+  - type: trigger
+    name: babp-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/auth-security/skills/better-auth-best-practices/SKILL.md
+      mode: positive
+      threshold: 0.6
