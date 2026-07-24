@@ -61,7 +61,11 @@ the Waza binary is executed.
 Use `--output-dir` to keep raw Waza results outside the repository when they
 may contain prompts, transcripts, absolute paths, or loaded skill content.
 `evals/results/` is ignored for the same reason. Only sanitized aggregate
-baseline reports belong in version control.
+baseline reports belong in version control. A first-run output directory must
+be absent or empty. On reuse, the runner requires its exact versioned ownership
+manifest and refuses any invalid manifest or undeclared directory entry without
+modifying the directory. The manifest is a local ownership marker, so do not
+share an output directory with another concurrent writer.
 
 ## Waza version
 
@@ -70,13 +74,13 @@ supported binary. It also pins the immutable official eval and task schemas;
 `pnpm test:waza-schema` downloads them, verifies their SHA-256 checksums, and
 validates every generated Waza artifact. Before invoking `--version`, the runner
 maps the current platform and architecture to the release asset and verifies
-the binary against the matching lockfile checksum. It also removes stale result
-files recorded in its artifact manifest, clears the prior summary before
-preflight, and requires a fresh parseable artifact whose skill, eval, engine,
-task IDs, task statuses, and task counts match the loaded suite. Result
-filenames include a deterministic suite-identity hash so normalized skill-name
-collisions cannot overwrite one another. Download the matching binary from the
-official [Waza releases](https://github.com/microsoft/waza/releases/tag/v0.38.3)
+the binary against the matching lockfile checksum. It removes stale result
+files and the prior summary only after validating the output directory's
+runner-owned manifest, then requires a fresh parseable artifact whose skill,
+eval, engine, task IDs, task statuses, and task counts match the loaded suite.
+Result filenames include a deterministic suite-identity hash so normalized
+skill-name collisions cannot overwrite one another. Download the matching
+binary from the official [Waza releases](https://github.com/microsoft/waza/releases/tag/v0.38.3)
 and make it executable.
 
 Example for Apple Silicon:

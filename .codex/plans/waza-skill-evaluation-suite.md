@@ -31,6 +31,8 @@ target the sync branch and link to the sync pull request.
 - Verify the platform-specific release checksum before invoking the supplied
   Waza binary, and require fresh parseable per-suite output before reporting a
   pass.
+- Require a new output directory to be empty and a reused directory to carry a
+  valid versioned runner-ownership manifest before removing prior artifacts.
 
 ## TDD Sequence
 

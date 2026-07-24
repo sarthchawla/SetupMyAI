@@ -18,6 +18,11 @@ const REPOSITORY_ROOT = path.resolve(__dirname, '..');
 const execFileAsync = promisify(execFile);
 const PINNED_WAZA_VERSION = '0.38.3';
 const RESULT_MANIFEST = '.waza-results-manifest.json';
+const RESULT_MANIFEST_OWNER = '@setupmyai/cli:waza-results';
+const RESULT_MANIFEST_VERSION = 1;
+const RESULT_SUMMARY = 'summary.json';
+const RESULT_FILENAME_PATTERN =
+  /^[a-z0-9-]+--[a-f0-9]{12}\.json$/;
 
 export function outputFilenameForSuite(suite) {
   const slug =
@@ -30,35 +35,122 @@ export function outputFilenameForSuite(suite) {
   return `${slug}--${identity}.json`;
 }
 
-async function clearPreviousRunArtifacts(outputDir) {
-  const manifestPath = path.join(outputDir, RESULT_MANIFEST);
-  let artifactNames = [];
+function validateResultManifest(manifest) {
+  if (
+    !manifest ||
+    typeof manifest !== 'object' ||
+    Array.isArray(manifest) ||
+    JSON.stringify(Object.keys(manifest).sort()) !==
+      JSON.stringify(['artifacts', 'owner', 'summary', 'version'])
+  ) {
+    return false;
+  }
+  if (
+    manifest.owner !== RESULT_MANIFEST_OWNER ||
+    manifest.version !== RESULT_MANIFEST_VERSION ||
+    manifest.summary !== RESULT_SUMMARY ||
+    !Array.isArray(manifest.artifacts)
+  ) {
+    return false;
+  }
+  if (new Set(manifest.artifacts).size !== manifest.artifacts.length) {
+    return false;
+  }
 
+  return manifest.artifacts.every(
+    (name) =>
+      typeof name === 'string' &&
+      path.basename(name) === name &&
+      RESULT_FILENAME_PATTERN.test(name)
+  );
+}
+
+async function unlinkOwnedFile(filePath) {
   try {
-    const manifest = await fs.readJson(manifestPath);
-    if (Array.isArray(manifest.artifacts)) {
-      artifactNames = manifest.artifacts.filter(
-        (name) =>
-          typeof name === 'string' &&
-          path.basename(name) === name &&
-          /^[a-z0-9-]+--[a-f0-9]{12}\.json$/.test(name)
-      );
-    }
+    await fs.unlink(filePath);
   } catch (error) {
     if (error.code !== 'ENOENT') {
-      console.warn(
-        `Ignoring unreadable prior Waza result manifest: ${error.message}`
+      throw error;
+    }
+  }
+}
+
+async function prepareOutputDirectory(outputDir) {
+  let outputStats;
+  try {
+    outputStats = await fs.lstat(outputDir);
+  } catch (error) {
+    if (error.code !== 'ENOENT') {
+      throw error;
+    }
+    await fs.ensureDir(outputDir);
+    return;
+  }
+
+  if (!outputStats.isDirectory()) {
+    throw new Error('Waza output path must be a real directory');
+  }
+
+  const existingEntries = (await fs.readdir(outputDir)).sort();
+  if (existingEntries.length === 0) {
+    return;
+  }
+
+  const manifestPath = path.join(outputDir, RESULT_MANIFEST);
+  if (!existingEntries.includes(RESULT_MANIFEST)) {
+    throw new Error(
+      'Waza output directory is nonempty and is not owned by this runner'
+    );
+  }
+
+  const manifestStats = await fs.lstat(manifestPath);
+  if (!manifestStats.isFile()) {
+    throw new Error('Waza output ownership manifest is invalid');
+  }
+
+  let manifest;
+  try {
+    manifest = await fs.readJson(manifestPath);
+  } catch (error) {
+    throw new Error(
+      `Waza output ownership manifest is invalid: ${error.message}`
+    );
+  }
+  if (!validateResultManifest(manifest)) {
+    throw new Error('Waza output ownership manifest is invalid');
+  }
+
+  const ownedEntries = new Set([
+    RESULT_MANIFEST,
+    manifest.summary,
+    ...manifest.artifacts,
+  ]);
+  const unownedEntries = existingEntries.filter(
+    (name) => !ownedEntries.has(name)
+  );
+  if (unownedEntries.length > 0) {
+    throw new Error(
+      'Waza output directory contains unowned entries: ' +
+        unownedEntries.join(', ')
+    );
+  }
+
+  for (const name of existingEntries) {
+    const entryStats = await fs.lstat(path.join(outputDir, name));
+    if (!entryStats.isFile()) {
+      throw new Error(
+        `Waza output owned entry must be a regular file: ${name}`
       );
     }
   }
 
   await Promise.all(
     [
-      path.join(outputDir, 'summary.json'),
-      manifestPath,
-      ...artifactNames.map((name) => path.join(outputDir, name)),
-    ].map((artifactPath) => fs.remove(artifactPath))
+      path.join(outputDir, manifest.summary),
+      ...manifest.artifacts.map((name) => path.join(outputDir, name)),
+    ].map(unlinkOwnedFile)
   );
+  await unlinkOwnedFile(manifestPath);
 }
 
 async function createIsolatedOfflineEnvironment() {
@@ -128,7 +220,7 @@ async function executeWaza(
     outputPath,
   ];
 
-  await fs.remove(outputPath);
+  await unlinkOwnedFile(outputPath);
   const exitCode = await new Promise((resolve, reject) => {
     console.log(`\n[Waza] ${suite.skillName}`);
     const child = spawn(waza, args, {
@@ -194,8 +286,7 @@ export async function runWazaEvals(
     );
   }
 
-  await fs.ensureDir(options.outputDir);
-  await clearPreviousRunArtifacts(options.outputDir);
+  await prepareOutputDirectory(options.outputDir);
 
   const integrity = await verifyBinaryChecksum(
     options.waza,
@@ -218,11 +309,18 @@ export async function runWazaEvals(
     const suites = await loadEvaluationCoverage(repositoryRoot, {
       mode: options.mode,
     });
+    const resultManifest = {
+      owner: RESULT_MANIFEST_OWNER,
+      version: RESULT_MANIFEST_VERSION,
+      summary: RESULT_SUMMARY,
+      artifacts: suites.map(outputFilenameForSuite),
+    };
+    if (!validateResultManifest(resultManifest)) {
+      throw new Error('Generated Waza result manifest is invalid');
+    }
     await fs.writeJson(
       path.join(options.outputDir, RESULT_MANIFEST),
-      {
-        artifacts: suites.map(outputFilenameForSuite),
-      },
+      resultManifest,
       { spaces: 2 }
     );
     const summary = await runSuites(suites, {
@@ -249,7 +347,7 @@ export async function runWazaEvals(
     };
 
     await fs.writeJson(
-      path.join(options.outputDir, 'summary.json'),
+      path.join(options.outputDir, RESULT_SUMMARY),
       report,
       {
         spaces: 2,

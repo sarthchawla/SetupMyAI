@@ -15,6 +15,16 @@ const execFileAsync = promisify(execFile);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPOSITORY_ROOT = path.resolve(__dirname, '../..');
 const temporaryRoots = [];
+const RESULT_MANIFEST_NAME = '.waza-results-manifest.json';
+
+function resultManifest(artifacts) {
+  return {
+    owner: '@setupmyai/cli:waza-results',
+    version: 1,
+    summary: 'summary.json',
+    artifacts,
+  };
+}
 
 afterEach(async () => {
   await Promise.all(temporaryRoots.splice(0).map((root) => fs.remove(root)));
@@ -172,6 +182,14 @@ describe('waza-evals CLI', () => {
       errors: 0,
       skipped: 0,
     });
+    const manifest = await fs.readJson(
+      path.join(outputDirectory, RESULT_MANIFEST_NAME)
+    );
+    assert.equal(manifest.owner, '@setupmyai/cli:waza-results');
+    assert.equal(manifest.version, 1);
+    assert.equal(manifest.summary, 'summary.json');
+    assert.equal(manifest.artifacts.length, 15);
+    assert.equal(new Set(manifest.artifacts).size, 15);
   });
 
   it('removes stale artifacts and fails closed when Waza writes no result', async () => {
@@ -215,6 +233,10 @@ describe('waza-evals CLI', () => {
       },
       tasks: [],
     });
+    await fs.writeJson(
+      path.join(outputDirectory, RESULT_MANIFEST_NAME),
+      resultManifest([path.basename(stalePath)])
+    );
 
     const result = await runWazaEvals(
       [
@@ -299,10 +321,8 @@ describe('waza-evals CLI', () => {
       stale: true,
     });
     await fs.writeJson(
-      path.join(outputDirectory, '.waza-results-manifest.json'),
-      {
-        artifacts: [obsoleteResult],
-      }
+      path.join(outputDirectory, RESULT_MANIFEST_NAME),
+      resultManifest([obsoleteResult])
     );
 
     await assert.rejects(
@@ -334,9 +354,241 @@ describe('waza-evals CLI', () => {
     );
     assert.equal(
       await fs.pathExists(
-        path.join(outputDirectory, '.waza-results-manifest.json')
+        path.join(outputDirectory, RESULT_MANIFEST_NAME)
       ),
       false
+    );
+  });
+
+  it('preserves an unrelated summary in an unowned output directory', async () => {
+    const temporaryRoot = await fs.mkdtemp(
+      path.join(os.tmpdir(), 'setupmyai-waza-unowned-')
+    );
+    temporaryRoots.push(temporaryRoot);
+    const outputDirectory = path.join(temporaryRoot, 'reports');
+    const summaryPath = path.join(outputDirectory, 'summary.json');
+    const unrelatedSummary = {
+      owner: 'another-tool',
+      result: 'keep this',
+    };
+    await fs.outputJson(summaryPath, unrelatedSummary);
+    let checksumCalled = false;
+
+    await assert.rejects(
+      runWazaEvals(
+        [
+          'run',
+          '--waza',
+          path.join(temporaryRoot, 'missing-waza'),
+          '--output-dir',
+          outputDirectory,
+        ],
+        {
+          repositoryRoot: REPOSITORY_ROOT,
+          verifyBinaryChecksum: async () => {
+            checksumCalled = true;
+            throw new Error('checksum should not run');
+          },
+        }
+      ),
+      /output directory is nonempty and is not owned/
+    );
+
+    assert.equal(checksumCalled, false);
+    assert.deepEqual(await fs.readJson(summaryPath), unrelatedSummary);
+    assert.deepEqual(await fs.readdir(outputDirectory), ['summary.json']);
+  });
+
+  it('rejects an invalid ownership manifest without mutation', async () => {
+    const temporaryRoot = await fs.mkdtemp(
+      path.join(os.tmpdir(), 'setupmyai-waza-invalid-owner-')
+    );
+    temporaryRoots.push(temporaryRoot);
+    const outputDirectory = path.join(temporaryRoot, 'results');
+    const summaryPath = path.join(outputDirectory, 'summary.json');
+    const manifestPath = path.join(
+      outputDirectory,
+      RESULT_MANIFEST_NAME
+    );
+    const unrelatedSummary = { result: 'keep this too' };
+    const invalidManifest = {
+      ...resultManifest([]),
+      owner: 'another-tool',
+    };
+    await fs.outputJson(summaryPath, unrelatedSummary);
+    await fs.writeJson(manifestPath, invalidManifest);
+    let checksumCalled = false;
+
+    await assert.rejects(
+      runWazaEvals(
+        [
+          'run',
+          '--waza',
+          path.join(temporaryRoot, 'missing-waza'),
+          '--output-dir',
+          outputDirectory,
+        ],
+        {
+          repositoryRoot: REPOSITORY_ROOT,
+          verifyBinaryChecksum: async () => {
+            checksumCalled = true;
+            throw new Error('checksum should not run');
+          },
+        }
+      ),
+      /ownership manifest is invalid/
+    );
+
+    assert.equal(checksumCalled, false);
+    assert.deepEqual(await fs.readJson(summaryPath), unrelatedSummary);
+    assert.deepEqual(await fs.readJson(manifestPath), invalidManifest);
+  });
+
+  it('rejects traversal in an owned manifest without mutation', async () => {
+    const temporaryRoot = await fs.mkdtemp(
+      path.join(os.tmpdir(), 'setupmyai-waza-traversal-')
+    );
+    temporaryRoots.push(temporaryRoot);
+    const outputDirectory = path.join(temporaryRoot, 'results');
+    const summaryPath = path.join(outputDirectory, 'summary.json');
+    const artifactName = 'owned-skill--0123456789ab.json';
+    const artifactPath = path.join(outputDirectory, artifactName);
+    const outsidePath = path.join(temporaryRoot, 'victim.json');
+    const manifestPath = path.join(
+      outputDirectory,
+      RESULT_MANIFEST_NAME
+    );
+    const manifest = resultManifest([
+      artifactName,
+      '../victim.json',
+    ]);
+    await fs.outputJson(summaryPath, { result: 'preserve' });
+    await fs.writeJson(artifactPath, { result: 'preserve artifact' });
+    await fs.writeJson(outsidePath, { result: 'preserve outside' });
+    await fs.writeJson(manifestPath, manifest);
+    let checksumCalled = false;
+
+    await assert.rejects(
+      runWazaEvals(
+        [
+          'run',
+          '--waza',
+          path.join(temporaryRoot, 'missing-waza'),
+          '--output-dir',
+          outputDirectory,
+        ],
+        {
+          repositoryRoot: REPOSITORY_ROOT,
+          verifyBinaryChecksum: async () => {
+            checksumCalled = true;
+            throw new Error('checksum should not run');
+          },
+        }
+      ),
+      /ownership manifest is invalid/
+    );
+
+    assert.equal(checksumCalled, false);
+    assert.deepEqual(await fs.readJson(summaryPath), {
+      result: 'preserve',
+    });
+    assert.deepEqual(await fs.readJson(artifactPath), {
+      result: 'preserve artifact',
+    });
+    assert.deepEqual(await fs.readJson(outsidePath), {
+      result: 'preserve outside',
+    });
+    assert.deepEqual(await fs.readJson(manifestPath), manifest);
+  });
+
+  it('rejects a declared artifact directory without recursive deletion', async () => {
+    const temporaryRoot = await fs.mkdtemp(
+      path.join(os.tmpdir(), 'setupmyai-waza-artifact-directory-')
+    );
+    temporaryRoots.push(temporaryRoot);
+    const outputDirectory = path.join(temporaryRoot, 'results');
+    const summaryPath = path.join(outputDirectory, 'summary.json');
+    const artifactName = 'owned-skill--0123456789ab.json';
+    const artifactDirectory = path.join(outputDirectory, artifactName);
+    const sentinelPath = path.join(artifactDirectory, 'sentinel.txt');
+    const manifestPath = path.join(
+      outputDirectory,
+      RESULT_MANIFEST_NAME
+    );
+    const manifest = resultManifest([artifactName]);
+    await fs.outputJson(summaryPath, { result: 'preserve' });
+    await fs.outputFile(sentinelPath, 'do not recursively delete');
+    await fs.writeJson(manifestPath, manifest);
+
+    await assert.rejects(
+      runWazaEvals(
+        [
+          'run',
+          '--waza',
+          path.join(temporaryRoot, 'missing-waza'),
+          '--output-dir',
+          outputDirectory,
+        ],
+        {
+          repositoryRoot: REPOSITORY_ROOT,
+          verifyBinaryChecksum: async () => {
+            throw new Error('checksum should not run');
+          },
+        }
+      ),
+      /owned entry must be a regular file/
+    );
+
+    assert.equal(
+      await fs.readFile(sentinelPath, 'utf8'),
+      'do not recursively delete'
+    );
+    assert.deepEqual(await fs.readJson(summaryPath), {
+      result: 'preserve',
+    });
+    assert.deepEqual(await fs.readJson(manifestPath), manifest);
+  });
+
+  it('rejects unlisted entries in an otherwise valid owned directory', async () => {
+    const temporaryRoot = await fs.mkdtemp(
+      path.join(os.tmpdir(), 'setupmyai-waza-extra-output-')
+    );
+    temporaryRoots.push(temporaryRoot);
+    const outputDirectory = path.join(temporaryRoot, 'results');
+    const summaryPath = path.join(outputDirectory, 'summary.json');
+    const unrelatedPath = path.join(outputDirectory, 'notes.txt');
+    const manifestPath = path.join(
+      outputDirectory,
+      RESULT_MANIFEST_NAME
+    );
+    await fs.outputJson(summaryPath, { passed: 15 });
+    await fs.writeFile(unrelatedPath, 'do not remove');
+    await fs.writeJson(manifestPath, resultManifest([]));
+
+    await assert.rejects(
+      runWazaEvals(
+        [
+          'run',
+          '--waza',
+          path.join(temporaryRoot, 'missing-waza'),
+          '--output-dir',
+          outputDirectory,
+        ],
+        {
+          repositoryRoot: REPOSITORY_ROOT,
+          verifyBinaryChecksum: async () => {
+            throw new Error('checksum should not run');
+          },
+        }
+      ),
+      /contains unowned entries: notes\.txt/
+    );
+
+    assert.equal(await fs.readFile(unrelatedPath, 'utf8'), 'do not remove');
+    assert.deepEqual(await fs.readJson(summaryPath), { passed: 15 });
+    assert.deepEqual(
+      await fs.readJson(manifestPath),
+      resultManifest([])
     );
   });
 
