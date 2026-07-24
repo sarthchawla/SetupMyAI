@@ -39,29 +39,45 @@ describe('installed inventory', () => {
 
   it('writes a project-level manifest during install', async () => {
     const targetDir = path.join(tmpDir, 'project-manifest');
-    await installPackage('kotlin-backend', targetDir, { tool: 'codex', level: 'project' });
+    const tools = ['claude', 'cursor', 'codex'];
+    for (const tool of tools) {
+      await installPackage('kotlin-backend', targetDir, { tool, level: 'project' });
+    }
 
     const manifestPath = getManifestPath(targetDir, 'project');
     const manifest = await loadManifest(targetDir, 'project');
 
     assert.ok(await fs.pathExists(manifestPath));
     assert.ok(manifest.items.length > 0);
-    assert.equal(manifest.items[0].packageKey, 'kotlin-backend');
-    assert.equal(manifest.items[0].tool, 'codex');
-    assert.equal(manifest.items[0].level, 'project');
-    assert.ok(manifest.items[0].sourceHash);
-    assert.ok(manifest.items[0].installedHash);
+    for (const tool of tools) {
+      const item = manifest.items.find((candidate) => candidate.tool === tool);
+      assert.ok(item);
+      assert.equal(item.packageKey, 'kotlin-backend');
+      assert.equal(item.level, 'project');
+      assert.ok(item.sourceHash);
+      assert.ok(item.installedHash);
+    }
   });
 
   it('writes a user-level manifest during install', async () => {
     const targetDir = path.join(tmpDir, 'user-manifest');
-    await installPackage('kotlin-backend', targetDir, { tool: 'codex', level: 'user' });
+    const tools = ['claude', 'cursor', 'codex'];
+    for (const tool of tools) {
+      await installPackage('kotlin-backend', targetDir, { tool, level: 'user' });
+    }
 
     const manifestPath = getManifestPath(targetDir, 'user');
     const manifest = await loadManifest(targetDir, 'user');
 
     assert.ok(await fs.pathExists(manifestPath));
-    assert.ok(manifest.items.some((item) => item.level === 'user' && item.tool === 'codex'));
+    for (const tool of tools) {
+      const item = manifest.items.find((candidate) => candidate.tool === tool);
+      assert.ok(item);
+      assert.equal(item.packageKey, 'kotlin-backend');
+      assert.equal(item.level, 'user');
+      assert.ok(item.sourceHash);
+      assert.ok(item.installedHash);
+    }
   });
 
   it('classifies current, outdated, modified, missing, unmanaged, and orphaned items', async () => {
