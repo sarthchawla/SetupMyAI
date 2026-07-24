@@ -7,11 +7,13 @@ const VALUE_OPTIONS = new Set([
   '--concurrency',
   '--task-workers',
 ]);
+const BOOLEAN_OPTIONS = new Set(['--acknowledge-model-transmission']);
 
 export function parseWazaOptions(args, { repositoryRoot }) {
   const options = {
     command: args[0] || 'run',
-    mode: 'model',
+    mode: 'offline',
+    modelTransmissionAcknowledged: false,
     concurrency: 2,
     taskWorkers: 4,
     outputDir: path.join(repositoryRoot, 'evals', 'results'),
@@ -20,6 +22,10 @@ export function parseWazaOptions(args, { repositoryRoot }) {
   for (let index = 1; index < args.length; index++) {
     const arg = args[index];
     if (arg === '--') {
+      continue;
+    }
+    if (BOOLEAN_OPTIONS.has(arg)) {
+      options.modelTransmissionAcknowledged = true;
       continue;
     }
     const value = args[index + 1];
@@ -42,6 +48,16 @@ export function parseWazaOptions(args, { repositoryRoot }) {
 
   if (options.mode !== 'model' && options.mode !== 'offline') {
     throw new Error('--mode must be "model" or "offline"');
+  }
+  if (options.mode === 'model' && !options.modelTransmissionAcknowledged) {
+    throw new Error(
+      'Model-backed execution requires --acknowledge-model-transmission'
+    );
+  }
+  if (options.mode === 'offline' && options.modelTransmissionAcknowledged) {
+    throw new Error(
+      '--acknowledge-model-transmission is only valid with --mode model'
+    );
   }
   if (!Number.isInteger(options.concurrency) || options.concurrency < 1) {
     throw new Error('--concurrency must be a positive integer');

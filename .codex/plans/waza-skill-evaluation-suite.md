@@ -23,8 +23,14 @@ target the sync branch and link to the sync pull request.
 - Pin Waza and verify its published checksum before execution.
 - Generate an offline `mock`/trigger-only layer so routing can be evaluated
   locally without transmitting skill bodies to an external model.
-- Run model-backed evaluations only with sanitized fixtures. Deterministic
+- Generate model-backed artifacts only with sanitized fixtures. Deterministic
   schema, inventory, and coverage checks must remain runnable without secrets.
+- Default the runner to offline mode and fail closed on model execution until
+  Waza host-home isolation is proven by a regression test. An acknowledgement
+  alone must not override this boundary.
+- Verify the platform-specific release checksum before invoking the supplied
+  Waza binary, and require fresh parseable per-suite output before reporting a
+  pass.
 
 ## TDD Sequence
 
@@ -41,8 +47,9 @@ target the sync branch and link to the sync pull request.
    - Add Waza `eval.yaml` and task files generated from the blind metadata-only
      case designs.
 3. RED — Waza baseline
-   - Validate every suite with Waza `v0.38.3`, first through the local mock
-     executor and trigger grader, then through the approval-gated model path.
+   - Validate every suite with Waza `v0.38.3` through the local mock executor
+     and trigger grader, then attempt the approval-gated model path only when
+     host isolation is proven.
    - Run all suites against the real skill behavior and save a sanitized
      baseline summary before reading any skill body.
    - Commit the cases and failing-baseline evidence as a dedicated checkpoint.
@@ -73,9 +80,10 @@ scripts/
   waza-evals.js
 ```
 
-The Node runner will expose deterministic inventory/coverage validation and
-orchestrate the pinned Waza binary. Model-backed execution remains an explicit
-command so ordinary package tests do not require external credentials.
+The Node runner exposes deterministic inventory/coverage validation and
+orchestrates the pinned Waza binary. Model-backed specs remain generated for
+future isolated execution, but the shared wrapper currently refuses to run
+them.
 
 ## Validation Commands
 
@@ -87,6 +95,5 @@ pnpm test:validate
 pnpm test:all
 waza coverage --format markdown
 node scripts/waza-evals.js run --mode offline --waza /path/to/pinned/waza
-node scripts/waza-evals.js run --waza /path/to/pinned/waza
 git diff --check
 ```

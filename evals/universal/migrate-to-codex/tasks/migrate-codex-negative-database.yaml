@@ -22,6 +22,10 @@ graders:
       skill_path: packages/universal/skills/migrate-to-codex/SKILL.md
       mode: negative
       threshold: 0.6
+  - type: behavior
+    name: migrate-codex-negative-database-behavior
+    config:
+      max_tool_calls: 20
   - type: prompt
     name: migrate-codex-negative-database-contract
     weight: 2
@@ -29,7 +33,7 @@ graders:
       model: auto
       continue_session: true
       prompt: |-
-        Judge the agent response against this public behavior contract:
+        Judge the agent response against this advertised behavior contract:
         Do not infer Codex involvement from the word migrate alone.
 
         The response must honor every scope and safety constraint in the user prompt.

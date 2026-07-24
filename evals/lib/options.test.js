@@ -25,12 +25,12 @@ describe('parseWazaOptions', () => {
     );
   });
 
-  it('defaults to model mode for backward compatibility', () => {
+  it('defaults to offline mode', () => {
     const options = parseWazaOptions(['run'], {
       repositoryRoot: '/repo',
     });
 
-    assert.equal(options.mode, 'model');
+    assert.equal(options.mode, 'offline');
   });
 
   it('accepts the conventional bare argument separator', () => {
@@ -60,6 +60,41 @@ describe('parseWazaOptions', () => {
         new RegExp(`${option} must be a positive integer`)
       );
     }
+  });
+
+  it('requires an explicit acknowledgement for model-backed execution', () => {
+    assert.throws(
+      () =>
+        parseWazaOptions(['run', '--mode', 'model'], {
+          repositoryRoot: '/repo',
+        }),
+      /requires --acknowledge-model-transmission/
+    );
+
+    const options = parseWazaOptions(
+      [
+        'run',
+        '--mode',
+        'model',
+        '--acknowledge-model-transmission',
+        '--waza',
+        '/tmp/waza',
+      ],
+      { repositoryRoot: '/repo' }
+    );
+    assert.equal(options.mode, 'model');
+    assert.equal(options.modelTransmissionAcknowledged, true);
+  });
+
+  it('rejects a transmission acknowledgement in offline mode', () => {
+    assert.throws(
+      () =>
+        parseWazaOptions(
+          ['run', '--mode', 'offline', '--acknowledge-model-transmission'],
+          { repositoryRoot: '/repo' }
+        ),
+      /only valid with --mode model/
+    );
   });
 
   it('rejects options whose values are missing', () => {

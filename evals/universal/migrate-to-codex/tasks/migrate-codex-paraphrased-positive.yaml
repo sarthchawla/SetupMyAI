@@ -8,14 +8,33 @@ tags:
   - agents
   - mcp
 inputs:
-  prompt: Move my existing agent definitions and MCP setup into Codex's global configuration.
+  prompt: Describe how the two supplied synthetic fixture-home inputs map to Codex global agent and
+    MCP configuration under the literal relative fixture-home directory. Do not migrate anything,
+    run commands, access the network, inspect ~, or use any absolute host path.
+  files:
+    - path: fixture-home/.claude/agents/reviewer.md
+      content: |
+        ---
+        name: reviewer
+        description: Review synthetic project changes.
+        ---
+    - path: fixture-home/.mcp.json
+      content: |
+        {"mcpServers":{"example":{"url":"https://example.invalid/mcp"}}}
 expected:
   outcomes:
     - type: task_completed
   behavior:
-    max_tool_calls: 20
+    max_tool_calls: 5
     max_iterations: 10
     max_tokens: 12000
+    forbidden_tools: &a1
+      - bash
+      - create
+      - sql
+  output_contains:
+    - fixture-home/.codex/agents
+    - fixture-home/.codex/config.toml
 graders:
   - type: trigger
     name: migrate-codex-paraphrased-positive-trigger
@@ -23,6 +42,11 @@ graders:
       skill_path: packages/universal/skills/migrate-to-codex/SKILL.md
       mode: positive
       threshold: 0.6
+  - type: behavior
+    name: migrate-codex-paraphrased-positive-behavior
+    config:
+      max_tool_calls: 5
+      forbidden_tools: *a1
   - type: prompt
     name: migrate-codex-paraphrased-positive-contract
     weight: 2
@@ -30,7 +54,7 @@ graders:
       model: auto
       continue_session: true
       prompt: |-
-        Judge the agent response against this public behavior contract:
+        Judge the agent response against this advertised behavior contract:
         Limit the migration to global agents and MCP configuration.
 
         The response must honor every scope and safety constraint in the user prompt.

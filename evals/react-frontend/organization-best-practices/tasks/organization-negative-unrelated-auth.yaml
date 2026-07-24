@@ -6,8 +6,7 @@ tags:
   - negative-trigger
   - boundary
 inputs:
-  prompt: Design generic application roles for an auth provider that does not use Better Auth's
-    organization plugin.
+  prompt: Design generic application roles for a different authentication library.
 expected:
   outcomes:
     - type: task_completed
@@ -22,6 +21,10 @@ graders:
       skill_path: packages/react-frontend/skills/organization-best-practices/SKILL.md
       mode: negative
       threshold: 0.6
+  - type: behavior
+    name: organization-negative-unrelated-auth-behavior
+    config:
+      max_tool_calls: 20
   - type: prompt
     name: organization-negative-unrelated-auth-contract
     weight: 2
@@ -29,7 +32,7 @@ graders:
       model: auto
       continue_session: true
       prompt: |-
-        Judge the agent response against this public behavior contract:
+        Judge the agent response against this advertised behavior contract:
         Do not apply plugin-specific guidance to an unrelated authentication provider.
 
         The response must honor every scope and safety constraint in the user prompt.

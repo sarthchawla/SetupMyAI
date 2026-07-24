@@ -22,6 +22,7 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
+      - run: pnpm eval:check-generated
       - run: pnpm test:eval
       - run: pnpm test:waza-schema
       - run: pnpm test:validate

@@ -22,6 +22,10 @@ graders:
       skill_path: packages/react-frontend/skills/vercel-react-best-practices/SKILL.md
       mode: negative
       threshold: 0.6
+  - type: behavior
+    name: vercel-react-negative-nonreact-behavior
+    config:
+      max_tool_calls: 20
   - type: prompt
     name: vercel-react-negative-nonreact-contract
     weight: 2
@@ -29,7 +33,7 @@ graders:
       model: auto
       continue_session: true
       prompt: |-
-        Judge the agent response against this public behavior contract:
+        Judge the agent response against this advertised behavior contract:
         Do not apply React or Next.js advice to a Python command-line tool.
 
         The response must honor every scope and safety constraint in the user prompt.

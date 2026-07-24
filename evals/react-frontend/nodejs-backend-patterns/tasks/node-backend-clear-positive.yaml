@@ -23,6 +23,10 @@ graders:
       skill_path: packages/react-frontend/skills/nodejs-backend-patterns/SKILL.md
       mode: positive
       threshold: 0.6
+  - type: behavior
+    name: node-backend-clear-positive-behavior
+    config:
+      max_tool_calls: 20
   - type: prompt
     name: node-backend-clear-positive-contract
     weight: 2
@@ -30,7 +34,7 @@ graders:
       model: auto
       continue_session: true
       prompt: |-
-        Judge the agent response against this public behavior contract:
+        Judge the agent response against this advertised behavior contract:
         Cover the requested Node service and API concerns without drifting into frontend work.
 
         The response must honor every scope and safety constraint in the user prompt.

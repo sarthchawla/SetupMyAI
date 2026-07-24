@@ -1,6 +1,12 @@
 ---
 name: migrate-to-codex
-description: Migrate supported instruction files, skills, agents, and MCP config into Codex project and global files.
+description: >-
+  Migrate supported instruction files, skills, agents, and MCP configuration
+  into Codex project and global files. USE FOR: move existing agent definitions
+  and MCP setup into Codex global configuration, migrate supported skills into
+  Codex project files, convert supported Claude Code configuration to Codex.
+  DO NOT USE FOR: PostgreSQL database migrations, moving a database schema to a
+  new server, unrelated data migrations.
 ---
 
 # Migrate to Codex

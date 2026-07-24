@@ -1,6 +1,9 @@
 ---
 name: better-auth-security-best-practices
-description: This skill provides guidance for implementing security features that span across Better Auth, including rate limiting, CSRF protection, session security, trusted origins, secret management, OAuth security, IP tracking, and security auditing. These topics are not covered in individual plugin skills.
+description: |
+  Secure and audit cross-cutting Better Auth features, including rate limiting, CSRF protection, session security, trusted origins, secret management, OAuth security, IP tracking, and security auditing.
+  USE FOR: harden a Better Auth deployment; audit a Better Auth setup for OAuth risks and IP tracking; configure secure Better Auth secrets and trusted origins; reject insecure Better Auth security configuration.
+  DO NOT USE FOR: standalone service throttling or security work outside Better Auth.
 ---
 
 ## Secret Management
@@ -541,12 +544,12 @@ import { betterAuth } from "better-auth";
 export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
-    // Generic error messages (implement in your error handling)
+    // Non-specific error messages (implement in your error handling)
   },
 });
 ```
 
-Return generic error messages like "Invalid credentials" rather than "User not found" or "Incorrect password".
+Return non-specific error messages like "Invalid credentials" rather than "User not found" or "Incorrect password".
 
 ## Complete Security Configuration Example
 

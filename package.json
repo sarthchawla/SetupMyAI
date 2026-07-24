@@ -15,8 +15,9 @@
     "test:validate": "node scripts/validate-packages.js",
     "test:all": "pnpm test && pnpm test:eval && pnpm test:bats && pnpm test:validate",
     "eval:generate": "node evals/lib/generate.js",
+    "eval:check-generated": "node scripts/check-generated-evals.js",
     "eval:run:offline": "node scripts/waza-evals.js run --mode offline",
-    "eval:run": "node scripts/waza-evals.js run",
+    "eval:run:model": "node scripts/waza-evals.js run --mode model",
     "lint": "eslint cli/"
   },
   "dependencies": {

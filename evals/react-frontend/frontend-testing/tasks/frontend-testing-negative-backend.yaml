@@ -22,6 +22,10 @@ graders:
       skill_path: packages/react-frontend/skills/frontend-testing/SKILL.md
       mode: negative
       threshold: 0.6
+  - type: behavior
+    name: frontend-testing-negative-backend-behavior
+    config:
+      max_tool_calls: 20
   - type: prompt
     name: frontend-testing-negative-backend-contract
     weight: 2
@@ -29,7 +33,7 @@ graders:
       model: auto
       continue_session: true
       prompt: |-
-        Judge the agent response against this public behavior contract:
+        Judge the agent response against this advertised behavior contract:
         Do not classify a backend route test as frontend testing.
 
         The response must honor every scope and safety constraint in the user prompt.

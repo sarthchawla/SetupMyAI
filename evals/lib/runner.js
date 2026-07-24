@@ -38,10 +38,41 @@ export async function runSuites(
     Array.from({ length: workerCount }, () => worker())
   );
 
+  const taskTotals = results.reduce(
+    (totals, result) => {
+      const taskSummary = result.taskSummary;
+      if (!taskSummary) return totals;
+
+      for (const field of [
+        'total',
+        'succeeded',
+        'failed',
+        'errors',
+        'skipped',
+      ]) {
+        totals[field] += taskSummary[field];
+      }
+      return totals;
+    },
+    {
+      total: 0,
+      succeeded: 0,
+      failed: 0,
+      errors: 0,
+      skipped: 0,
+    }
+  );
+
   return {
     total: results.length,
-    passed: results.filter((result) => result.exitCode === 0).length,
-    failed: results.filter((result) => result.exitCode !== 0).length,
+    passed: results.filter((result) => result.passed === true).length,
+    failed: results.filter((result) => result.passed !== true).length,
+    artifactErrors: results.filter((result) => !result.taskSummary).length,
+    expectedTasks: suites.reduce(
+      (total, suite) => total + (suite.tasks?.length ?? 0),
+      0
+    ),
+    tasks: taskTotals,
     results,
   };
 }

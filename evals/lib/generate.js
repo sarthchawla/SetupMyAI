@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import fs from 'fs-extra';
+import { globSync } from 'glob';
 import YAML from 'yaml';
 import { loadSkillInventory } from './inventory.js';
 
@@ -20,6 +21,23 @@ function renderYaml(value) {
   })}`;
 }
 
+async function isGeneratedSuiteDirectory(directoryPath) {
+  const generatedFiles = ['eval.yaml', 'mock.eval.yaml'];
+
+  for (const filename of generatedFiles) {
+    const filePath = path.join(directoryPath, filename);
+    if (!(await fs.pathExists(filePath))) {
+      return false;
+    }
+    const contents = await fs.readFile(filePath, 'utf8');
+    if (!contents.startsWith(GENERATED_HEADER)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 export async function generateWazaSuites(repositoryRoot) {
   const casePath = path.join(repositoryRoot, 'evals', 'cases.yaml');
   const caseSet = YAML.parse(await fs.readFile(casePath, 'utf8'));
@@ -36,6 +54,27 @@ export async function generateWazaSuites(repositoryRoot) {
   const inventoryNames = inventory.map((skill) => skill.name).sort();
   if (JSON.stringify(declaredNames) !== JSON.stringify(inventoryNames)) {
     throw new Error('evals/cases.yaml must cover the exact skill inventory');
+  }
+
+  const expectedSuiteDirectories = new Set(
+    caseSet.skills.map(
+      (skill) => `evals/${skill.package}/${skill.directory}`
+    )
+  );
+  const existingSuiteEntries = globSync('evals/*/*', {
+    cwd: repositoryRoot,
+    nodir: false,
+  });
+  for (const relativeEntry of existingSuiteEntries) {
+    const absoluteEntry = path.join(repositoryRoot, relativeEntry);
+    const entryStats = await fs.lstat(absoluteEntry);
+    if (
+      entryStats.isDirectory() &&
+      !expectedSuiteDirectories.has(relativeEntry) &&
+      (await isGeneratedSuiteDirectory(absoluteEntry))
+    ) {
+      await fs.remove(absoluteEntry);
+    }
   }
 
   for (const skill of caseSet.skills) {
@@ -141,15 +180,25 @@ export async function generateWazaSuites(repositoryRoot) {
         description: task.contract,
         tags: task.tags,
         inputs: {
-          prompt: task.prompt,
+          prompt: task.modelPrompt ?? task.prompt,
+          ...(task.files ? { files: task.files } : {}),
         },
         expected: {
           outcomes: [{ type: 'task_completed' }],
           behavior: {
-            max_tool_calls: 20,
+            max_tool_calls: task.maxToolCalls ?? 20,
             max_iterations: 10,
             max_tokens: 12000,
+            ...(task.forbiddenTools
+              ? { forbidden_tools: task.forbiddenTools }
+              : {}),
           },
+          ...(task.outputContains
+            ? { output_contains: task.outputContains }
+            : {}),
+          ...(task.outputNotContains
+            ? { output_not_contains: task.outputNotContains }
+            : {}),
         },
         graders: [
           {
@@ -162,6 +211,16 @@ export async function generateWazaSuites(repositoryRoot) {
             },
           },
           {
+            type: 'behavior',
+            name: `${task.id}-behavior`,
+            config: {
+              max_tool_calls: task.maxToolCalls ?? 20,
+              ...(task.forbiddenTools
+                ? { forbidden_tools: task.forbiddenTools }
+                : {}),
+            },
+          },
+          {
             type: 'prompt',
             name: `${task.id}-contract`,
             weight: 2,
@@ -169,7 +228,7 @@ export async function generateWazaSuites(repositoryRoot) {
               model: 'auto',
               continue_session: true,
               prompt: [
-                'Judge the agent response against this public behavior contract:',
+                'Judge the agent response against this advertised behavior contract:',
                 task.contract,
                 '',
                 'The response must honor every scope and safety constraint in the user prompt.',

@@ -22,6 +22,10 @@ graders:
       skill_path: packages/bdd-testing/skills/bdd-test-workflow/SKILL.md
       mode: positive
       threshold: 0.6
+  - type: behavior
+    name: bddtw-01-clear-positive-behavior
+    config:
+      max_tool_calls: 20
   - type: prompt
     name: bddtw-01-clear-positive-contract
     weight: 2
@@ -29,7 +33,7 @@ graders:
       model: auto
       continue_session: true
       prompt: >-
-        Judge the agent response against this public behavior contract:
+        Judge the agent response against this advertised behavior contract:
 
         Apply a BDD workflow to scenarios, feature files, and step files without inventing product
         behavior.

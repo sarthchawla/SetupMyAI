@@ -433,15 +433,44 @@ describe('loadEvaluationCoverage', () => {
               tags: task.tags,
               trigger: task.graders.find((grader) => grader.type === 'trigger')
                 ?.config.mode,
+              files: task.inputs.files,
+              outputContains: task.expected.output_contains,
+              outputNotContains: task.expected.output_not_contains,
+              maxToolCalls: task.expected.behavior?.max_tool_calls,
+              forbiddenTools: task.expected.behavior?.forbidden_tools,
+              behaviorGrader: task.graders.find(
+                (grader) => grader.type === 'behavior'
+              )?.config,
             }))
             .sort((left, right) => left.id.localeCompare(right.id)),
           canonicalTasks
             .map((task) => ({
               id: task.id,
-              prompt: task.prompt,
+              prompt:
+                mode === 'model'
+                  ? task.modelPrompt ?? task.prompt
+                  : task.prompt,
               description: task.contract,
               tags: task.tags,
               trigger: task.trigger,
+              files: mode === 'model' ? task.files : undefined,
+              outputContains:
+                mode === 'model' ? task.outputContains : undefined,
+              outputNotContains:
+                mode === 'model' ? task.outputNotContains : undefined,
+              maxToolCalls:
+                mode === 'model' ? task.maxToolCalls ?? 20 : undefined,
+              forbiddenTools:
+                mode === 'model' ? task.forbiddenTools : undefined,
+              behaviorGrader:
+                mode === 'model'
+                  ? {
+                      max_tool_calls: task.maxToolCalls ?? 20,
+                      ...(task.forbiddenTools
+                        ? { forbidden_tools: task.forbiddenTools }
+                        : {}),
+                    }
+                  : undefined,
             }))
             .sort((left, right) => left.id.localeCompare(right.id)),
           `${suite.skillName}: ${mode} tasks drifted from evals/cases.yaml`

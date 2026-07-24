@@ -21,6 +21,10 @@ graders:
       skill_path: packages/react-frontend/skills/web-design-guidelines/SKILL.md
       mode: positive
       threshold: 0.6
+  - type: behavior
+    name: web-design-paraphrased-positive-behavior
+    config:
+      max_tool_calls: 20
   - type: prompt
     name: web-design-paraphrased-positive-contract
     weight: 2
@@ -28,7 +32,7 @@ graders:
       model: auto
       continue_session: true
       prompt: |-
-        Judge the agent response against this public behavior contract:
+        Judge the agent response against this advertised behavior contract:
         Recognize a UX and interface-practices review without redesigning unless asked.
 
         The response must honor every scope and safety constraint in the user prompt.

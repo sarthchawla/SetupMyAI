@@ -6,8 +6,7 @@ tags:
   - negative-trigger
   - boundary
 inputs:
-  prompt: Design generic application roles for an auth provider that does not use Better Auth's
-    organization plugin.
+  prompt: Design generic application roles for a different authentication library.
 expected: {}
 graders:
   - type: trigger

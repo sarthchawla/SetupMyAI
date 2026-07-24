@@ -106,6 +106,134 @@ describe('generateWazaSuites', () => {
     );
   });
 
+  it('maps optional fixtures and deterministic constraints only to model tasks', async () => {
+    const repositoryRoot = await createRepositoryFixture();
+    const casePath = path.join(repositoryRoot, 'evals', 'cases.yaml');
+    const caseSet = YAML.parse(await fs.readFile(casePath, 'utf8'));
+    Object.assign(caseSet.skills[0].tasks[0], {
+      modelPrompt: 'Inspect the synthetic fixture without changing it.',
+      files: [
+        {
+          path: 'example.txt',
+          content: 'synthetic public fixture',
+        },
+      ],
+      outputContains: ['synthetic'],
+      outputNotContains: ['secret-value'],
+      maxToolCalls: 3,
+      forbiddenTools: ['bash', 'sql'],
+    });
+    await fs.writeFile(casePath, YAML.stringify(caseSet));
+
+    await generateWazaSuites(repositoryRoot);
+
+    const suiteDirectory = path.join(
+      repositoryRoot,
+      'evals',
+      'demo',
+      'demo-skill'
+    );
+    const modelTask = YAML.parse(
+      await fs.readFile(
+        path.join(suiteDirectory, 'tasks', 'demo-positive.yaml'),
+        'utf8'
+      )
+    );
+    const offlineTask = YAML.parse(
+      await fs.readFile(
+        path.join(suiteDirectory, 'mock-tasks', 'demo-positive.yaml'),
+        'utf8'
+      )
+    );
+
+    assert.equal(
+      modelTask.inputs.prompt,
+      'Inspect the synthetic fixture without changing it.'
+    );
+    assert.deepEqual(modelTask.inputs.files, [
+      {
+        path: 'example.txt',
+        content: 'synthetic public fixture',
+      },
+    ]);
+    assert.deepEqual(modelTask.expected.output_contains, ['synthetic']);
+    assert.deepEqual(modelTask.expected.output_not_contains, ['secret-value']);
+    assert.equal(modelTask.expected.behavior.max_tool_calls, 3);
+    assert.deepEqual(modelTask.expected.behavior.forbidden_tools, [
+      'bash',
+      'sql',
+    ]);
+    assert.deepEqual(
+      modelTask.graders.find((grader) => grader.type === 'behavior'),
+      {
+        type: 'behavior',
+        name: 'demo-positive-behavior',
+        config: {
+          max_tool_calls: 3,
+          forbidden_tools: ['bash', 'sql'],
+        },
+      }
+    );
+    assert.match(
+      modelTask.graders.find((grader) => grader.type === 'prompt').config
+        .prompt,
+      /advertised behavior contract/
+    );
+
+    assert.equal(
+      offlineTask.inputs.prompt,
+      'Use the deterministic demo skill.'
+    );
+    assert.ok(!Object.hasOwn(offlineTask.inputs, 'files'));
+    assert.deepEqual(offlineTask.expected, {});
+    assert.deepEqual(
+      offlineTask.graders.map((grader) => grader.type),
+      ['trigger']
+    );
+  });
+
+  it('preserves existing model task defaults when optional fields are absent', async () => {
+    const repositoryRoot = await createRepositoryFixture();
+
+    await generateWazaSuites(repositoryRoot);
+
+    const task = YAML.parse(
+      await fs.readFile(
+        path.join(
+          repositoryRoot,
+          'evals',
+          'demo',
+          'demo-skill',
+          'tasks',
+          'demo-positive.yaml'
+        ),
+        'utf8'
+      )
+    );
+
+    assert.deepEqual(task.inputs, {
+      prompt: 'Use the deterministic demo skill.',
+    });
+    assert.deepEqual(task.expected, {
+      outcomes: [{ type: 'task_completed' }],
+      behavior: {
+        max_tool_calls: 20,
+        max_iterations: 10,
+        max_tokens: 12000,
+      },
+    });
+    assert.deepEqual(
+      task.graders.find((grader) => grader.type === 'behavior'),
+      {
+        type: 'behavior',
+        name: 'demo-positive-behavior',
+        config: {
+          max_tool_calls: 20,
+        },
+      }
+    );
+  });
+
   it('removes stale generated model and offline tasks', async () => {
     const repositoryRoot = await createRepositoryFixture();
     const casePath = path.join(repositoryRoot, 'evals', 'cases.yaml');
@@ -154,6 +282,56 @@ describe('generateWazaSuites', () => {
         path.join(suiteDirectory, 'mock-tasks', 'replacement-positive.yaml')
       ),
       true
+    );
+  });
+
+  it('prunes removed suite directories without touching eval support files', async () => {
+    const repositoryRoot = await createRepositoryFixture();
+    const staleSuite = path.join(
+      repositoryRoot,
+      'evals',
+      'retired-package',
+      'retired-skill'
+    );
+    const baselinePath = path.join(
+      repositoryRoot,
+      'evals',
+      'baseline',
+      'red.md'
+    );
+    const supportFixturePath = path.join(
+      repositoryRoot,
+      'evals',
+      'lib',
+      'fixtures',
+      'keep.txt'
+    );
+    const generatedSuiteMarker = [
+      '# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.',
+      'name: retired-skill-eval',
+    ].join('\n');
+    await fs.outputFile(
+      path.join(staleSuite, 'eval.yaml'),
+      generatedSuiteMarker
+    );
+    await fs.outputFile(
+      path.join(staleSuite, 'mock.eval.yaml'),
+      generatedSuiteMarker
+    );
+    await fs.outputFile(
+      path.join(staleSuite, 'tasks', 'stale.yaml'),
+      'stale'
+    );
+    await fs.outputFile(baselinePath, 'preserve this report');
+    await fs.outputFile(supportFixturePath, 'preserve this fixture');
+
+    await generateWazaSuites(repositoryRoot);
+
+    assert.equal(await fs.pathExists(staleSuite), false);
+    assert.equal(await fs.pathExists(baselinePath), true);
+    assert.equal(
+      await fs.readFile(supportFixturePath, 'utf8'),
+      'preserve this fixture'
     );
   });
 });

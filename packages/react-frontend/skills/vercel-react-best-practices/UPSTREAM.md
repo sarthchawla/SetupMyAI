@@ -8,4 +8,4 @@
 - License: MIT, as declared in the upstream `SKILL.md` and repository `README.md`
 - Attribution: Vercel Engineering; originally created by [@shuding](https://x.com/shuding) at Vercel
 
-The skill contents are mirrored from the upstream `skills/react-best-practices/` directory, with trailing whitespace normalized to repository conventions. OpenAI plugin-specific metadata is intentionally excluded.
+The skill contents are mirrored from the upstream `skills/react-best-practices/` directory, with trailing whitespace normalized to repository conventions. The local `SKILL.md` description adds eval-backed routing phrases without changing the upstream guidance. OpenAI plugin-specific metadata is intentionally excluded.

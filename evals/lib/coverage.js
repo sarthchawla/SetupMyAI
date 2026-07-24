@@ -144,6 +144,9 @@ export async function loadEvaluationCoverage(
 
     suites.push({
       skillName: evaluation.skill,
+      evaluationName: evaluation.name,
+      mode,
+      executor: evaluation.config?.executor,
       relativeEvalPath,
       skillDirectories: evaluation.config?.skill_directories || [],
       tasks,

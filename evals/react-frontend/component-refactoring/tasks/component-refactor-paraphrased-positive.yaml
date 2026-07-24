@@ -22,6 +22,10 @@ graders:
       skill_path: packages/react-frontend/skills/component-refactoring/SKILL.md
       mode: positive
       threshold: 0.6
+  - type: behavior
+    name: component-refactor-paraphrased-positive-behavior
+    config:
+      max_tool_calls: 20
   - type: prompt
     name: component-refactor-paraphrased-positive-contract
     weight: 2
@@ -29,7 +33,7 @@ graders:
       model: auto
       continue_session: true
       prompt: |-
-        Judge the agent response against this public behavior contract:
+        Judge the agent response against this advertised behavior contract:
         Recognize the threshold and address hook extraction and component splitting.
 
         The response must honor every scope and safety constraint in the user prompt.

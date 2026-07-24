@@ -22,6 +22,10 @@ graders:
       skill_path: packages/database/skills/postgresql-table-design/SKILL.md
       mode: negative
       threshold: 0.6
+  - type: behavior
+    name: pgtd-03-boundary-negative-behavior
+    config:
+      max_tool_calls: 20
   - type: prompt
     name: pgtd-03-boundary-negative-contract
     weight: 2
@@ -29,7 +33,7 @@ graders:
       model: auto
       continue_session: true
       prompt: |-
-        Judge the agent response against this public behavior contract:
+        Judge the agent response against this advertised behavior contract:
         Do not apply PostgreSQL table advice to MongoDB.
 
         The response must honor every scope and safety constraint in the user prompt.

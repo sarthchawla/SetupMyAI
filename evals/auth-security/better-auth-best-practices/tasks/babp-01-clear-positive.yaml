@@ -21,6 +21,10 @@ graders:
       skill_path: packages/auth-security/skills/better-auth-best-practices/SKILL.md
       mode: positive
       threshold: 0.6
+  - type: behavior
+    name: babp-01-clear-positive-behavior
+    config:
+      max_tool_calls: 20
   - type: prompt
     name: babp-01-clear-positive-contract
     weight: 2
@@ -28,7 +32,7 @@ graders:
       model: auto
       continue_session: true
       prompt: >-
-        Judge the agent response against this public behavior contract:
+        Judge the agent response against this advertised behavior contract:
 
         Give Better Auth-specific TypeScript integration guidance without inventing project
         configuration.

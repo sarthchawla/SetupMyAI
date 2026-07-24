@@ -1,6 +1,6 @@
 ---
 name: frontend-code-review
-description: "Trigger when the user requests a review of frontend files (e.g., `.tsx`, `.ts`, `.js`). Support both pending-change reviews and focused file reviews while applying the checklist rules."
+description: 'Review pending frontend changes or specific frontend files against code-quality, performance, and business-logic checklists. USE FOR: "review a React component diff", "review pending .tsx changes", "review only a .tsx file". DO NOT USE FOR: creating new React components or implementing changes without a review request.'
 ---
 
 # Frontend Code Review

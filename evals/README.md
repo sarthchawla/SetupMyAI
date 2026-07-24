@@ -20,12 +20,15 @@ Run the deterministic repository checks with:
 
 ```sh
 pnpm eval:generate
+pnpm eval:check-generated
 pnpm test:eval
 pnpm test:waza-schema
 ```
 
 Generated Waza files carry a header directing contributors back to
-`cases.yaml`; do not edit them directly.
+`cases.yaml`; do not edit them directly. Generation also removes suite
+directories no longer present in the canonical inventory. CI regenerates the
+suite and fails if any tracked or untracked eval artifact changes.
 
 ## Execution modes
 
@@ -34,18 +37,26 @@ The suite has two intentionally separate modes:
 - **Offline routing:** `mock.eval.yaml` uses Waza's local `mock` executor and
   heuristic `trigger` graders only. Its schema-required model value is inert:
   this mode makes no model execution or API calls and is safe for private skill
-  bodies.
+  bodies. The wrapper also gives the verified Waza process a temporary isolated
+  `HOME`/XDG tree and a minimal non-credential environment, then removes that
+  tree after the run.
 - **Model-backed behavior:** `eval.yaml` uses the Copilot SDK executor plus
-  prompt graders to assess the response contract. Running it transmits prompts
-  and loaded skill instructions to the configured model provider, so obtain any
-  required approval first.
+  prompt graders to assess the response contract. The artifacts use synthetic
+  fixtures and deterministic output/tool constraints where relevant. Wrapper
+  execution is currently disabled because Waza `v0.38.3` did not isolate the
+  host home directory during a global-path evaluation. Do not invoke
+  `eval.yaml` directly. Model mode must remain disabled until host isolation is
+  proven by a regression test.
 
 After installing the pinned Waza binary, run:
 
 ```sh
 pnpm eval:run:offline -- --waza /path/to/waza
-pnpm eval:run -- --waza /path/to/waza
 ```
+
+Invoking `node scripts/waza-evals.js run` without `--mode` is also offline by
+default. Even an explicitly acknowledged model invocation fails closed before
+the Waza binary is executed.
 
 Use `--output-dir` to keep raw Waza results outside the repository when they
 may contain prompts, transcripts, absolute paths, or loaded skill content.
@@ -57,9 +68,16 @@ baseline reports belong in version control.
 `waza.lock.yaml` pins Waza `v0.38.3` and the release checksums for each
 supported binary. It also pins the immutable official eval and task schemas;
 `pnpm test:waza-schema` downloads them, verifies their SHA-256 checksums, and
-validates every generated Waza artifact. Download the matching binary from the official
-[Waza releases](https://github.com/microsoft/waza/releases/tag/v0.38.3), verify
-its SHA-256 checksum, and make it executable.
+validates every generated Waza artifact. Before invoking `--version`, the runner
+maps the current platform and architecture to the release asset and verifies
+the binary against the matching lockfile checksum. It also removes stale result
+files recorded in its artifact manifest, clears the prior summary before
+preflight, and requires a fresh parseable artifact whose skill, eval, engine,
+task IDs, task statuses, and task counts match the loaded suite. Result
+filenames include a deterministic suite-identity hash so normalized skill-name
+collisions cannot overwrite one another. Download the matching binary from the
+official [Waza releases](https://github.com/microsoft/waza/releases/tag/v0.38.3)
+and make it executable.
 
 Example for Apple Silicon:
 
