@@ -1,11 +1,28 @@
 import fs from 'fs-extra';
 import path from 'path';
 
+export function getHookEntryKey(entry) {
+  if (entry && Object.hasOwn(entry, 'command')) {
+    return `matcher:${entry.matcher || ''}|command:${entry.command}`;
+  }
+  const nestedHooks = Array.isArray(entry?.hooks)
+    ? entry.hooks.map((hook) => ({
+      type: hook?.type || '',
+      command: hook?.command || '',
+    }))
+    : [];
+  if (nestedHooks.length > 0) {
+    return `matcher:${entry.matcher || ''}|hooks:${JSON.stringify(nestedHooks)}`;
+  }
+  return JSON.stringify(entry);
+}
+
 /**
  * Deep merge hooks into an existing settings.json without clobbering.
  * Creates the file if it doesn't exist.
  */
-export async function mergeSettings(existingSettingsPath, newHooksConfig) {
+export async function mergeSettings(existingSettingsPath, newHooksConfig, options = {}) {
+  const overwriteManaged = options.overwriteManaged === true;
   let existing = {};
   if (await fs.pathExists(existingSettingsPath)) {
     existing = await fs.readJson(existingSettingsPath);
@@ -17,11 +34,13 @@ export async function mergeSettings(existingSettingsPath, newHooksConfig) {
     for (const [event, hookEntries] of Object.entries(newHooksConfig.hooks)) {
       existing.hooks[event] = existing.hooks[event] || [];
       for (const entry of hookEntries) {
-        const alreadyExists = existing.hooks[event].some(
-          (h) => h.command === entry.command
+        const existingIndex = existing.hooks[event].findIndex(
+          (candidate) => getHookEntryKey(candidate) === getHookEntryKey(entry)
         );
-        if (!alreadyExists) {
+        if (existingIndex === -1) {
           existing.hooks[event].push(entry);
+        } else if (overwriteManaged) {
+          existing.hooks[event][existingIndex] = entry;
         }
       }
     }
@@ -30,7 +49,7 @@ export async function mergeSettings(existingSettingsPath, newHooksConfig) {
   // Merge any other top-level keys (non-hooks)
   for (const [key, value] of Object.entries(newHooksConfig)) {
     if (key === 'hooks') continue;
-    if (existing[key] === undefined) {
+    if (existing[key] === undefined || overwriteManaged) {
       existing[key] = value;
     }
   }
@@ -43,7 +62,8 @@ export async function mergeSettings(existingSettingsPath, newHooksConfig) {
 /**
  * Merge MCP server entries into .cursor/mcp.json without overwriting existing servers.
  */
-export async function mergeMcpConfig(existingMcpPath, newMcpConfig) {
+export async function mergeMcpConfig(existingMcpPath, newMcpConfig, options = {}) {
+  const overwriteManaged = options.overwriteManaged === true;
   let existing = {};
   if (await fs.pathExists(existingMcpPath)) {
     existing = await fs.readJson(existingMcpPath);
@@ -54,7 +74,7 @@ export async function mergeMcpConfig(existingMcpPath, newMcpConfig) {
   for (const [serverName, serverConfig] of Object.entries(
     newMcpConfig.mcpServers || {}
   )) {
-    if (!existing.mcpServers[serverName]) {
+    if (!existing.mcpServers[serverName] || overwriteManaged) {
       existing.mcpServers[serverName] = serverConfig;
     }
   }
