@@ -363,7 +363,7 @@ async function maybeUpdateSelf(opts, cliStatus) {
   }
 
   if (shouldUpdateSelf) {
-    await runSelfUpdate();
+    await runSelfUpdate({ command });
   }
 }
 

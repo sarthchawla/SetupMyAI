@@ -817,6 +817,11 @@ export async function updateInventory(targetDir, options = {}) {
     includeUnmanaged: true,
   });
   const results = [];
+  const managedState = new Map(
+    inventory.manifests
+      .flatMap(({ manifest }) => manifest.items)
+      .map((item) => [managedRecordKey(item), item])
+  );
 
   for (const item of inventory.items) {
     if (item.status === 'unmanaged') {
@@ -841,8 +846,7 @@ export async function updateInventory(targetDir, options = {}) {
       continue;
     }
 
-    const protectedManagedContents = inventory.manifests
-      .flatMap(({ manifest }) => manifest.items)
+    const protectedManagedContents = [...managedState.values()]
       .filter((candidate) => {
         return candidate.managedContent
           && path.resolve(candidate.destinationPath) === path.resolve(item.destinationPath)
@@ -854,6 +858,7 @@ export async function updateInventory(targetDir, options = {}) {
       protectedManagedContents,
     });
     results.push(updated);
+    managedState.set(managedRecordKey(updated), updated);
   }
 
   if (!options.dryRun) {

@@ -91,13 +91,14 @@ SetupMyAi packages  -->  APM resolves & places files  -->  Thin CLI handles the 
 Files are placed into:
 - `.claude/commands/`, `.claude/rules/`, `.claude/agents/`, `.claude/skills/` (Claude Code)
 - `.cursor/commands/`, `.cursor/rules/`, `.cursor/agents/`, `.cursor/skills/` (Cursor)
+- `.codex/commands/`, `.codex/rules/`, `.codex/agents/`, `.codex/skills/`, `.codex/plugins/` (Codex)
 - `.claude/scripts/` or `~/.claude/scripts/` (project- or user-level scripts)
 
 ## Supported Tools
 
 - **Claude Code** — Full support (commands, rules, agents, skills, hooks, scripts)
 - **Cursor** — Full support (commands, rules with .mdc format, agents, skills)
-- **Codex** — Commands and instructions (via APM compatibility)
+- **Codex** — Commands, instructions, skills, and plugins (via APM compatibility)
 
 ## Adding Your Own Org Package
 

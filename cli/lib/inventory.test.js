@@ -430,6 +430,83 @@ describe('installed inventory', () => {
     assert.equal(inventory.items.find((item) => item.type === 'hook').status, 'current');
   });
 
+  it('updates multiple same-matcher hook records in one forced run', async () => {
+    const targetDir = path.join(tmpDir, 'hook-multi-update');
+    const sourceA = path.join(tmpDir, 'hook-multi-a.json');
+    const sourceB = path.join(tmpDir, 'hook-multi-b.json');
+    const destinationPath = path.join(targetDir, '.claude', 'settings.json');
+    const hookConfig = (command) => ({
+      hooks: {
+        Stop: [
+          {
+            matcher: '',
+            hooks: [{ type: 'command', command }],
+          },
+        ],
+      },
+    });
+    await fs.ensureDir(path.dirname(destinationPath));
+    await fs.writeJson(destinationPath, { hooks: { Stop: [] } });
+    await fs.writeJson(sourceA, hookConfig('a-command'));
+    await fs.writeJson(sourceB, hookConfig('b-command'));
+
+    await mergeSettings(destinationPath, await fs.readJson(sourceA));
+    const recordA = await buildManagedRecord({
+      packageName: 'universal',
+      tool: 'claude',
+      level: 'project',
+      type: 'hook',
+      sourcePath: sourceA,
+      destinationPath,
+      installMode: 'merge-settings',
+      targetDir,
+    });
+    await mergeSettings(destinationPath, await fs.readJson(sourceB));
+    const recordB = await buildManagedRecord({
+      packageName: 'universal',
+      tool: 'claude',
+      level: 'project',
+      type: 'hook',
+      sourcePath: sourceB,
+      destinationPath,
+      installMode: 'merge-settings',
+      targetDir,
+    });
+    await recordInstall(targetDir, 'project', [recordA, recordB]);
+
+    await fs.writeJson(sourceA, hookConfig('a2-command'));
+    const settings = await fs.readJson(destinationPath);
+    settings.hooks.Stop
+      .find((entry) => entry.hooks[0].command === 'b-command')
+      .hooks[0]
+      .command = 'b-local-command';
+    await fs.writeJson(destinationPath, settings);
+
+    const result = await updateInventory(targetDir, {
+      tool: 'claude',
+      level: 'project',
+      force: true,
+    });
+    assert.equal(
+      result.results.filter((item) => item.type === 'hook' && item.result === 'updated').length,
+      2
+    );
+
+    const commands = (await fs.readJson(destinationPath)).hooks.Stop
+      .map((entry) => entry.hooks[0].command);
+    assert.deepStrictEqual(commands, ['a2-command', 'b-command']);
+
+    const inventory = await getInventory(targetDir, {
+      tool: 'claude',
+      level: 'project',
+    });
+    assert.ok(
+      inventory.items
+        .filter((item) => item.type === 'hook')
+        .every((item) => item.status === 'current')
+    );
+  });
+
   it('reports unmanaged Codex plugins and root hook config', async () => {
     const targetDir = path.join(tmpDir, 'plugin-inventory');
     const pluginPath = path.join(targetDir, '.codex', 'plugins', 'example', 'plugin.json');
