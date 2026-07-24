@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: web-design-clear-positive
+name: Web Design Clear Positive
+description: Review the named UI file for accessibility and interface-guideline concerns.
+tags:
+  - positive
+  - accessibility
+  - ui-review
+inputs:
+  prompt: Audit `Checkout.tsx` for accessibility and Web Interface Guidelines compliance.
+expected: {}
+graders:
+  - type: trigger
+    name: web-design-clear-positive-trigger
+    config:
+      skill_path: packages/react-frontend/skills/web-design-guidelines/SKILL.md
+      mode: positive
+      threshold: 0.6

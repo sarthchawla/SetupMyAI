@@ -1,6 +1,12 @@
 ---
 name: bdd-test-workflow
-description: This skill should be used when the user asks to "create bdd tests", "add playwright-bdd scenarios", "mock data for acceptance tests", "fix flaky bdd tests", "write feature and step files", or asks whether cases should be unit tests vs bdd tests.
+description: >-
+  **WORKFLOW SKILL** - Plan and implement Playwright-BDD acceptance tests while
+  separating unit-test concerns. USE FOR: create Playwright-BDD scenarios with
+  feature and step files, choose between unit tests and BDD tests for acceptance
+  cases, mock data for acceptance tests, fix flaky Playwright-BDD tests.
+  DO NOT USE FOR: isolated unit tests for pure calculation functions, unit-only
+  work with no end-to-end user journey.
 version: 0.1.0
 ---
 

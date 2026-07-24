@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: epbp-01-clear-positive
+name: Epbp 01 Clear Positive
+description: Give secure Better Auth email and password guidance without insecure credential handling.
+tags:
+  - positive
+  - authentication
+inputs:
+  prompt: Implement secure email-and-password authentication with Better Auth.
+expected: {}
+graders:
+  - type: trigger
+    name: epbp-01-clear-positive-trigger
+    config:
+      skill_path: packages/auth-security/skills/email-and-password-best-practices/SKILL.md
+      mode: positive
+      threshold: 0.6

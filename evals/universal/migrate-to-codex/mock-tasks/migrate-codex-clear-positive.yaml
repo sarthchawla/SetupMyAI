@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: migrate-codex-clear-positive
+name: Migrate Codex Clear Positive
+description: Handle only supported artifact types and place them in the requested Codex scopes.
+tags:
+  - positive
+  - migration
+inputs:
+  prompt: Migrate my supported instruction files, skills, agents, and MCP configuration into Codex
+    project and global files.
+expected: {}
+graders:
+  - type: trigger
+    name: migrate-codex-clear-positive-trigger
+    config:
+      skill_path: packages/universal/skills/migrate-to-codex/SKILL.md
+      mode: positive
+      threshold: 0.6

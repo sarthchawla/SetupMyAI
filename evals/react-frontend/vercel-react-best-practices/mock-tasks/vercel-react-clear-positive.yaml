@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: vercel-react-clear-positive
+name: Vercel React Clear Positive
+description: Apply React and Next.js performance guidance to data fetching and bundle size.
+tags:
+  - positive
+  - nextjs
+  - performance
+inputs:
+  prompt: Refactor this Next.js page to improve data-fetching performance and reduce its bundle size.
+expected: {}
+graders:
+  - type: trigger
+    name: vercel-react-clear-positive-trigger
+    config:
+      skill_path: packages/react-frontend/skills/vercel-react-best-practices/SKILL.md
+      mode: positive
+      threshold: 0.6

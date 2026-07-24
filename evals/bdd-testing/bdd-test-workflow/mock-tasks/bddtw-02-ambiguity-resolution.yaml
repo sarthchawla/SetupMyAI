@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: bddtw-02-ambiguity-resolution
+name: Bddtw 02 Ambiguity Resolution
+description: Explain the unit-versus-BDD boundary without claiming every test belongs in BDD.
+tags:
+  - positive
+  - boundary
+  - routing
+inputs:
+  prompt: Should these acceptance cases be unit tests or BDD tests?
+expected: {}
+graders:
+  - type: trigger
+    name: bddtw-02-ambiguity-resolution-trigger
+    config:
+      skill_path: packages/bdd-testing/skills/bdd-test-workflow/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -1,0 +1,21 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+name: postgresql-table-design-offline-eval
+description: Offline trigger evaluation for postgresql-table-design.
+skill: postgresql-table-design
+schemaVersion: "1.2"
+version: "1.0"
+config:
+  trials_per_task: 1
+  timeout_seconds: 30
+  parallel: false
+  executor: mock
+  model: offline-mock
+  inject_skill_body: false
+  skill_directories:
+    - ../../../packages/database/skills
+metrics:
+  - name: trigger-accuracy
+    weight: 1
+    threshold: 0.6
+tasks:
+  - mock-tasks/*.yaml

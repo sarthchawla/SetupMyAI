@@ -167,55 +167,120 @@ describe('installPackage', () => {
     assert.ok(await fs.pathExists(path.join(targetDir, '.codex', 'rules', 'kotlin-backend.md')));
   });
 
+  it('installs complete skill directories recursively', async () => {
+    const targetDir = path.join(tmpDir, 'nested-skills');
+    await fs.ensureDir(targetDir);
+
+    await installPackage('react-frontend', targetDir, { tool: 'codex' });
+
+    const skillDir = path.join(
+      targetDir,
+      '.codex',
+      'skills',
+      'vercel-react-best-practices'
+    );
+    assert.ok(await fs.pathExists(path.join(skillDir, 'SKILL.md')));
+    assert.ok(
+      await fs.pathExists(path.join(skillDir, 'rules', 'async-parallel.md'))
+    );
+  });
+
+  it('installs nested scripts and references inside a skill', async () => {
+    const targetDir = path.join(tmpDir, 'skill-support-files');
+    const homeDir = path.join(tmpDir, 'skill-support-home');
+    await fs.ensureDir(targetDir);
+
+    await installPackage('universal', targetDir, {
+      tool: 'codex',
+      homeDir,
+    });
+
+    const skillDir = path.join(
+      targetDir,
+      '.codex',
+      'skills',
+      'migrate-to-codex'
+    );
+    assert.ok(await fs.pathExists(path.join(skillDir, 'SKILL.md')));
+    assert.ok(
+      await fs.pathExists(
+        path.join(skillDir, 'scripts', 'migrate-to-codex.py')
+      )
+    );
+    assert.ok(
+      await fs.pathExists(path.join(skillDir, 'references', 'differences.md'))
+    );
+  });
+
   // ── user-level installation ─────────────────────────────────────────────
 
   it('installs to user home directory when level=user', async () => {
     const targetDir = path.join(tmpDir, 'user-level');
+    const homeDir = path.join(tmpDir, 'user-level-home');
     await fs.ensureDir(targetDir);
 
-    await installPackage('kotlin-backend', targetDir, { tool: 'claude', level: 'user' });
+    await installPackage('kotlin-backend', targetDir, {
+      tool: 'claude',
+      level: 'user',
+      homeDir,
+    });
 
-    const installedPath = path.join(os.homedir(), '.claude', 'rules', 'kotlin-backend.md');
+    const installedPath = path.join(
+      homeDir,
+      '.claude',
+      'rules',
+      'kotlin-backend.md'
+    );
     assert.ok(await fs.pathExists(installedPath));
-
-    // Cleanup
-    await fs.remove(installedPath);
-    const mdcPath = path.join(os.homedir(), '.claude', 'rules', 'kotlin-backend.mdc');
-    if (await fs.pathExists(mdcPath)) await fs.remove(mdcPath);
   });
 
   it('does NOT install to project dir when level=user', async () => {
     const targetDir = path.join(tmpDir, 'user-no-project');
+    const homeDir = path.join(tmpDir, 'user-no-project-home');
     await fs.ensureDir(targetDir);
 
-    await installPackage('kotlin-backend', targetDir, { tool: 'codex', level: 'user' });
+    await installPackage('kotlin-backend', targetDir, {
+      tool: 'codex',
+      level: 'user',
+      homeDir,
+    });
 
     assert.ok(!(await fs.pathExists(path.join(targetDir, '.codex'))));
 
-    const userPath = path.join(os.homedir(), '.codex', 'rules', 'kotlin-backend.md');
+    const userPath = path.join(
+      homeDir,
+      '.codex',
+      'rules',
+      'kotlin-backend.md'
+    );
     assert.ok(await fs.pathExists(userPath));
-
-    // Cleanup
-    await fs.remove(path.join(os.homedir(), '.codex'));
   });
 
   it('installs to user home for multiple tools when level=user', async () => {
     const targetDir = path.join(tmpDir, 'user-multi');
+    const homeDir = path.join(tmpDir, 'user-multi-home');
     await fs.ensureDir(targetDir);
 
     await installPackage('kotlin-backend', targetDir, {
       tool: ['opencode', 'gemini'],
       level: 'user',
+      homeDir,
     });
 
-    const opencodePath = path.join(os.homedir(), '.opencode', 'rules', 'kotlin-backend.md');
-    const geminiPath = path.join(os.homedir(), '.gemini', 'rules', 'kotlin-backend.md');
+    const opencodePath = path.join(
+      homeDir,
+      '.opencode',
+      'rules',
+      'kotlin-backend.md'
+    );
+    const geminiPath = path.join(
+      homeDir,
+      '.gemini',
+      'rules',
+      'kotlin-backend.md'
+    );
     assert.ok(await fs.pathExists(opencodePath));
     assert.ok(await fs.pathExists(geminiPath));
-
-    // Cleanup
-    await fs.remove(path.join(os.homedir(), '.opencode'));
-    await fs.remove(path.join(os.homedir(), '.gemini'));
   });
 
   // ── file count ──────────────────────────────────────────────────────────

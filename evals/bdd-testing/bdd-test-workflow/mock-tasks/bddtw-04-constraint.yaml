@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: bddtw-04-constraint
+name: Bddtw 04 Constraint
+description: Limit changes to BDD tests and mocks while preserving production behavior.
+tags:
+  - positive
+  - constraint
+  - no-production-change
+inputs:
+  prompt: Fix flaky Playwright-BDD acceptance tests using mock data, without changing production behavior.
+expected: {}
+graders:
+  - type: trigger
+    name: bddtw-04-constraint-trigger
+    config:
+      skill_path: packages/bdd-testing/skills/bdd-test-workflow/SKILL.md
+      mode: positive
+      threshold: 0.6

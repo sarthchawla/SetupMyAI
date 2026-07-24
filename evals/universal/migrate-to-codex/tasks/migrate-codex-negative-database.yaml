@@ -1,0 +1,43 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: migrate-codex-negative-database
+name: Migrate Codex Negative Database
+description: Do not infer Codex involvement from the word migrate alone.
+tags:
+  - negative-trigger
+  - boundary
+  - database
+inputs:
+  prompt: Migrate my PostgreSQL database schema to a new server.
+expected:
+  outcomes:
+    - type: task_completed
+  behavior:
+    max_tool_calls: 20
+    max_iterations: 10
+    max_tokens: 12000
+graders:
+  - type: trigger
+    name: migrate-codex-negative-database-trigger
+    config:
+      skill_path: packages/universal/skills/migrate-to-codex/SKILL.md
+      mode: negative
+      threshold: 0.6
+  - type: behavior
+    name: migrate-codex-negative-database-behavior
+    config:
+      max_tool_calls: 20
+  - type: prompt
+    name: migrate-codex-negative-database-contract
+    weight: 2
+    config:
+      model: auto
+      continue_session: true
+      prompt: |-
+        Judge the agent response against this advertised behavior contract:
+        Do not infer Codex involvement from the word migrate alone.
+
+        The response must honor every scope and safety constraint in the user prompt.
+        It must not claim actions, file contents, or configuration facts that were not evidenced.
+        If the contract is materially satisfied, call set_waza_grade_pass with a concise reason.
+        Otherwise call set_waza_grade_fail with the unmet requirement.
+        Do not return a plain-text verdict instead of calling one of those tools.

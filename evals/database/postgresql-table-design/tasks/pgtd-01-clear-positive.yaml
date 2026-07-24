@@ -1,0 +1,49 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pgtd-01-clear-positive
+name: Pgtd 01 Clear Positive
+description: Give PostgreSQL-specific schema guidance for the requested areas without claiming deployment.
+tags:
+  - positive
+  - schema-design
+inputs:
+  prompt: Design a PostgreSQL table schema with appropriate data types, indexes, and constraints.
+expected:
+  outcomes:
+    - type: task_completed
+  behavior:
+    max_tool_calls: 20
+    max_iterations: 10
+    max_tokens: 12000
+graders:
+  - type: trigger
+    name: pgtd-01-clear-positive-trigger
+    config:
+      skill_path: packages/database/skills/postgresql-table-design/SKILL.md
+      mode: positive
+      threshold: 0.6
+  - type: behavior
+    name: pgtd-01-clear-positive-behavior
+    config:
+      max_tool_calls: 20
+  - type: prompt
+    name: pgtd-01-clear-positive-contract
+    weight: 2
+    config:
+      model: auto
+      continue_session: true
+      prompt: >-
+        Judge the agent response against this advertised behavior contract:
+
+        Give PostgreSQL-specific schema guidance for the requested areas without claiming
+        deployment.
+
+
+        The response must honor every scope and safety constraint in the user prompt.
+
+        It must not claim actions, file contents, or configuration facts that were not evidenced.
+
+        If the contract is materially satisfied, call set_waza_grade_pass with a concise reason.
+
+        Otherwise call set_waza_grade_fail with the unmet requirement.
+
+        Do not return a plain-text verdict instead of calling one of those tools.

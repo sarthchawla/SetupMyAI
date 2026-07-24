@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pgtd-02-paraphrased-positive
+name: Pgtd 02 Paraphrased Positive
+description: Review performance and advanced features without inventing workload evidence.
+tags:
+  - positive
+  - review
+  - performance
+inputs:
+  prompt: Review a Postgres schema for performance patterns and useful advanced database features.
+expected: {}
+graders:
+  - type: trigger
+    name: pgtd-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/database/skills/postgresql-table-design/SKILL.md
+      mode: positive
+      threshold: 0.6

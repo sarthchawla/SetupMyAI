@@ -9,9 +9,15 @@
   "scripts": {
     "build": "echo 'No build step needed'",
     "test": "node --test cli/**/*.test.js",
+    "test:eval": "node --test evals/**/*.test.js",
+    "test:waza-schema": "node evals/lib/schema.js",
     "test:bats": "bats tests/bats/*.bats",
     "test:validate": "node scripts/validate-packages.js",
-    "test:all": "pnpm test && pnpm test:bats && pnpm test:validate",
+    "test:all": "pnpm test && pnpm test:eval && pnpm test:bats && pnpm test:validate",
+    "eval:generate": "node evals/lib/generate.js",
+    "eval:check-generated": "node scripts/check-generated-evals.js",
+    "eval:run:offline": "node scripts/waza-evals.js run --mode offline",
+    "eval:run:model": "node scripts/waza-evals.js run --mode model",
     "lint": "eslint cli/"
   },
   "dependencies": {
@@ -40,5 +46,8 @@
     "node": ">=18"
   },
   "packageManager": "pnpm@9.0.0",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "ajv": "8.20.0"
+  }
 }

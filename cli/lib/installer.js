@@ -25,11 +25,26 @@ function resolveTools(tools) {
   return tools.split(',').map((t) => t.trim()).filter(Boolean);
 }
 
-function getToolRoot(targetDir, level, tool) {
+function getToolRoot(targetDir, level, tool, homeDir) {
   if (level === 'user') {
-    return path.join(os.homedir(), `.${tool}`);
+    return path.join(homeDir, `.${tool}`);
   }
   return path.join(targetDir, `.${tool}`);
+}
+
+async function countFiles(dir) {
+  const entries = await fs.readdir(dir, { withFileTypes: true });
+  let count = 0;
+
+  for (const entry of entries) {
+    if (entry.isDirectory()) {
+      count += await countFiles(path.join(dir, entry.name));
+    } else if (entry.isFile()) {
+      count++;
+    }
+  }
+
+  return count;
 }
 
 /**
@@ -37,11 +52,12 @@ function getToolRoot(targetDir, level, tool) {
  *
  * @param {string} packageName - Key from PACKAGES registry
  * @param {string} targetDir   - Absolute path to the user's project root
- * @param {object} options      - { tool: string|string[], level: 'user'|'project' }
+ * @param {object} options      - { tool: string|string[], level: 'user'|'project', homeDir?: string }
  */
 export async function installPackage(packageName, targetDir, options = {}) {
   const tools = resolveTools(options.tool || 'all');
   const level = options.level || 'project';
+  const homeDir = options.homeDir || os.homedir();
   const pkgDir = path.join(PACKAGES_ROOT, packageName);
 
   if (!(await fs.pathExists(pkgDir))) {
@@ -56,19 +72,19 @@ export async function installPackage(packageName, targetDir, options = {}) {
     const dirName = entry.name;
 
     if (dirName === 'hooks') {
-      await installHooks(pkgDir, targetDir, tools, level);
+      await installHooks(pkgDir, targetDir, tools, level, homeDir);
       filesInstalled++;
       continue;
     }
 
     if (dirName === 'scripts') {
-      await installScripts(pkgDir);
+      await installScripts(pkgDir, homeDir);
       filesInstalled++;
       continue;
     }
 
     if (dirName === 'mcp') {
-      await installMcp(pkgDir, targetDir, tools, level);
+      await installMcp(pkgDir, targetDir, tools, level, homeDir);
       filesInstalled++;
       continue;
     }
@@ -79,13 +95,25 @@ export async function installPackage(packageName, targetDir, options = {}) {
     for (const file of files) {
       const srcFile = path.join(srcDir, file);
       const stat = await fs.stat(srcFile);
-      if (!stat.isFile()) continue;
+      const contentDir = CONTENT_DIRS[dirName];
+      if (!contentDir) continue;
+
+      if (stat.isDirectory()) {
+        if (dirName !== 'skills' && dirName !== '{skills}') continue;
+
+        const nestedFileCount = await countFiles(srcFile);
+        for (const tool of tools) {
+          const toolRoot = getToolRoot(targetDir, level, tool, homeDir);
+          const dest = path.join(toolRoot, contentDir, file);
+          await fs.ensureDir(path.dirname(dest));
+          await fs.copy(srcFile, dest);
+          filesInstalled += nestedFileCount;
+        }
+        continue;
+      }
 
       for (const tool of tools) {
-        const contentDir = CONTENT_DIRS[dirName];
-        if (!contentDir) continue;
-
-        const toolRoot = getToolRoot(targetDir, level, tool);
+        const toolRoot = getToolRoot(targetDir, level, tool, homeDir);
         const isRule = dirName === 'rules' || dirName === '{rules}';
         const isMdFile = file.endsWith('.md');
         const needsMdcConvert = tool === 'cursor' && isRule && isMdFile;
@@ -110,7 +138,7 @@ export async function installPackage(packageName, targetDir, options = {}) {
   return filesInstalled;
 }
 
-async function installHooks(pkgDir, targetDir, tools, level) {
+async function installHooks(pkgDir, targetDir, tools, level, homeDir) {
   const hooksDir = path.join(pkgDir, 'hooks');
   const files = await fs.readdir(hooksDir);
 
@@ -120,21 +148,21 @@ async function installHooks(pkgDir, targetDir, tools, level) {
 
     for (const tool of tools) {
       if (tool !== 'claude') continue;
-      const toolRoot = getToolRoot(targetDir, level, tool);
+      const toolRoot = getToolRoot(targetDir, level, tool, homeDir);
       const settingsPath = path.join(toolRoot, 'settings.json');
       await mergeSettings(settingsPath, hooksConfig);
     }
   }
 }
 
-async function installScripts(pkgDir) {
+async function installScripts(pkgDir, homeDir) {
   const scriptsDir = path.join(pkgDir, 'scripts');
-  const userScriptsDir = path.join(os.homedir(), '.claude', 'scripts');
+  const userScriptsDir = path.join(homeDir, '.claude', 'scripts');
   await fs.ensureDir(userScriptsDir);
   await fs.copy(scriptsDir, userScriptsDir, { overwrite: false });
 }
 
-async function installMcp(pkgDir, targetDir, tools, level) {
+async function installMcp(pkgDir, targetDir, tools, level, homeDir) {
   const mcpDir = path.join(pkgDir, 'mcp');
   const files = await fs.readdir(mcpDir);
 
@@ -144,7 +172,7 @@ async function installMcp(pkgDir, targetDir, tools, level) {
 
     for (const tool of tools) {
       if (tool !== 'cursor') continue;
-      const toolRoot = getToolRoot(targetDir, level, tool);
+      const toolRoot = getToolRoot(targetDir, level, tool, homeDir);
       const mcpPath = path.join(toolRoot, 'mcp.json');
       await mergeMcpConfig(mcpPath, mcpConfig);
     }

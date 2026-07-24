@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: node-backend-constrained-scope
+name: Node Backend Constrained Scope
+description: Address error handling only and preserve the authentication and database exclusions.
+tags:
+  - positive
+  - constraint
+inputs:
+  prompt: Improve error handling in this Node REST API, but do not change authentication or database
+    integration.
+expected: {}
+graders:
+  - type: trigger
+    name: node-backend-constrained-scope-trigger
+    config:
+      skill_path: packages/react-frontend/skills/nodejs-backend-patterns/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -10,7 +10,7 @@ https://github.com/user-attachments/assets/eb0838d1-8f75-4e3a-aa86-988c8551fbd1
 
 | Package | Tier | What's Inside |
 |---------|------|---------------|
-| `@setupmyai/universal` | 1 - Any repo | MR/PR commands, CI fixes, worktree management, statusline, hooks, loops |
+| `@setupmyai/universal` | 1 - Any repo | MR/PR commands, CI fixes, worktree management, Codex migration, statusline, hooks, loops |
 | `@setupmyai/react-frontend` | 2 - Stack | React/TS rules, 7 frontend skills (testing, code review, perf, design) |
 | `@setupmyai/kotlin-backend` | 2 - Stack | Kotlin/Ktor coding standards and patterns |
 | `@setupmyai/bdd-testing` | 2 - Stack | Playwright BDD workflow — 6 commands, 3 agents, skills, rules |
@@ -45,7 +45,7 @@ pnpm dlx @setupmyai/cli init
 This launches an interactive picker:
 ```
 ? Select packages to install:
-  [x] universal        — MR/PR commands, CI fixes, worktree, statusline, hooks
+  [x] universal        — MR/PR commands, CI fixes, worktree, Codex migration, statusline, hooks
   [x] react-frontend   — React/TS rules, frontend skills
   [ ] kotlin-backend   — Kotlin/Ktor coding standards
   [x] bdd-testing      — BDD workflow with Playwright
@@ -101,8 +101,12 @@ mkdir -p packages/my-org-workflows/{commands,agents,rules,skills,mcp}
 
 1. Add/modify files in the relevant `packages/<name>/` directory
 2. Update the package's `apm.yml` if adding new primitive types
-3. Test with `setupmyai install <package> --dry-run`
-4. Submit a pull request
+3. Add or update its metadata-derived cases in
+   [`evals/cases.yaml`](evals/cases.yaml)
+4. Run `pnpm test:all` and the appropriate
+   [Waza skill evaluations](evals/README.md)
+5. Test with `setupmyai install <package> --dry-run`
+6. Submit a pull request
 
 ### Adding a New Package
 

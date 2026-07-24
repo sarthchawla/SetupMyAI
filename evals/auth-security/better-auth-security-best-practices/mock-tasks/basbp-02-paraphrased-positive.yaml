@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: basbp-02-paraphrased-positive
+name: Basbp 02 Paraphrased Positive
+description: Perform a Better Auth security audit without inventing configuration facts.
+tags:
+  - positive
+  - audit
+inputs:
+  prompt: Audit our Better Auth setup for OAuth risks, IP tracking, and overall security gaps.
+expected: {}
+graders:
+  - type: trigger
+    name: basbp-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/auth-security/skills/better-auth-security-best-practices/SKILL.md
+      mode: positive
+      threshold: 0.6

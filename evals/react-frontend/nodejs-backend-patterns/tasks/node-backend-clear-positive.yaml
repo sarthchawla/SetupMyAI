@@ -1,0 +1,44 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: node-backend-clear-positive
+name: Node Backend Clear Positive
+description: Cover the requested Node service and API concerns without drifting into frontend work.
+tags:
+  - positive
+  - fastify
+  - rest
+inputs:
+  prompt: Build a production-ready Fastify REST API with middleware, authentication, and consistent
+    error handling.
+expected:
+  outcomes:
+    - type: task_completed
+  behavior:
+    max_tool_calls: 20
+    max_iterations: 10
+    max_tokens: 12000
+graders:
+  - type: trigger
+    name: node-backend-clear-positive-trigger
+    config:
+      skill_path: packages/react-frontend/skills/nodejs-backend-patterns/SKILL.md
+      mode: positive
+      threshold: 0.6
+  - type: behavior
+    name: node-backend-clear-positive-behavior
+    config:
+      max_tool_calls: 20
+  - type: prompt
+    name: node-backend-clear-positive-contract
+    weight: 2
+    config:
+      model: auto
+      continue_session: true
+      prompt: |-
+        Judge the agent response against this advertised behavior contract:
+        Cover the requested Node service and API concerns without drifting into frontend work.
+
+        The response must honor every scope and safety constraint in the user prompt.
+        It must not claim actions, file contents, or configuration facts that were not evidenced.
+        If the contract is materially satisfied, call set_waza_grade_pass with a concise reason.
+        Otherwise call set_waza_grade_fail with the unmet requirement.
+        Do not return a plain-text verdict instead of calling one of those tools.

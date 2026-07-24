@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: web-design-pattern-read-only
+name: Web Design Pattern Read Only
+description: Keep the review accessibility-only, pattern-scoped, and read-only.
+tags:
+  - positive
+  - constraint
+  - accessibility
+  - read-only
+inputs:
+  prompt: Check accessibility only in `components/Nav*.tsx`; report findings but make no edits.
+expected: {}
+graders:
+  - type: trigger
+    name: web-design-pattern-read-only-trigger
+    config:
+      skill_path: packages/react-frontend/skills/web-design-guidelines/SKILL.md
+      mode: positive
+      threshold: 0.6

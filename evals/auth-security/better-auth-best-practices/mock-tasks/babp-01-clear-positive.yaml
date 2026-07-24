@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: babp-01-clear-positive
+name: Babp 01 Clear Positive
+description: Give Better Auth-specific TypeScript integration guidance without inventing project configuration.
+tags:
+  - positive
+  - integration
+inputs:
+  prompt: Integrate Better Auth into a TypeScript application.
+expected: {}
+graders:
+  - type: trigger
+    name: babp-01-clear-positive-trigger
+    config:
+      skill_path: packages/auth-security/skills/better-auth-best-practices/SKILL.md
+      mode: positive
+      threshold: 0.6

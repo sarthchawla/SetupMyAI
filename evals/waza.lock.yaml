@@ -1,0 +1,18 @@
+version: "0.38.3"
+release: "https://github.com/microsoft/waza/releases/tag/v0.38.3"
+checksums:
+  waza-darwin-amd64: "f2a0c6952abbb5ad75bf17e2769c34c480093c269574839368b82d40b3c5dec9"
+  waza-darwin-arm64: "99aa4366b198f319145cffeef42d500eb9f6178235a0537d34c19dd8f2f46fec"
+  waza-linux-amd64: "168e3562deeaa1958d44366b37d963b48b091c325c6c9b5b2613e5399ff077b9"
+  waza-linux-arm64: "ab5d6a3e502a0f7f5a48149e034fa07875a2fe02addddec6b9b9dba14f3b4685"
+  waza-windows-amd64.exe: "b2f7c84dfd8df44a6eb962385b37976c59637c96f0a9b34cf7328e8ababc5b88"
+  waza-windows-arm64.exe: "b867521c70ae817fed827d0de6bde4ce927cd7df9be5214d7033ae82ed14c891"
+schemas:
+  eval:
+    url: "https://raw.githubusercontent.com/microsoft/waza/v0.38.3/schemas/eval.schema.json"
+    path: "evals/schemas/eval.schema.json"
+    sha256: "f9ae5730c4170695a700ce927c0fa26d3c75c00d901e46115ec4d123f87b5565"
+  task:
+    url: "https://raw.githubusercontent.com/microsoft/waza/v0.38.3/schemas/task.schema.json"
+    path: "evals/schemas/task.schema.json"
+    sha256: "28466d3b205b68fab9eb1de55d87d3643ebd3835a8eb4cb990907483487cf6d1"

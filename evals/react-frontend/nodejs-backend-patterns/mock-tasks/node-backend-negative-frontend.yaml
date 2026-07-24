@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: node-backend-negative-frontend
+name: Node Backend Negative Frontend
+description: Do not apply backend architecture guidance to a frontend testing task.
+tags:
+  - negative-trigger
+  - boundary
+  - frontend
+inputs:
+  prompt: Write unit tests for a React form component.
+expected: {}
+graders:
+  - type: trigger
+    name: node-backend-negative-frontend-trigger
+    config:
+      skill_path: packages/react-frontend/skills/nodejs-backend-patterns/SKILL.md
+      mode: negative
+      threshold: 0.6

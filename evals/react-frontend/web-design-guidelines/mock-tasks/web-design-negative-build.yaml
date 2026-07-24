@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: web-design-negative-build
+name: Web Design Negative Build
+description: Do not invent an audit for a UI creation request.
+tags:
+  - negative-trigger
+  - boundary
+  - creation
+inputs:
+  prompt: Build a new landing-page UI from this written brief.
+expected: {}
+graders:
+  - type: trigger
+    name: web-design-negative-build-trigger
+    config:
+      skill_path: packages/react-frontend/skills/web-design-guidelines/SKILL.md
+      mode: negative
+      threshold: 0.6

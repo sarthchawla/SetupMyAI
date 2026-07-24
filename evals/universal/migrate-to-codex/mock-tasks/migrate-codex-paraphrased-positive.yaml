@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: migrate-codex-paraphrased-positive
+name: Migrate Codex Paraphrased Positive
+description: Limit the migration to global agents and MCP configuration.
+tags:
+  - positive
+  - global
+  - agents
+  - mcp
+inputs:
+  prompt: Move my existing agent definitions and MCP setup into Codex's global configuration.
+expected: {}
+graders:
+  - type: trigger
+    name: migrate-codex-paraphrased-positive-trigger
+    config:
+      skill_path: packages/universal/skills/migrate-to-codex/SKILL.md
+      mode: positive
+      threshold: 0.6
