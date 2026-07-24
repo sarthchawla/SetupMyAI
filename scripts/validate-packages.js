@@ -9,7 +9,7 @@
  *  3. No orphan .md/.sh files untracked by sources.yml (warning)
  *  4. No broken {{PLACEHOLDER}} patterns without nearby documentation
  *  5. No duplicate filenames across packages in the same type directory
- *  6. Every skills subdirectory has SKILL.md
+ *  6. Every skills subdirectory has an exact SKILL.md entry
  *  7. Every .sh file has the execute bit set
  *
  * Exit 0 on success, 1 on any error.
@@ -267,7 +267,7 @@ function checkDuplicateFilenames() {
 }
 
 // ---------------------------------------------------------------------------
-// Check 6 — Skills have SKILL.md
+// Check 6 — Skills have an exact SKILL.md entry
 // ---------------------------------------------------------------------------
 
 function checkSkillsMd() {
@@ -282,9 +282,7 @@ function checkSkillsMd() {
     for (const entry of entries) {
       if (!entry.isDirectory()) continue;
       const skillDir = path.join(skillsDir, entry.name);
-      const hasSkillMd =
-        fs.existsSync(path.join(skillDir, "SKILL.md")) ||
-        fs.existsSync(path.join(skillDir, "SKILL.MD"));
+      const hasSkillMd = fs.readdirSync(skillDir).includes("SKILL.md");
       if (!hasSkillMd) {
         missing.push(`packages/${pkg}/skills/${entry.name}`);
       }
@@ -292,9 +290,9 @@ function checkSkillsMd() {
   }
 
   if (missing.length) {
-    fail(`${missing.length} skills missing SKILL.md`, missing);
+    fail(`${missing.length} skills missing exact SKILL.md`, missing);
   } else {
-    pass("All skills have SKILL.md");
+    pass("All skills have exact SKILL.md");
   }
 }
 

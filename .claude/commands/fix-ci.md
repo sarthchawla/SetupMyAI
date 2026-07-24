@@ -38,6 +38,21 @@ glab api "projects/:fullpath/pipelines?ref=$(git branch --show-current)&per_page
 **GitLab (MCP fallback):**
 Use `mcp__gitlab__list_pipelines` with `ref: current branch`, `per_page: 1`
 
+For GitLab, always check child pipelines before deciding the CI status. After selecting the parent pipeline, inspect bridge jobs and collect every downstream pipeline ID:
+
+```bash
+glab api "projects/:fullpath/pipelines/<parent_pipeline_id>/bridges?per_page=100"
+glab api "projects/:fullpath/pipelines/<child_pipeline_id>"
+```
+
+Treat the full CI status as the aggregate of the parent pipeline plus all child pipelines:
+
+- If any parent or child pipeline is `running`, `pending`, `created`, or `waiting_for_resource`, CI is still in progress.
+- If any parent or child pipeline is `failed`, `canceled`, or `skipped`, inspect that pipeline before reporting success.
+- Only report CI as green when the parent pipeline and every child pipeline are `success`.
+
+If using MCP and there is no dedicated child-pipeline helper, use the GitLab API endpoint above through `glab api` or the available generic API tool.
+
 ## Step 2: Get Failed Jobs
 
 **GitHub:**
@@ -50,10 +65,12 @@ gh run view <run-id> --log-failed
 glab api "projects/:fullpath/pipelines/<pipeline_id>/jobs?scope=failed"
 ```
 
-**GitLab (MCP fallback):**
-Use `mcp__gitlab__list_pipeline_jobs` with `scope: failed`
+Run this for the parent pipeline and for every discovered child pipeline. Keep the source pipeline ID with each failed job so the analysis and commit message identify whether the failure came from the parent or a child pipeline.
 
-If no failed jobs found, inform the user that all jobs passed and exit.
+**GitLab (MCP fallback):**
+Use `mcp__gitlab__list_pipeline_jobs` with `scope: failed` for the parent pipeline and each child pipeline.
+
+If no failed jobs are found but any parent or child pipeline is still running or pending, inform the user that CI is still in progress and exit. If no failed jobs are found and all parent and child pipelines succeeded, inform the user that all jobs passed and exit.
 
 ## Step 3: Analyze Each Failed Job
 
@@ -90,9 +107,12 @@ Extract:
 
 ### Pipeline/Workflow #<id> | Branch: `<branch-name>`
 
+Parent pipeline: `<parent_pipeline_id>`
+Child pipelines checked: `<child_pipeline_id_1>, <child_pipeline_id_2>, ...` or `none`
+
 ### Summary Table
-| Job | Stage | Failure Type | Files Affected |
-|-----|-------|--------------|----------------|
+| Pipeline | Job | Stage | Failure Type | Files Affected |
+|----------|-----|-------|--------------|----------------|
 | ... | ... | ... | ... |
 
 ### Detailed Analysis

@@ -38,6 +38,16 @@ Ask the user about branch preference:
 
 Current branch: `{{ git.currentBranch }}`
 
+### Issue-Key Requirement: Repository Context
+
+Before requiring or adding a Jira or other issue key, classify the repository from verifiable context rather than its hosting platform alone:
+
+- **Organization/work repository:** If the remote organization, repository documentation, or established branch/MR/CI conventions require an issue key, follow that policy.
+- **Personal repository:** If the user identifies the project as personal, or the remote belongs to their personal GitHub or personal GitLab namespace and there is no work-related evidence, **do not ask for, look up, or invent a Jira key**. Follow the repository's own convention; if none exists, use a clear conventional prefix such as `chore`, `fix`, or `feat`.
+- **Unclear ownership:** Inspect the remote namespace and checked-in contribution/CI conventions. Ask one concise question only if the evidence still does not resolve the context.
+
+Never infer that a Jira key is required merely because the host is GitLab. For a conventional personal-project branch, use a slash form such as `chore/update-skills`; for commit and MR/PR titles, use the repository's conventional form such as `chore(skills): update installed skills`.
+
 ## Step 2: Check for Existing MR/PR
 
 Before creating a new MR/PR, check if one already exists:
@@ -72,13 +82,33 @@ git diff origin/${DEFAULT_BRANCH}...HEAD
 git log origin/${DEFAULT_BRANCH}..HEAD --oneline
 ```
 
-## Step 4: Generate Title and Description
+## Step 4: Discover Title Policy and Generate Title
+
+Before choosing a title format, inspect the repository's checked-in MR/PR and release conventions. Search CI configuration, contributor documentation, and changelog/version tooling for title validators or semantic-version prefixes. Treat an anchored CI rule as authoritative over branch-name heuristics.
+
+### Release/Semver-Prefixed Repositories
+
+When a repository requires a leading release prefix, put it first. This order is machine-readable, not cosmetic: CI may validate the first token, derive the next semantic version, and classify generated changelog entries from it.
+
+| Change impact | Leading prefix |
+|--------------|----------------|
+| Backward-compatible fix or maintenance | `PATCH:` |
+| Backward-compatible feature | `MINOR:` or `FEATURE:` |
+| Incompatible change | `MAJOR:` or `BREAKING:` |
+
+Keep a required issue key immediately after the release prefix for traceability:
+
+```text
+FEATURE: TICKET-123 - Add feature description
+```
+
+Before creating the MR/PR, validate the proposed title against the repository's actual rule. If correcting an existing title after a validation failure, update it and retry the failed validation job or pipeline; changing MR/PR metadata alone may not trigger a new CI run.
 
 ### Title Format
 
-Auto-detect title style from the branch name:
+If the repository has no explicit title policy, auto-detect the title style from the branch name:
 
-- **Ticket-prefixed branches** (e.g., `CWS-2838-add-feature`): `CWS-2838 - Add feature description`
+- **Ticket-prefixed branches** (e.g., `APP-123-add-feature`): `APP-123 - Add feature description`
 - **Conventional branches** (e.g., `feature/add-auth`, `fix/login-bug`): `feat: Add auth` / `fix: Resolve login bug`
 - **Other branches**: Use a concise descriptive title
 
@@ -141,10 +171,11 @@ EOF
 
 **GitLab (glab - preferred):**
 ```bash
+MR_TITLE="chore(skills): update installed skills"
 glab mr create \
   --source-branch "$(git branch --show-current)" \
   --target-branch "$DEFAULT_BRANCH" \
-  --title "[BRANCH-PREFIX] - Description" \
+  --title "$MR_TITLE" \
   --remove-source-branch \
   --description "$(cat <<'EOF'
 ## Summary
