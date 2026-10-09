@@ -133,21 +133,27 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 For each applied fix, reply to the thread and resolve it.
 
+**Review reply signature:** End every MR/PR review reply with `*By AI*` on its own line.
+
 **GitHub:**
 ```bash
-gh api repos/{owner}/{repo}/pulls/{number}/comments/{id}/replies -f body="Fixed in commit <sha>. <brief description>"
+gh api repos/{owner}/{repo}/pulls/{number}/comments/{id}/replies -f body="Fixed in commit <sha>. <brief description>
+
+*By AI*"
 ```
 
 **GitLab (glab - preferred):**
 ```bash
-glab api --method POST "projects/:fullpath/merge_requests/<iid>/discussions/<discussion_id>/notes" --raw-field "body=Fixed in commit <sha>. <brief description>"
+glab api --method POST "projects/:fullpath/merge_requests/<iid>/discussions/<discussion_id>/notes" --raw-field "body=Fixed in commit <sha>. <brief description>
+
+*By AI*"
 glab api --method PUT "projects/:fullpath/merge_requests/<iid>/discussions/<discussion_id>?resolved=true"
 ```
 
 **GitLab (MCP fallback):**
 Use `mcp__gitlab__reply_to_thread` with:
 - `discussion_id`: from step 2
-- `body`: "Fixed in commit `<sha>`. <brief description>"
+- `body`: "Fixed in commit `<sha>`. <brief description>\n\n*By AI*"
 - `resolve_thread`: `true`
 
 ## Step 10: Push
