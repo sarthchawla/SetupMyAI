@@ -62,3 +62,16 @@ test('changed explanations cannot reuse positive adjudications after rehashing o
   report.resultsHash=evaluationResultsHash(report);
   assert.match(validatePromotionEvidence(report).reasons.join(' '),/adjudication is not bound/);
 });
+
+test('recorded runtime metadata cannot contradict hashed raw model responses', async () => {
+  for(const judging of [false,true]) {
+    const report=await promotionFixture();
+    for(const row of report.cases)for(const arm of ['baseline','candidate']) {
+      const execution=judging?row[arm].adjudication.execution:row[arm].execution;
+      if(execution)execution.observedModel.version='different-version';
+    }
+    report.resultsHash=evaluationResultsHash(report);
+    assert.equal(validatePromotionEvidence(report).eligible,false);
+    assert.match(validatePromotionEvidence(report).reasons.join(' '),/response does not bind/);
+  }
+});

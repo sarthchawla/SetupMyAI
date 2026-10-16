@@ -308,14 +308,14 @@ export function validatePromotionEvidence(report) {
     insist(Number.isFinite(Date.parse(report.evaluatedAt)) && Date.parse(report.coverage?.holdout?.frozenAt) <= Date.parse(report.evaluatedAt), 'Holdout must be frozen before execution');
     insist(nonempty(report.runtime.judgeModel) && report.runtime.judgeModel !== 'configured-default' && nonempty(report.runtime.judgeReasoningEffort), 'Pinned semantic judge model/settings required');
     insist(report.coverage?.wholeMr && report.coverage.defectGroupDisjoint && report.coverage.mrDisjoint && report.coverage.chronologicallyDisjoint && report.coverage.holdout?.independentFromGuidance, 'Independent whole-MR and defect-group holdout required');
-    insist(report.evidenceKind === 'real', 'Synthetic fixtures validate the harness only; they cannot establish real review quality');
+    if (report.evidenceKind !== 'real') reasons.push('Synthetic fixtures validate the harness only; they cannot establish real review quality');
     insist(Array.isArray(report.cases) && report.cases.length > 0, 'Case outcomes required');
     const identities = new Set(), judgeIdentities = new Set();
     const originals = new Map(suite.cases.map(item => [item.id, item]));
     for (const item of report.cases) for (const arm of ['baseline', 'candidate']) {
       const output = item[arm], execution = output?.execution;
       insist(execution?.succeeded && /^[a-f0-9]{64}$/.test(execution.requestHash) && /^[a-f0-9]{64}$/.test(execution.responseHash), 'Successful bound case execution required');
-      insist(nonempty(execution.responseText) && sha256(execution.responseText) === execution.responseHash && JSON.stringify(JSON.parse(execution.responseText).findings) === JSON.stringify(output.findings), 'Reviewer response does not bind emitted explanations');
+      insist(nonempty(execution.responseText) && sha256(execution.responseText) === execution.responseHash && JSON.stringify(JSON.parse(execution.responseText).findings) === JSON.stringify(output.findings) && JSON.stringify(JSON.parse(execution.responseText).model) === JSON.stringify(execution.observedModel), 'Reviewer response does not bind emitted explanations');
       const model = execution.observedModel;
       insist(nonempty(model?.runtime) && /^[a-f0-9]{64}$/.test(model?.binaryHash) && model?.name === report.runtime.declaredModel && nonempty(model.version) && model.effectiveReasoningEffort === report.runtime.reasoningEffort && model.binaryHash === report.runtime.runtimeBinaryHash && model.binaryPath === report.runtime.runtimeCommand, 'Observed runtime differs from pinned model/settings');
       identities.add(observedIdentity(model));
@@ -326,7 +326,7 @@ export function validatePromotionEvidence(report) {
       if (output.findings.length) {
         const judge = output.adjudication.execution;
         insist(judge?.requestHash === sha256(JSON.stringify(adjudicationRequest(originals.get(item.id), output.findings))), 'Semantic adjudication is not bound to these finding explanations');
-        insist(nonempty(judge.responseText) && sha256(judge.responseText) === judge.responseHash && JSON.stringify(JSON.parse(judge.responseText).judgments) === JSON.stringify(output.adjudication.judgments), 'Judge response does not bind semantic decisions');
+        insist(nonempty(judge.responseText) && sha256(judge.responseText) === judge.responseHash && JSON.stringify(JSON.parse(judge.responseText).judgments) === JSON.stringify(output.adjudication.judgments) && JSON.stringify(JSON.parse(judge.responseText).model) === JSON.stringify(judge.observedModel), 'Judge response does not bind semantic decisions');
         insist(judge?.succeeded && /^[a-f0-9]{64}$/.test(judge.requestHash) && /^[a-f0-9]{64}$/.test(judge.responseHash) && nonempty(judge.observedModel?.version) && /^[a-f0-9]{64}$/.test(judge.observedModel?.binaryHash) && nonempty(judge.observedModel?.runtime) && judge.observedModel?.name === report.runtime.judgeModel && judge.observedModel?.effectiveReasoningEffort === report.runtime.judgeReasoningEffort && judge.observedModel?.binaryHash === report.runtime.judgeRuntimeBinaryHash && judge.observedModel?.binaryPath === report.runtime.judgeRuntimeCommand, 'Bound semantic judge runtime required');
         judgeIdentities.add(observedIdentity(judge.observedModel));
       }
