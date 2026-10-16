@@ -14,6 +14,11 @@ Use this skill whenever the user asks to review frontend code (especially `.tsx`
 Stick to the checklist below for every applicable file and mode.
 
 ## Checklist
+Load `review-adjudication` to verify claims and counterevidence before suggesting or applying fixes; keep this review read-only unless edits are authorized.
+
+When changed tests claim reset behavior, supplied-prop effects, scrolling, or absence of an asynchronous request, read [scenario reachability](references/scenario-reachability.md).
+
+When a reusable package's published peer contract or packaging transform changes, read [published peer contracts](references/published-peer-contract.md).
 See [references/code-quality.md](references/code-quality.md), [references/performance.md](references/performance.md), [references/business-logic.md](references/business-logic.md) for the living checklist split by category -- treat it as the canonical set of rules to follow.
 
 Flag each rule violation with urgency metadata so future reviewers can prioritize fixes.
