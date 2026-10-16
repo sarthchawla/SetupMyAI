@@ -4,6 +4,8 @@ description: Monitor MR/PR - fix review comments and CI failures in a loop until
 
 Monitor the current branch's MR/PR until CI is green and there are no unresolved review comments. Automatically fix issues as they appear.
 
+Load `review-adjudication` before judging findings and reuse its evidence gate and local ledger for every loop. If unavailable, report that prerequisite before applying findings. Existing authorization and repository instructions govern commits, replies and resolutions.
+
 ## Step 0: Detect Platform
 
 ```bash
@@ -64,13 +66,14 @@ For each unresolved comment:
    | # | File:Line | Author | Comment Summary |
    |---|-----------|--------|-----------------|
 
-2. **Read** the affected file and analyze what change is requested.
+2. **Adjudicate** each claim/remedy through `review-adjudication`; inspect callers and counterevidence at the current revision, split mixed remedies, and retain stable IDs and judgments.
 
-3. **Propose** the fix as a diff and apply it (auto-apply without asking -- this is autonomous mode).
+3. **Apply** only evidenced, authorized `FIX` remedies. Prepare `DEFEND` evidence without code churn, discard duplicates with links, and investigate `CLARIFY` before editing that claim. Existing local-edit authorization does not require a new checkpoint for an obvious verified fix.
 
 4. **Validate** after all fixes:
    - Auto-detect build/lint/test commands from the project
    - Run relevant validation
+   - Reinspect final retained corrections and record per-remedy outcomes in the shared ledger; failed checks do not count as `FIXED`.
 
 5. **Commit** with format:
    ```
@@ -84,7 +87,7 @@ For each unresolved comment:
 
 6. **Push**: `git push`
 
-7. **Reply** to each comment thread and resolve it. End each reply with `*By AI*` on its own line.
+7. **Reply/resolve** only within authorization and any human-reply restrictions. Cite the validated published revision or verified defense; settle every child remedy before resolving a mixed thread. Keep `CLARIFY` open. End each reply with `*By AI*` on its own line.
 
 ### If no unresolved comments:
 
@@ -160,6 +163,7 @@ Next action: <what will happen next iteration or "All clear - ready to merge">
 This command is designed to run in a loop. Key principles:
 
 - **Auto-fix without asking** for straightforward changes (lint fixes, reviewer suggestions, simple type fixes)
+- Apply that autonomy only to verified `FIX` judgments; unresolved `CLARIFY` blocks readiness and `DEFEND` remains a disclosed comment risk, not a defect. Include the ledger path and final per-remedy outcomes in each material status report.
 - **Ask for approval** only if a fix is ambiguous, risky, or changes business logic
 - **Always validate** before committing (build + relevant tests)
 - **Report status** concisely each iteration -- don't repeat context from previous runs
