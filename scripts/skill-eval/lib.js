@@ -201,7 +201,7 @@ export function matchFindings(expected, actual, judgments = []) {
     if (expectedIndex === null || !judgment.defect || !judgment.scope || !judgment.remedy) continue;
     const finding = actual[actualIndex], label = expected[expectedIndex];
     // Rule and target alignment constrain a semantic match; they never establish it.
-    if (assigned.has(expectedIndex) || label.ruleId !== finding.ruleId || label.file !== finding.file || label.lineStart !== undefined && !(finding.line >= label.lineStart && finding.line <= label.lineEnd)) continue;
+    if (assigned.has(expectedIndex) || label.ruleId !== finding.ruleId || label.file !== finding.file) continue;
     assigned.add(expectedIndex); matches.push({ expectedIndex, actualIndex, finding });
   }
   if (judgments.length) insist(seen.size === actual.length, 'Every emitted finding requires semantic adjudication');
@@ -212,13 +212,14 @@ export function matchFindings(expected, actual, judgments = []) {
 }
 
 export function metrics(items, variant) {
-  let expected = 0; let tp = 0; let fp = 0; let fn = 0; let flaggedNegativeCases = 0; let negativeCases = 0;
+  let expected = 0; let tp = 0; let fp = 0; let fn = 0; let flaggedNegativeCases = 0; let negativeCases = 0; let validAdjacentFindings = 0;
   for (const item of items) {
     expected += item.expectedFindings.length;
+    validAdjacentFindings += (item[variant].adjudication?.judgments ?? []).filter(judgment => judgment.expectedIndex === null && judgment.defect && judgment.scope && judgment.remedy).length;
     tp += item[variant].matching.truePositives; fp += item[variant].matching.falsePositives; fn += item[variant].matching.falseNegatives;
     if (!item.expectedFindings.length) { negativeCases++; if (item[variant].findings.length) flaggedNegativeCases++; }
   }
-  return { cases: items.length, expectedFindings: expected, truePositives: tp, falsePositives: fp, falseNegatives: fn, recall: expected ? tp / expected : null, precision: tp + fp ? tp / (tp + fp) : null, negativeCases, flaggedNegativeCases, negativeCaseFalsePositiveRate: negativeCases ? flaggedNegativeCases / negativeCases : null };
+  return { cases: items.length, validAdjacentFindings, expectedFindings: expected, truePositives: tp, falsePositives: fp, falseNegatives: fn, recall: expected ? tp / expected : null, precision: tp + fp ? tp / (tp + fp) : null, negativeCases, flaggedNegativeCases, negativeCaseFalsePositiveRate: negativeCases ? flaggedNegativeCases / negativeCases : null };
 }
 
 export function adapterRequest(skill, item, rules) {
@@ -282,7 +283,7 @@ export function evaluationBindingHash(report) {
   return sha256(JSON.stringify({ baselineHash: report.baselineHash, candidateHash: report.candidateHash, guidance: report.guidance, suiteHash: report.suiteHash, adapterHash: report.adapterHash, judgeHash: report.judgeHash, policy: report.policy, coverage: report.coverage, grading: report.grading, runtime: report.runtime }));
 }
 
-export const adjudicationRequest = (item, findings) => ({ version: 1, task: 'adjudicate_findings', code: item.code, context: item.context, reviewContext: item.reviewContext ?? null, expectedFindings: item.expectedFindings, findings });
+export const adjudicationRequest = (item, findings, rules = []) => ({ version: 1, task: 'adjudicate_findings', code: item.code, context: item.context, reviewContext: item.reviewContext ?? null, ruleScopes: rules.map(({ id, description }) => ({ id, description })), expectedFindings: item.expectedFindings, findings });
 
 const observedIdentity = model => model && JSON.stringify([model.name, model.runtime, model.version, model.effectiveReasoningEffort, model.binaryHash]);
 
@@ -291,9 +292,10 @@ export function validatePromotionEvidence(report) {
   const reasons = [];
   try {
     insist(report?.status === 'complete' && report.behavioralExecuted === true, 'Complete successful behavioral execution required');
-    insist(report.grading?.version === 2 && report.grading.method === 'semantic-adjudication', 'Semantic grading v2 required; regenerate older reports');
+    insist(report.grading?.version === 3 && report.grading.method === 'semantic-adjudication', 'Semantic grading v3 required; regenerate older reports');
     insist(report.policy?.version === 2 && report.policy.declaredBeforeExecution === true, 'Predeclared promotion policy required');
     const limits = validateThresholds(report.policy.thresholds);
+    if (report.grading.posthoc) reasons.push('Posthoc grading repair requires prospective confirmation; it is not promotion evidence');
     insist(nonempty(report.suiteText) && sha256(report.suiteText) === report.suiteHash, 'Exact suite/oracle binding required');
     const suite = JSON.parse(report.suiteText);
     insist(suite.evidenceKind === report.evidenceKind && JSON.stringify(validateSuite(suite)) === JSON.stringify(report.coverage), 'Case coverage differs from bound suite');
@@ -319,13 +321,16 @@ export function validatePromotionEvidence(report) {
       const model = execution.observedModel;
       insist(nonempty(model?.runtime) && /^[a-f0-9]{64}$/.test(model?.binaryHash) && model?.name === report.runtime.declaredModel && nonempty(model.version) && model.effectiveReasoningEffort === report.runtime.reasoningEffort && model.binaryHash === report.runtime.runtimeBinaryHash && model.binaryPath === report.runtime.runtimeCommand, 'Observed runtime differs from pinned model/settings');
       identities.add(observedIdentity(model));
+      const original = originals.get(item.id);
+      const files = new Map([original.code, ...(original.reviewContext?.files ?? [])].map(file => [file.file, file.content]));
+      insist(output.findings.every(finding => typeof files.get(finding.file) === 'string' && finding.line <= files.get(finding.file).split('\n').length), 'Finding location is outside supplied code');
       insist(Array.isArray(output.findings) && output.findings.every(finding => nonempty(finding.ruleId) && suite.rules.some(rule => rule.id === finding.ruleId) && nonempty(finding.file) && Number.isInteger(finding.line) && finding.line > 0 && nonempty(finding.message)), 'Invalid stored finding schema');
       insist(output.adjudication?.judgments?.length === output.findings.length, 'Every finding requires semantic adjudication');
       const matching = matchFindings(item.expectedFindings, output.findings, output.adjudication.judgments);
       insist(JSON.stringify(matching) === JSON.stringify(output.matching), 'Stored semantic matching differs from adjudication');
       if (output.findings.length) {
         const judge = output.adjudication.execution;
-        insist(judge?.requestHash === sha256(JSON.stringify(adjudicationRequest(originals.get(item.id), output.findings))), 'Semantic adjudication is not bound to these finding explanations');
+        insist(judge?.requestHash === sha256(JSON.stringify(adjudicationRequest(originals.get(item.id), output.findings, suite.rules))), 'Semantic adjudication is not bound to these finding explanations');
         insist(nonempty(judge.responseText) && sha256(judge.responseText) === judge.responseHash && JSON.stringify(JSON.parse(judge.responseText).judgments) === JSON.stringify(output.adjudication.judgments) && JSON.stringify(JSON.parse(judge.responseText).model) === JSON.stringify(judge.observedModel), 'Judge response does not bind semantic decisions');
         insist(judge?.succeeded && /^[a-f0-9]{64}$/.test(judge.requestHash) && /^[a-f0-9]{64}$/.test(judge.responseHash) && nonempty(judge.observedModel?.version) && /^[a-f0-9]{64}$/.test(judge.observedModel?.binaryHash) && nonempty(judge.observedModel?.runtime) && judge.observedModel?.name === report.runtime.judgeModel && judge.observedModel?.effectiveReasoningEffort === report.runtime.judgeReasoningEffort && judge.observedModel?.binaryHash === report.runtime.judgeRuntimeBinaryHash && judge.observedModel?.binaryPath === report.runtime.judgeRuntimeCommand, 'Bound semantic judge runtime required');
         judgeIdentities.add(observedIdentity(judge.observedModel));
@@ -337,6 +342,7 @@ export function validatePromotionEvidence(report) {
       const actual = Object.fromEntries(['baseline', 'candidate'].map(arm => [arm, metrics(rows, arm)]));
       insist(JSON.stringify(actual) === JSON.stringify(report.metrics?.[split]), 'Stored metrics differ from semantic outcomes');
       insist(actual.baseline.expectedFindings > 0, 'Positive regression coverage required in each split');
+      if (actual.baseline.validAdjacentFindings || actual.candidate.validAdjacentFindings) reasons.push(`Frozen ${split} oracle omits validated adjacent defects; useful baseline coverage cannot be certified`);
       if (actual.candidate.recall < actual.baseline.recall) reasons.push(`Candidate loses ${split} finding recall relative to baseline`);
       if (actual.candidate.falsePositives > actual.baseline.falsePositives) reasons.push(`Candidate increases ${split} false positives relative to baseline`);
       // Preserve each useful baseline target; aggregate recall can hide swapped regressions.
@@ -355,7 +361,7 @@ export function validatePromotionEvidence(report) {
   return { eligible: reasons.length === 0, reasons };
 }
 
-async function loadAdapter(adapterPath) {
+export async function loadAdapter(adapterPath) {
   const text = await readFile(adapterPath, 'utf8'), config = JSON.parse(text), cwd = path.dirname(path.resolve(adapterPath));
   insist(nonempty(config.command) && (!config.args || Array.isArray(config.args) && config.args.every(arg => typeof arg === 'string')), 'Adapter requires command and string-array args (no shell)');
   insist(['smoke', 'model'].includes(config.mode), 'Adapter mode must be smoke or model');
@@ -390,7 +396,7 @@ export async function runEvaluation({ casesPath, baselineSkill, candidateSkill, 
     report.evidenceKind = suite.evidenceKind; report.coverage = validateSuite(suite);
     report.runtime = { ...report.runtime, adapterMode: config.mode, declaredModel: config.model ?? null, reasoningEffort: config.reasoningEffort ?? null, runtimeCommand: config.runtimeCommand ?? null, runtimeBinaryHash: config.runtimeBinaryHash ?? null, command: config.command, args: config.args ?? [], adapterFiles: adapter.files, judgeMode: judge?.config.mode ?? null, judgeModel: judge?.config.model ?? null, judgeReasoningEffort: judge?.config.reasoningEffort ?? null, judgeRuntimeCommand: judge?.config.runtimeCommand ?? null, judgeRuntimeBinaryHash: judge?.config.runtimeBinaryHash ?? null, judgeFiles: judge?.files ?? [] };
     report.adapterHash = adapter.hash; report.judgeHash = judge?.hash ?? sha256('no-semantic-judge');
-    report.grading = { version: 2, method: 'semantic-adjudication', judgeConfigured: !!judge };
+    report.grading = { version: 3, method: 'semantic-adjudication', judgeConfigured: !!judge };
     report.bindingHash = evaluationBindingHash(report);
     report.status = 'execution_failed';
     for (const [index, item] of suite.cases.entries()) {
@@ -405,7 +411,7 @@ export async function runEvaluation({ casesPath, baselineSkill, candidateSkill, 
           const findings = output[variant].findings;
           let adjudication = { judgments: [], execution: null };
           if (findings.length && judge) {
-            const request = adjudicationRequest(item, findings);
+            const request = adjudicationRequest(item, findings, suite.rules);
             await assertAdapterUnchanged(judge);
             adjudication = await executeAdapter(judge.config, request, judge.cwd);
             await assertAdapterUnchanged(judge);
