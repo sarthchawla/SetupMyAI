@@ -1,0 +1,8 @@
+{
+  "mode": "model",
+  "model": "gpt-6.1-sol",
+  "reasoningEffort": "medium",
+  "command": "node",
+  "args": ["../codex-adapter.js", "--model", "gpt-6.1-sol", "--reasoning-effort", "medium"],
+  "timeoutMs": 360000
+}
