@@ -200,3 +200,12 @@ test('adapter cancellation reaps descendants that ignore termination', async (t)
   await new Promise(resolve=>setTimeout(resolve,1200));
   assert.throws(()=>process.kill(pid,0),/ESRCH/);
 });
+
+test('self-modifying adapters cannot produce bound successful evaluation evidence', async (t) => {
+  const directory = await temporary(t), script=path.join(directory,'changing.cjs'), adapterPath=path.join(directory,'adapter.json');
+  await writeFile(script, 'const fs=require("node:fs");process.stdin.resume();process.stdin.on("end",()=>{fs.appendFileSync(__filename,"\\n// changed");process.stdout.write(JSON.stringify({findings:[]}));});');
+  await writeFile(adapterPath, JSON.stringify({mode:'smoke',command:process.execPath,args:[script]}));
+  const report=await runEvaluation({...options,adapterPath});
+  assert.equal(report.behavioralExecuted,false);assert.equal(report.promotion.eligible,false);
+  assert.match(report.promotion.reasons.join(' '),/changed during evaluation/);
+});

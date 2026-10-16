@@ -9,15 +9,15 @@ import { pathToFileURL } from 'node:url';
 
 const supportedEfforts = ['none', 'minimal', 'low', 'medium', 'high', 'xhigh'];
 const modelPattern = /^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,127}$/;
-const usage = `Usage: codex-adapter.js --model MODEL --reasoning-effort ${supportedEfforts.join('|')}`;
+const usage = `Usage: codex-adapter.js --model MODEL --reasoning-effort ${supportedEfforts.join('|')} [--codex-command ABSOLUTE_PATH]`;
 export function parseAdapterOptions(args) {
   const options = {};
   for (let i = 0; i < args.length; i += 2) {
-    const key = { '--model': 'model', '--reasoning-effort': 'reasoningEffort' }[args[i]];
+    const key = { '--model': 'model', '--reasoning-effort': 'reasoningEffort', '--codex-command': 'command' }[args[i]];
     if (!key || options[key] !== undefined || !args[i + 1]) throw new Error(usage);
     options[key] = args[i + 1];
   }
-  if (!modelPattern.test(options.model ?? '') || !supportedEfforts.includes(options.reasoningEffort)) throw new Error(usage);
+  if (!modelPattern.test(options.model ?? '') || !supportedEfforts.includes(options.reasoningEffort) || (options.command !== undefined && !path.isAbsolute(options.command))) throw new Error(usage);
   return options;
 }
 

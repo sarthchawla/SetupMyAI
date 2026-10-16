@@ -10,10 +10,10 @@ import { parseAdapterOptions, reviewWithCodex } from './codex-adapter.js';
 
 const pins = { model: 'test-model', reasoningEffort: 'medium' };
 const review = { allowedRules: [{ id: 'test' }], code: { file: 'test.js', content: 'return value;' }, context: '', skill: {} };
-async function fakeCodex(t, { result = { findings: [] }, observedModel = 'test-model', effort = 'medium', version = '0.test', retainsSkills = false, invalidPrompt = false, aliasedSkills = false, wait = false } = {}) {
+async function fakeCodex(t, { result = { findings: [] }, observedModel = 'test-model', effort = 'medium', version = '0.test', retainsSkills = false, invalidPrompt = false, aliasedSkills = false, wait = false, commandName = 'codex' } = {}) {
   const directory = await mkdtemp(path.join(tmpdir(), 'codex-adapter-test-'));
   t.after(() => rm(directory, { recursive: true, force: true }));
-  const command = path.join(directory, 'codex'); const record = path.join(directory, 'record.json');
+  const command = path.join(directory, commandName); const record = path.join(directory, 'record.json');
   const skillCatalog = aliasedSkills ? '### Skill roots\n- `r0` = `/global/skills`\n### Available skills\n- sample (file: r0/sample/SKILL.md)' : '### Available skills\n- sample (file: /global/skills/sample/SKILL.md)';
   const source = `#!${process.execPath}
 const fs=require('node:fs');const path=require('node:path');const args=process.argv.slice(2);
@@ -37,6 +37,17 @@ test('explicit model and effort are required and parsed literally', async () => 
   for (const args of [[], ['--model', 'x'], ['--reasoning-effort', 'medium'], ['--model', 'x', '--reasoning-effort', 'ultra'], ['--model', 'x;touch /tmp/no', '--reasoning-effort', 'medium'], ['--model', 'x', '--reasoning-effort', 'medium', '--model', 'y'], ['--unknown', 'x']]) assert.throws(() => parseAdapterOptions(args), /Usage/);
   await assert.rejects(reviewWithCodex(review, { model: 'x', reasoningEffort: 'ultra' }), /Unsupported explicit/);
   await assert.rejects(reviewWithCodex(review, { reasoningEffort: 'medium' }), /model pin/);
+});
+
+test('explicit absolute Codex command overrides environment and is executed without a shell', async (t) => {
+  const fake = await fakeCodex(t, { commandName: 'codex with spaces; $(false)' });
+  const args = ['--model', pins.model, '--reasoning-effort', pins.reasoningEffort];
+  const options = parseAdapterOptions([...args, '--codex-command', fake.command]);
+  assert.equal(options.command, fake.command);
+  const response = await reviewWithCodex(review, { ...options, authHome: fake.authHome });
+  assert.equal(response.model.binaryPath, await realpath(fake.command));
+  for (const commandArgs of [['--codex-command', 'relative/codex'], ['--codex-command', ''], ['--codex-command'], ['--codex-command', fake.command, '--codex-command', fake.command]]) assert.throws(() => parseAdapterOptions([...args, ...commandArgs]), /Usage/);
+  await assert.rejects(reviewWithCodex(review, { ...parseAdapterOptions([...args, '--codex-command', path.join(fake.authHome, 'missing')]), authHome: fake.authHome }), /Codex unavailable/);
 });
 
 test('isolated runtime records pins and confirmed identity and removes its auth workspace', async (t) => {

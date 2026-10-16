@@ -21,6 +21,8 @@ Smoke fixtures exercise wiring only and always remain ineligible for promotion. 
 
 Adapter JSON: `{command, args: string[], mode: "model" | "smoke", model, reasoningEffort, timeoutMs?, maxOutputBytes?}`. Commands use `spawn` without a shell; relative script arguments resolve from the configuration directory. Pin the same settings for both arms. Before a promotable run, also set `runtimeCommand` to the resolved Codex executable path and `runtimeBinaryHash` to its SHA256 in each adapter config. Execution checks the observed path/hash against those predeclared values. The portable sample omits machine-specific binary pins and therefore cannot promote until configured. Use `--adapter adapter.json --judge-adapter judge.json`; the reviewer and judge may use separate pinned configurations.
 
+Use optional `--codex-command /absolute/path/to/codex` in adapter args to select the same compatible binary from Cursor and Codex without relying on either process PATH.
+
 The CLI writes private reports atomically. Exit zero means execution completed; inspect the promotion gate separately. A failed execution retains partial findings and never becomes a clean review.
 
 ## Cases and holdouts
@@ -72,7 +74,7 @@ Without a semantic judge, execution can complete but emitted findings earn no TP
 
 Thresholds freeze before the first execution. Defaults: heldout recall 1, recall gain at least 0.05, at least one additional heldout TP, zero false positives in both splits, and no loss of any individual useful baseline target. `--policy thresholds.json` can predeclare alternative positive gain/FP thresholds; zero gain and unknown options are rejected. A tie cannot establish improvement.
 
-Reports retain exact suite/oracle bytes and their hash, full baseline/candidate tree hashes, selected guidance hashes, adapter/judge executable and script hashes, observed per-case runtimes, the frozen policy, semantic decisions, metrics and result hashes. `validatePromotionEvidence(report)` recomputes suite coverage, matching, metrics, nonregression and gain; reconciliation calls the same gate. Old reports, missing controls, relabeled outcomes, unbound edits, drifted settings and fabricated eligibility flags fail closed. Hashes bind saved evidence, not the honesty of a trusted adapter or adjudicator.
+Reports retain exact suite/oracle bytes and their hash, full baseline/candidate tree hashes, selected guidance hashes, adapter/judge executable and script hashes, observed per-case runtimes, the frozen policy, semantic decisions, metrics and result hashes. `validatePromotionEvidence(report)` recomputes suite coverage, matching, metrics, nonregression and gain; reconciliation calls the same gate. Old reports, missing controls, relabeled outcomes, unbound edits, an adapter changed during execution, drifted settings and fabricated eligibility flags fail closed. Hashes bind saved evidence, not the honesty of a trusted adapter or adjudicator.
 
 Guidance allowlists remain mandatory when skill packages contain evals/results/oracles. `--guidance-manifest manifest.json` accepts exactly `{version:1, baselineFiles:["SKILL.md",...], candidateFiles:["SKILL.md",...]}`. Safe relative paths, complete selected-file hashes, no symlinks and no evaluation artifacts are required. Full tree hashes still include auxiliary files. Keep reports outside evaluated directories. Renaming/disguising natural-language answers cannot be ruled out automatically; audit selections.
 

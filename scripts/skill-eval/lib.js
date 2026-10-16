@@ -372,6 +372,10 @@ async function loadAdapter(adapterPath) {
   return { config, cwd, files, hash: sha256(text + '\n' + JSON.stringify(files)) };
 }
 
+async function assertAdapterUnchanged(adapter) {
+  for (const file of adapter.files) insist(sha256(await readFile(file.path)) === file.hash, `Adapter executable/script changed during evaluation: ${file.path}`);
+}
+
 export async function runEvaluation({ casesPath, baselineSkill, candidateSkill, adapterPath, judgeAdapterPath, guidanceManifestPath, thresholds = {} }) {
   const report = { version: 1, evaluatedAt: new Date().toISOString(), status: 'invalid_input', behavioralExecuted: false, candidateHash: null, baselineHash: null, cases: [], promotion: { eligible: false, reasons: [] }, runtime: { node: process.version, platform: process.platform } };
   try {
@@ -395,12 +399,16 @@ export async function runEvaluation({ casesPath, baselineSkill, candidateSkill, 
       // Alternate order to reduce a systematic first-arm effect; fresh process per case.
       for (const variant of index % 2 ? ['candidate', 'baseline'] : ['baseline', 'candidate']) {
         try {
+          await assertAdapterUnchanged(adapter);
           output[variant] = await executeAdapter(config, adapterRequest(guidance[variant], item, suite.rules.map(({ id }) => ({ id }))), adapter.cwd);
+          await assertAdapterUnchanged(adapter);
           const findings = output[variant].findings;
           let adjudication = { judgments: [], execution: null };
           if (findings.length && judge) {
             const request = adjudicationRequest(item, findings);
+            await assertAdapterUnchanged(judge);
             adjudication = await executeAdapter(judge.config, request, judge.cwd);
+            await assertAdapterUnchanged(judge);
             insist(adjudication.judgments.length === findings.length, 'Every emitted finding requires semantic adjudication');
           }
           output[variant].adjudication = adjudication;
@@ -408,6 +416,8 @@ export async function runEvaluation({ casesPath, baselineSkill, candidateSkill, 
         } catch (error) { output[variant] = { ...output[variant], failure: error.message, execution: { ...output[variant]?.execution, succeeded: false, error: error.message } }; throw new Error(`${item.id}/${variant}: ${error.message}`); }
       }
     }
+    await assertAdapterUnchanged(adapter);
+    if (judge) await assertAdapterUnchanged(judge);
     report.behavioralExecuted = true; report.status = 'complete';
     report.metrics = Object.fromEntries(splits.map(split => [split, Object.fromEntries(['baseline', 'candidate'].map(variant => [variant, metrics(report.cases.filter(item => item.split === split), variant)]))]));
     report.resultsHash = evaluationResultsHash(report);
