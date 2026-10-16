@@ -1,0 +1,240 @@
+{
+  "version": 1,
+  "evidenceKind": "synthetic",
+  "rules": [
+    {
+      "id": "nullable-collection",
+      "description": "Nullable collection access without a guard"
+    }
+  ],
+  "cases": [
+    {
+      "id": "development-offending",
+      "split": "development",
+      "kind": "offending",
+      "ruleIds": [
+        "nullable-collection"
+      ],
+      "pairId": "development-nullable",
+      "source": {
+        "mrId": "synthetic/example!development-pair",
+        "createdAt": "2026-01-10T00:00:00Z",
+        "disposition": "accepted_and_fixed",
+        "urls": []
+      },
+      "code": {
+        "file": "src/items.js",
+        "language": "javascript",
+        "content": "export function count(items) {\n  return items.length;\n}"
+      },
+      "context": "items can be null; count must return 0 in that case.",
+      "expectedFindings": [
+        {
+          "ruleId": "nullable-collection",
+          "file": "src/items.js",
+          "lineStart": 2,
+          "lineEnd": 2
+        }
+      ]
+    },
+    {
+      "id": "development-corrected",
+      "split": "development",
+      "kind": "corrected",
+      "ruleIds": [
+        "nullable-collection"
+      ],
+      "pairId": "development-nullable",
+      "source": {
+        "mrId": "synthetic/example!development-pair",
+        "createdAt": "2026-01-10T00:00:00Z",
+        "disposition": "accepted_and_fixed",
+        "urls": []
+      },
+      "code": {
+        "file": "src/items.js",
+        "language": "javascript",
+        "content": "export function count(items) {\n  return items?.length ?? 0;\n}"
+      },
+      "context": "items can be null; count must return 0 in that case.",
+      "expectedFindings": []
+    },
+    {
+      "id": "development-clean",
+      "split": "development",
+      "kind": "clean",
+      "ruleIds": [
+        "nullable-collection"
+      ],
+      "source": {
+        "mrId": "synthetic/example!development-clean",
+        "createdAt": "2026-01-10T00:00:00Z",
+        "disposition": "clean",
+        "urls": []
+      },
+      "code": {
+        "file": "src/items.js",
+        "language": "javascript",
+        "content": "export function count(items) {\n  if (items == null) return 0;\n  return items.length;\n}"
+      },
+      "context": "items can be null; count must return 0 in that case.",
+      "expectedFindings": []
+    },
+    {
+      "id": "development-rejected",
+      "split": "development",
+      "kind": "rejected",
+      "ruleIds": [
+        "nullable-collection"
+      ],
+      "source": {
+        "mrId": "synthetic/example!development-rejected",
+        "createdAt": "2026-01-10T00:00:00Z",
+        "disposition": "pushed_back",
+        "urls": []
+      },
+      "code": {
+        "file": "src/items.js",
+        "language": "javascript",
+        "content": "export function count(items) {\n  return items.length;\n}"
+      },
+      "context": "items is always an array by a validated boundary contract. The nullable warning was pushed back with proof.",
+      "expectedFindings": []
+    },
+    {
+      "id": "development-boundary",
+      "split": "development",
+      "kind": "boundary",
+      "ruleIds": [
+        "nullable-collection"
+      ],
+      "source": {
+        "mrId": "synthetic/example!development-boundary",
+        "createdAt": "2026-01-10T00:00:00Z",
+        "disposition": "clean",
+        "urls": []
+      },
+      "code": {
+        "file": "src/items.js",
+        "language": "javascript",
+        "content": "export const example = \"items.length\";"
+      },
+      "context": "This is a documentation string, outside executable collection access.",
+      "expectedFindings": []
+    },
+    {
+      "id": "heldout-offending",
+      "split": "heldout",
+      "kind": "offending",
+      "ruleIds": [
+        "nullable-collection"
+      ],
+      "pairId": "heldout-nullable",
+      "source": {
+        "mrId": "synthetic/example!heldout-pair",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "disposition": "accepted_and_fixed",
+        "urls": []
+      },
+      "code": {
+        "file": "src/items.js",
+        "language": "javascript",
+        "content": "export function count(items) {\n  return items.length;\n}"
+      },
+      "context": "items can be null; count must return 0 in that case.",
+      "expectedFindings": [
+        {
+          "ruleId": "nullable-collection",
+          "file": "src/items.js",
+          "lineStart": 2,
+          "lineEnd": 2
+        }
+      ]
+    },
+    {
+      "id": "heldout-corrected",
+      "split": "heldout",
+      "kind": "corrected",
+      "ruleIds": [
+        "nullable-collection"
+      ],
+      "pairId": "heldout-nullable",
+      "source": {
+        "mrId": "synthetic/example!heldout-pair",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "disposition": "accepted_and_fixed",
+        "urls": []
+      },
+      "code": {
+        "file": "src/items.js",
+        "language": "javascript",
+        "content": "export function count(items) {\n  return items?.length ?? 0;\n}"
+      },
+      "context": "items can be null; count must return 0 in that case.",
+      "expectedFindings": []
+    },
+    {
+      "id": "heldout-clean",
+      "split": "heldout",
+      "kind": "clean",
+      "ruleIds": [
+        "nullable-collection"
+      ],
+      "source": {
+        "mrId": "synthetic/example!heldout-clean",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "disposition": "clean",
+        "urls": []
+      },
+      "code": {
+        "file": "src/items.js",
+        "language": "javascript",
+        "content": "export function count(items) {\n  if (items == null) return 0;\n  return items.length;\n}"
+      },
+      "context": "items can be null; count must return 0 in that case.",
+      "expectedFindings": []
+    },
+    {
+      "id": "heldout-rejected",
+      "split": "heldout",
+      "kind": "rejected",
+      "ruleIds": [
+        "nullable-collection"
+      ],
+      "source": {
+        "mrId": "synthetic/example!heldout-rejected",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "disposition": "pushed_back",
+        "urls": []
+      },
+      "code": {
+        "file": "src/items.js",
+        "language": "javascript",
+        "content": "export function count(items) {\n  return items.length;\n}"
+      },
+      "context": "items is always an array by a validated boundary contract. The nullable warning was pushed back with proof.",
+      "expectedFindings": []
+    },
+    {
+      "id": "heldout-boundary",
+      "split": "heldout",
+      "kind": "boundary",
+      "ruleIds": [
+        "nullable-collection"
+      ],
+      "source": {
+        "mrId": "synthetic/example!heldout-boundary",
+        "createdAt": "2026-02-10T00:00:00Z",
+        "disposition": "clean",
+        "urls": []
+      },
+      "code": {
+        "file": "src/items.js",
+        "language": "javascript",
+        "content": "export const example = \"items.length\";"
+      },
+      "context": "This is a documentation string, outside executable collection access.",
+      "expectedFindings": []
+    }
+  ]
+}

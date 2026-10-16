@@ -1,0 +1,6 @@
+{
+  "mode": "smoke",
+  "command": "node",
+  "args": ["smoke-adapter.js"],
+  "timeoutMs": 10000
+}
