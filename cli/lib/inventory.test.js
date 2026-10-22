@@ -37,6 +37,18 @@ describe('installed inventory', () => {
     await fs.remove(tmpDir);
   });
 
+
+  it('inventories Codex skills at the active .agents discovery path', async () => {
+    const targetDir = path.join(tmpDir, 'codex-skill-inventory');
+    await installPackage('pstack', targetDir, { tool: 'codex', level: 'project' });
+    const unmanagedPath = path.join(targetDir, '.agents', 'skills', 'unmanaged', 'SKILL.md');
+    await fs.outputFile(unmanagedPath, '# unmanaged\n');
+    const inventory = await getInventory(targetDir, { tool: 'codex', level: 'project' });
+    assert.ok(inventory.items.some((item) => item.type === 'skill' && item.status === 'current'));
+    assert.ok(inventory.items.some((item) => item.destinationPath === unmanagedPath && item.status === 'unmanaged'));
+    assert.ok(!inventory.items.some((item) => item.type === 'skill' && item.destinationPath.includes('/.codex/skills/')));
+  });
+
   it('writes a project-level manifest during install', async () => {
     const targetDir = path.join(tmpDir, 'project-manifest');
     const tools = ['claude', 'cursor', 'codex'];

@@ -43,6 +43,7 @@ export async function installPackage(packageName, targetDir, options = {}) {
   const entries = await fs.readdir(pkgDir, { withFileTypes: true });
   let filesInstalled = 0;
   const records = [];
+  const installedSkills = new Set();
 
   for (const entry of entries) {
     if (!entry.isDirectory()) continue;
@@ -76,6 +77,7 @@ export async function installPackage(packageName, targetDir, options = {}) {
     const srcDir = path.join(pkgDir, dirName);
     const files = await listFiles(srcDir);
 
+    const isSkill = CONTENT_DIRS[dirName] === 'skills';
     for (const srcFile of files) {
       const relativeFile = path.relative(srcDir, srcFile);
 
@@ -84,7 +86,7 @@ export async function installPackage(packageName, targetDir, options = {}) {
         if (!contentDir) continue;
         if (dirName === 'plugins' && tool !== 'codex') continue;
 
-        const toolRoot = getToolRoot(targetDir, level, tool);
+        const toolRoot = getToolRoot(targetDir, level, tool === 'codex' && isSkill ? 'agents' : tool);
         const isRule = dirName === 'rules' || dirName === '{rules}';
         const isMdFile = relativeFile.endsWith('.md');
         const needsMdcConvert = tool === 'cursor' && isRule && isMdFile;
@@ -125,7 +127,9 @@ export async function installPackage(packageName, targetDir, options = {}) {
             targetDir,
           }));
         }
-        filesInstalled++;
+        const skillKey = `${tool}:${dirName}:${relativeFile.split(path.sep)[0]}`;
+        if (!isSkill || !installedSkills.has(skillKey)) filesInstalled++;
+        if (isSkill) installedSkills.add(skillKey);
       }
     }
   }

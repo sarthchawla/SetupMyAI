@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "echo 'No build step needed'",
-    "test": "node --test cli/**/*.test.js",
+    "test": "node --test cli/**/*.test.js scripts/skill-eval/*.test.js scripts/mr-learning/*.test.mjs",
     "test:bats": "bats tests/bats/*.bats",
     "test:validate": "node scripts/validate-packages.js",
     "test:all": "pnpm test && pnpm test:bats && pnpm test:validate",
@@ -28,7 +28,10 @@
     "cli/",
     "packages/",
     "apm.yml",
-    "README.md"
+    "README.md",
+    "scripts/skill-eval/",
+    "scripts/mr-learning/",
+    "scripts/skill-reconcile.mjs"
   ],
   "repository": {
     "type": "git",

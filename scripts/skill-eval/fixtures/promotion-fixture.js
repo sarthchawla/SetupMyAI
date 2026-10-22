@@ -1,0 +1,20 @@
+import {readFile} from 'node:fs/promises';
+import {validateSuite,defaultThresholds,sha256,metrics,matchFindings,evaluationBindingHash,evaluationResultsHash,validatePromotionEvidence,adjudicationRequest} from '../lib.js';
+// Fabricated evidence for gate mechanics tests only; never model execution proof.
+export async function promotionFixture() {
+const suite=JSON.parse(await readFile(new URL('./smoke-cases.json', import.meta.url),'utf8'));
+suite.version=2;suite.evidenceKind='real';suite.rules[0].evidenceFindingIds=['test-fixture-only'];suite.holdout={frozenAt:'2026-03-01T00:00:00Z',author:'test fixture',independentFromGuidance:true};
+for(const item of suite.cases){
+ item.source={...item.source,defectGroupId:item.source.mrId,urls:['https://example.invalid/review-fixture'],findingId:'test-fixture-only',acceptanceEvidence:['Fabricated accepted evidence for gate mechanics tests only'],fixEvidence:['Fabricated fix evidence for gate mechanics tests only']};
+ item.reviewContext={scope:'whole-mr',baseRevision:'fixture-base',headRevision:'fixture-head',diff:'fixture diff for gate mechanics only',files:[{file:item.code.file,content:item.code.content},{file:'caller.js',content:'// fixture caller'}],contracts:['Fixture contract']};
+ if(item.kind==='offending') item.expectedFindings=[0,1].map(index=>({ruleId:'nullable-collection',file:item.code.file,lineStart:index+1,lineEnd:index+1,defect:'Nullable values are dereferenced',scope:'The stated nullable caller contract',remedy:'Guard the nullable value'}));
+}
+const report={version:1,testFixtureOnly:true,status:'complete',behavioralExecuted:true,evaluatedAt:'2026-10-16T00:00:00Z',suiteText:JSON.stringify(suite),suiteHash:sha256(JSON.stringify(suite)),baselineHash:sha256('baseline'),candidateHash:sha256('candidate'),adapterHash:sha256('adapter'),judgeHash:sha256('judge'),evidenceKind:'real',coverage:validateSuite(suite),guidance:{verified:true},runtime:{adapterMode:'model',judgeMode:'model',declaredModel:'fixture-model',reasoningEffort:'medium',runtimeCommand:'/fixture/codex',runtimeBinaryHash:sha256('fixture runtime binary'),judgeModel:'fixture-judge',judgeReasoningEffort:'medium',judgeRuntimeCommand:'/fixture/codex',judgeRuntimeBinaryHash:sha256('fixture runtime binary')},grading:{version:3,method:'semantic-adjudication'},policy:{version:2,declaredBeforeExecution:true,thresholds:defaultThresholds,hash:sha256(JSON.stringify(defaultThresholds))},cases:[]};
+function execution(payload,requestHash,judge=false){const model={name:judge?'fixture-judge':'fixture-model',runtime:'fixture-runtime',version:'0.test',binaryPath:'/fixture/codex',binaryHash:sha256('fixture runtime binary'),effectiveReasoningEffort:'medium'}; const responseText=JSON.stringify({...payload,model}); return {succeeded:true,requestHash:requestHash??sha256('fixture request'),responseHash:sha256(responseText),responseText,observedModel:model};}
+for(const item of suite.cases){const row=Object.fromEntries(['id','kind','split','source','expectedFindings'].map(k=>[k,item[k]]));row.pairId=item.pairId??null;
+ for(const arm of ['baseline','candidate']){const expected=item.expectedFindings.slice(0,arm==='baseline'?1:2);const findings=expected.map((f,i)=>({ruleId:f.ruleId,file:f.file,line:f.lineStart,message:'Fixture-only concrete defect and scoped guard remedy '+i})); const judgments=findings.map((f,i)=>({actualIndex:i,expectedIndex:i,defect:true,scope:true,remedy:true,reason:'Fabricated semantic decision for gate mechanics tests only'}));row[arm]={findings,execution:execution({findings}),adjudication:{judgments,execution:findings.length?execution({judgments},sha256(JSON.stringify(adjudicationRequest(item,findings,suite.rules))),true):null},matching:matchFindings(item.expectedFindings,findings,judgments)};}
+ report.cases.push(row);
+}
+report.metrics=Object.fromEntries(['development','heldout'].map(split=>[split,Object.fromEntries(['baseline','candidate'].map(arm=>[arm,metrics(report.cases.filter(r=>r.split===split),arm)]))]));report.bindingHash=evaluationBindingHash(report);report.resultsHash=evaluationResultsHash(report);report.promotion=validatePromotionEvidence(report);
+return report;
+}
