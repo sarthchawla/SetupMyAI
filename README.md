@@ -2,7 +2,7 @@
 
 Portable AI agent configuration packages. Install once, use everywhere.
 
-Stop copy-pasting `.claude/commands/`, `.cursor/rules/`, and agent configs across repos. **SetupMyAi** packages your AI setup into modular, versioned, selectively installable packages that work with **Claude Code**, **Cursor**, and **Codex**.
+Stop copy-pasting `.claude/commands/`, `.cursor/rules/`, and agent configs across repos. **SetupMyAi** packages your AI setup into modular, versioned, selectively installable packages that work with **Claude Code**, **Cursor**, **Codex**, **OpenCode**, and **Gemini**.
 
 https://github.com/user-attachments/assets/eb0838d1-8f75-4e3a-aa86-988c8551fbd1
 
@@ -21,26 +21,29 @@ https://github.com/user-attachments/assets/eb0838d1-8f75-4e3a-aa86-988c8551fbd1
 
 ## Quick Start
 
-### One-liner install
+### Install the CLI globally (recommended)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/SarthakChawla/SetupMyAi/main/scripts/install.sh | bash
+npm install -g @setupmyai/cli
+# or
+pnpm add -g @setupmyai/cli
 ```
 
-### Via APM (recommended)
+Then run `setupmyai init` from any project to select packages, tools and install level.
 
-```bash
-# Add the registry
-apm marketplace add SarthakChawla/SetupMyAi
-
-# Install what you need
-apm install @setupmyai/universal @setupmyai/react-frontend
-```
-
-### Via CLI (interactive)
+### One-off run (no global install)
 
 ```bash
 pnpm dlx @setupmyai/cli init
+# or
+npx @setupmyai/cli init
+```
+
+### Via APM (alternative)
+
+```bash
+apm marketplace add SarthakChawla/SetupMyAi
+apm install @setupmyai/universal @setupmyai/react-frontend
 ```
 
 This launches an interactive picker:
@@ -61,6 +64,9 @@ This launches an interactive picker:
 setupmyai install universal react-frontend bdd-testing
 setupmyai install --tool claude universal    # Claude Code only
 setupmyai install --tool cursor universal    # Cursor only
+setupmyai install --tool cursor,codex universal # Multiple tools
+setupmyai install --level user universal     # User-level install
+setupmyai install --level project universal  # Current project (default)
 setupmyai list                               # Show available packages
 setupmyai list --installed --level all       # Summarize managed installs
 setupmyai status --level all                 # Show drift and unmanaged files
@@ -113,6 +119,11 @@ Files are placed into:
 - **Codex** — Commands, instructions, skills, and plugins (via APM compatibility)
 
 - **Codex** — Skills in `.agents/skills/`; commands and instructions via APM compatibility
+
+- **OpenCode** — Commands, rules, agents, and skills in `.opencode/`
+- **Gemini** — Commands, rules, agents, and skills in `.gemini/`
+
+Select one or more tools with `--tool claude,cursor,codex,opencode,gemini`, or use `--tool all` (default).
 
 ## Adding Your Own Org Package
 
