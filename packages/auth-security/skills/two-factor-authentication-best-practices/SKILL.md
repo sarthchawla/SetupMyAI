@@ -1,6 +1,9 @@
 ---
 name: two-factor-authentication-best-practices
-description: This skill provides guidance and enforcement rules for implementing secure two-factor authentication (2FA) using Better Auth's twoFactor plugin.
+description: |
+  Implement and review secure two-factor authentication (2FA) using Better Auth's twoFactor plugin.
+  USE FOR: implement secure Better Auth 2FA; add a second verification factor through Better Auth's twoFactor plugin; reject a universal bypass code in Better Auth 2FA; review TOTP, OTP, backup-code, and trusted-device security.
+  DO NOT USE FOR: MFA supplied outside Better Auth's twoFactor plugin.
 ---
 
 ## Setting Up Two-Factor Authentication
@@ -356,7 +359,7 @@ Better Auth uses constant-time comparison for OTP verification to prevent timing
 
 ### Credential Account Requirement
 
-Two-factor authentication can only be enabled for credential (email/password) accounts. For social accounts, it's assumed the provider already handles 2FA.
+Two-factor authentication can only be enabled for credential (email/password) accounts. For social accounts, assume the external account service already handles 2FA.
 
 ## Disabling 2FA
 

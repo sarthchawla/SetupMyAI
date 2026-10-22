@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-interrogate-04-constraint
+name: Pstack Interrogate 04 Constraint
+description: Honor read-only scope and distinguish actual independent reviews from local analysis or
+  missing coverage.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Interrogate this proposal read-only; if independent reviewers are unavailable, disclose that
+    and do not fabricate their verdicts.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-interrogate-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/interrogate/SKILL.md
+      mode: positive
+      threshold: 0.6

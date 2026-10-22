@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: universal-monitor-mr-04-constraint
+name: Universal Monitor Mr 04 Constraint
+description: Report the observed head, check and review states within the requested single snapshot
+  and do not start ongoing monitoring.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Take one read-only status snapshot of the request; do not retry jobs, post replies, resolve
+    threads or schedule future polling.
+expected: {}
+graders:
+  - type: trigger
+    name: universal-monitor-mr-04-constraint-trigger
+    config:
+      skill_path: packages/universal/skills/monitor-mr/SKILL.md
+      mode: positive
+      threshold: 0.6

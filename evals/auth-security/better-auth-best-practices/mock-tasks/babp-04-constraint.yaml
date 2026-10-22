@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: babp-04-constraint
+name: Babp 04 Constraint
+description: Provide advisory integration guidance only and honor the no-change constraint.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Explain whether Better Auth fits our TypeScript app, but do not change code or configuration.
+expected: {}
+graders:
+  - type: trigger
+    name: babp-04-constraint-trigger
+    config:
+      skill_path: packages/auth-security/skills/better-auth-best-practices/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-maintain-verification-skill-02-paraphrased-positive
+name: Pstack Maintain Verification Skill 02 Paraphrased Positive
+description: Plan source coverage and a coherent live verification pass, retaining a bounded set of
+  proven corrections.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Bring the application control skill back in line with the features that shipped since its
+    last maintenance pass.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-maintain-verification-skill-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/maintain-verification-skill/SKILL.md
+      mode: positive
+      threshold: 0.6

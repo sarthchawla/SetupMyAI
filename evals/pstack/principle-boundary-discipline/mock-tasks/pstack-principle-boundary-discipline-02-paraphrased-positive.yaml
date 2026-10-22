@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-boundary-discipline-02-paraphrased-positive
+name: Pstack Principle Boundary Discipline 02 Paraphrased Positive
+description: Assign parsing and error translation to the appropriate adapter boundary and explain
+  the internal contract.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Where should CLI configuration errors be handled so business functions do not repeat
+    defensive checks?
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-boundary-discipline-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-boundary-discipline/SKILL.md
+      mode: positive
+      threshold: 0.6

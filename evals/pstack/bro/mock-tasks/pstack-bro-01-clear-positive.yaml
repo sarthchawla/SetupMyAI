@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-bro-01-clear-positive
+name: Pstack Bro 01 Clear Positive
+description: Restate the preceding technical message clearly without jargon or changing its meaning.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: The prior answer says eventual consistency requires idempotent reconciliation. Bro, restate
+    that in plain human language.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-bro-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/bro/SKILL.md
+      mode: positive
+      threshold: 0.6

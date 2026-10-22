@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-reflect-03-boundary-negative
+name: Pstack Reflect 03 Boundary Negative
+description: Answer the optics question rather than starting agent transcript reflection.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Explain how a mirror reflects light.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-reflect-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/reflect/SKILL.md
+      mode: negative
+      threshold: 0.6

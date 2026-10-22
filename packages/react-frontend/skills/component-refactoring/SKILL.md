@@ -1,6 +1,6 @@
 ---
 name: component-refactoring
-description: Refactor high-complexity React components. Use when complexity analysis shows complexity > 50 or lineCount > 300, when the user asks for code splitting, hook extraction, or complexity reduction; avoid for simple/well-structured components, third-party wrappers, or when the user explicitly wants testing without refactoring.
+description: 'Refactor high-complexity React components by reducing branching, extracting hooks, or splitting components. USE FOR: "reduce high measured complexity in a large React component", "extract stateful logic into hooks and split a complex component". DO NOT USE FOR: simple or well-structured components, third-party wrappers, or requests that explicitly ask for tests without refactoring.'
 ---
 
 # Component Refactoring Skill
@@ -78,7 +78,7 @@ const AppInfo = () => {
 
 // After: Split into focused components
 // app-info/
-//   index.tsx           (orchestration only)
+//   index.tsx           (orchestration entry point)
 //   app-header.tsx      (header UI)
 //   app-operations.tsx  (operations UI)
 //   app-modals.tsx      (modal management)
@@ -163,7 +163,7 @@ export const useAppConfig = (appId: string) => {
 // Component becomes cleaner
 const ServiceCard = () => {
   const { data: config, isLoading } = useAppConfig(appId)
-  // UI only
+  // UI rendering
 }
 ```
 
@@ -240,7 +240,7 @@ Create a refactoring plan based on detected features:
 ### Step 3: Execute Incrementally
 
 1. **Extract one piece at a time**
-2. **Run lint, type-check, and tests after each extraction**
+2. **Run lint, type-check, and the test suite after each extraction**
 3. **Verify functionality before next step**
 
 ```
@@ -285,7 +285,7 @@ const useButtonState = () => {
 
 ### Premature Abstraction
 
-- Only extract when there's clear complexity benefit
+- Extract when there's clear complexity benefit
 - Don't create abstractions for single-use code
 - Keep refactored code in the same domain area
 

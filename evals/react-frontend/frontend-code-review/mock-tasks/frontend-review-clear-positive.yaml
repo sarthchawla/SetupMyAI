@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: frontend-review-clear-positive
+name: Frontend Review Clear Positive
+description: Perform a frontend pending-change review and report findings rather than implementing.
+tags:
+  - positive
+  - pending-diff
+inputs:
+  prompt: Review my pending `.tsx`, `.ts`, and `.js` frontend changes.
+expected: {}
+graders:
+  - type: trigger
+    name: frontend-review-clear-positive-trigger
+    config:
+      skill_path: packages/react-frontend/skills/frontend-code-review/SKILL.md
+      mode: positive
+      threshold: 0.6

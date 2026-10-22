@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-reflect-01-clear-positive
+name: Pstack Reflect 01 Clear Positive
+description: Review the transcript from the skill learning perspective and map evidence-backed
+  lessons to existing guidance instead of proliferating new skills.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Reflect on this active transcript and propose learnings to concrete existing skills.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-reflect-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/reflect/SKILL.md
+      mode: positive
+      threshold: 0.6

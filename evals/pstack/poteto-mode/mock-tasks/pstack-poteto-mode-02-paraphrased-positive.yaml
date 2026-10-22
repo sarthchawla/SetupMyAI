@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-poteto-mode-02-paraphrased-positive
+name: Pstack Poteto Mode 02 Paraphrased Positive
+description: Apply the requested working style without treating style guidance as permission for
+  unrelated changes.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: "Work in poteto style for this review: direct answers, simple code and verification before
+    claiming done."
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-poteto-mode-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/poteto-mode/SKILL.md
+      mode: positive
+      threshold: 0.6

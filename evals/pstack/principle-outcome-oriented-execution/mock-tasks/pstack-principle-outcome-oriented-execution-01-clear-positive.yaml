@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-outcome-oriented-execution-01-clear-positive
+name: Pstack Principle Outcome Oriented Execution 01 Clear Positive
+description: Converge on the agreed architecture with explicit phase boundaries and verifiable
+  outcomes rather than unnecessary temporary layers.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Plan a phased internal rewrite toward the new architecture without adding disposable
+    compatibility scaffolding for every intermediate commit.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-outcome-oriented-execution-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-outcome-oriented-execution/SKILL.md
+      mode: positive
+      threshold: 0.6

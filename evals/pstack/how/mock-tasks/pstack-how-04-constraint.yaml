@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-how-04-constraint
+name: Pstack How 04 Constraint
+description: Trace only evidenced behavior and ownership, preserve uncertainty, and do not modify or
+  execute the subsystem.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Explain how the supplied three-file subsystem works, read-only; mark any missing caller or
+    runtime evidence.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-how-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/how/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-sequence-verifiable-units-04-constraint
+name: Pstack Principle Sequence Verifiable Units 04 Constraint
+description: Keep verification and delivery status honest and respect the actual dependency and
+  release constraints.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Plan verifiable migration units but do not claim an unchecked step is complete or alter
+    protected release ordering.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-sequence-verifiable-units-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-sequence-verifiable-units/SKILL.md
+      mode: positive
+      threshold: 0.6

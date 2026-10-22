@@ -8,3 +8,5 @@ coverage/
 .cache/
 .artifacts/
 sources.yml
+evals/results/
+.waza-cache/

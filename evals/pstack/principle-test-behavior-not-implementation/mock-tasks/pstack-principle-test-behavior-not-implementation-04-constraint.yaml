@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-test-behavior-not-implementation-04-constraint
+name: Pstack Principle Test Behavior Not Implementation 04 Constraint
+description: Distinguish meaningful interaction contracts from incidental implementation and use
+  supported completion evidence.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Improve behavior assertions without removing a contractually required interaction or adding
+    arbitrary sleeps.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-test-behavior-not-implementation-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-test-behavior-not-implementation/SKILL.md
+      mode: positive
+      threshold: 0.6

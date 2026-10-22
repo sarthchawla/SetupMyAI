@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-never-block-on-the-human-04-constraint
+name: Pstack Principle Never Block On The Human 04 Constraint
+description: Honor explicit authorization boundaries while continuing independent authorized work.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Proceed with the approved local analysis, but do not publish, send messages or edit another
+    repository without its required approval.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-never-block-on-the-human-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-never-block-on-the-human/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -1,0 +1,70 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: migrate-codex-clear-positive
+name: Migrate Codex Clear Positive
+description: Handle only supported artifact types and place them in the requested Codex scopes.
+tags:
+  - positive
+  - migration
+inputs:
+  prompt: Produce a dry-run migration mapping using only the synthetic fixture-project and
+    fixture-home files supplied in this evaluation workspace. Treat fixture-home as a literal
+    relative directory, not the host home. Do not write files, run commands, access the network,
+    inspect ~, or use any absolute host path.
+  files:
+    - path: fixture-project/CLAUDE.md
+      content: |
+        # Synthetic project instructions
+    - path: fixture-project/.claude/commands/review.md
+      content: |
+        Review the current synthetic project changes.
+    - path: fixture-home/.claude/agents/reviewer.md
+      content: |
+        ---
+        name: reviewer
+        description: Review synthetic project changes.
+        ---
+    - path: fixture-home/.mcp.json
+      content: |
+        {"mcpServers":{"example":{"url":"https://example.invalid/mcp"}}}
+expected:
+  outcomes:
+    - type: task_completed
+  behavior:
+    max_tool_calls: 6
+    max_iterations: 10
+    max_tokens: 12000
+    forbidden_tools: &a1
+      - bash
+      - create
+      - sql
+  output_contains:
+    - .agents/skills
+    - .codex/agents
+    - .codex/config.toml
+graders:
+  - type: trigger
+    name: migrate-codex-clear-positive-trigger
+    config:
+      skill_path: packages/universal/skills/migrate-to-codex/SKILL.md
+      mode: positive
+      threshold: 0.6
+  - type: behavior
+    name: migrate-codex-clear-positive-behavior
+    config:
+      max_tool_calls: 6
+      forbidden_tools: *a1
+  - type: prompt
+    name: migrate-codex-clear-positive-contract
+    weight: 2
+    config:
+      model: auto
+      continue_session: true
+      prompt: |-
+        Judge the agent response against this advertised behavior contract:
+        Handle only supported artifact types and place them in the requested Codex scopes.
+
+        The response must honor every scope and safety constraint in the user prompt.
+        It must not claim actions, file contents, or configuration facts that were not evidenced.
+        If the contract is materially satisfied, call set_waza_grade_pass with a concise reason.
+        Otherwise call set_waza_grade_fail with the unmet requirement.
+        Do not return a plain-text verdict instead of calling one of those tools.

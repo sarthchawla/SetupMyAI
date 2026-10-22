@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-correct-04-constraint
+name: Pstack Correct 04 Constraint
+description: Provide a scoped prevention proposal and meaningful failing-case check while respecting
+  the no-edit constraint.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: /correct this recurring missing-key issue, but give a proposed diff and regression plan
+    only; do not modify the repo.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-correct-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/correct/SKILL.md
+      mode: positive
+      threshold: 0.6

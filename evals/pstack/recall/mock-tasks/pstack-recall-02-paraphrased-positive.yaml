@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-recall-02-paraphrased-positive
+name: Pstack Recall 02 Paraphrased Positive
+description: Recover relevant working context and indicate evidence gaps instead of inventing continuity.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: "Catch me up before I resume this task: what decisions, prior fixes and open questions
+    matter now?"
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-recall-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/recall/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-make-bot-ui-03-boundary-negative
+name: Pstack Make Bot Ui 03 Boundary Negative
+description: Build the static page without adding bot dispatch or sender-key configuration.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Create a static portfolio page with no bot or webhook integration.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-make-bot-ui-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/make-bot-ui/SKILL.md
+      mode: negative
+      threshold: 0.6

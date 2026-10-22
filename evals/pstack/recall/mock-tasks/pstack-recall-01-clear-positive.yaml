@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-recall-01-clear-positive
+name: Pstack Recall 01 Clear Positive
+description: Reconstruct a tight current-state brief using the provided history and live-state
+  evidence, distinguishing stale plans from completed work.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Recall my work on the synthetic export feature and tell me where I left off from the
+    supplied chat and status notes.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-recall-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/recall/SKILL.md
+      mode: positive
+      threshold: 0.6

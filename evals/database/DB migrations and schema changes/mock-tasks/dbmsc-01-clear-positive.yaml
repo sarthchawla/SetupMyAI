@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: dbmsc-01-clear-positive
+name: Dbmsc 01 Clear Positive
+description: Provide the advertised Alembic migration workflow without claiming commands were executed.
+tags:
+  - positive
+  - alembic
+inputs:
+  prompt: Create an Alembic schema migration for the letta-cloud core app.
+expected: {}
+graders:
+  - type: trigger
+    name: dbmsc-01-clear-positive-trigger
+    config:
+      skill_path: packages/database/skills/DB migrations and schema changes/SKILL.md
+      mode: positive
+      threshold: 0.6

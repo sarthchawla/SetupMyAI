@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-why-04-constraint
+name: Pstack Why 04 Constraint
+description: Cite the supplied evidence, disclose coverage limits and avoid fabricated searches or
+  causal certainty.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Explain why from these synthetic notes only; do not query external services or claim
+    unavailable evidence categories were searched.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-why-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/why/SKILL.md
+      mode: positive
+      threshold: 0.6

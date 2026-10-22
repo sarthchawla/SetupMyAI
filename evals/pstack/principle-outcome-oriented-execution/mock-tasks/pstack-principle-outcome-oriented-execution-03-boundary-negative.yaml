@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-outcome-oriented-execution-03-boundary-negative
+name: Pstack Principle Outcome Oriented Execution 03 Boundary Negative
+description: Diagnose the unknown failure instead of assuming permission for a planned architectural migration.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Investigate an unexplained intermittent error before any rewrite has been approved.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-outcome-oriented-execution-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-outcome-oriented-execution/SKILL.md
+      mode: negative
+      threshold: 0.6

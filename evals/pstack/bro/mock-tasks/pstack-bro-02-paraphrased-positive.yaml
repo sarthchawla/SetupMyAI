@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-bro-02-paraphrased-positive
+name: Pstack Bro 02 Paraphrased Positive
+description: Translate the last explanation into familiar language while retaining its material limits.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Say that last explanation like you would to a nontechnical teammate.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-bro-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/bro/SKILL.md
+      mode: positive
+      threshold: 0.6

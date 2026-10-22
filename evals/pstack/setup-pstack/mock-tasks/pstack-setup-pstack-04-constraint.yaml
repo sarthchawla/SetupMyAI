@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-setup-pstack-04-constraint
+name: Pstack Setup Pstack 04 Constraint
+description: Use only declared supported options and produce a reviewable draft without
+  configuration writes or provider calls.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Draft a pstack budget configuration from this supplied model list only; do not alter global
+    defaults or probe any provider.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-setup-pstack-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/setup-pstack/SKILL.md
+      mode: positive
+      threshold: 0.6

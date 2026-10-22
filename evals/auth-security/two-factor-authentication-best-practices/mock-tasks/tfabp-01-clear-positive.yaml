@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: tfabp-01-clear-positive
+name: Tfabp 01 Clear Positive
+description: Give secure twoFactor-plugin guidance without weakening or bypassing verification.
+tags:
+  - positive
+  - 2fa
+inputs:
+  prompt: Implement secure 2FA using Better Auth's twoFactor plugin.
+expected: {}
+graders:
+  - type: trigger
+    name: tfabp-01-clear-positive-trigger
+    config:
+      skill_path: packages/auth-security/skills/two-factor-authentication-best-practices/SKILL.md
+      mode: positive
+      threshold: 0.6

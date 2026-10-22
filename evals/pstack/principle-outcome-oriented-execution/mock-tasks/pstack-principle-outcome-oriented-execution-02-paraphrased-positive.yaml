@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-outcome-oriented-execution-02-paraphrased-positive
+name: Pstack Principle Outcome Oriented Execution 02 Paraphrased Positive
+description: Respect the migration scope and delivery boundaries while avoiding unneeded legacy preservation.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: This coordinated migration has a defined cutover; choose phase sequencing that proves the
+    final design rather than preserving obsolete interfaces indefinitely.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-outcome-oriented-execution-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-outcome-oriented-execution/SKILL.md
+      mode: positive
+      threshold: 0.6

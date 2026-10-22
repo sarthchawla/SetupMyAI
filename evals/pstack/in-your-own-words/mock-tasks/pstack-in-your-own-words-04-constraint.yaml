@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-in-your-own-words-04-constraint
+name: Pstack In Your Own Words 04 Constraint
+description: Preserve supplied constraints and explicitly distinguish assumptions from confirmed goals.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Restate my goal using only the constraints in this message; label assumptions rather than
+    inventing extra requirements.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-in-your-own-words-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/in-your-own-words/SKILL.md
+      mode: positive
+      threshold: 0.6

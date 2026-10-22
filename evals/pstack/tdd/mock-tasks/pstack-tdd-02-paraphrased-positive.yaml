@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-tdd-02-paraphrased-positive
+name: Pstack Tdd 02 Paraphrased Positive
+description: Use the obvious local failing target and demonstrate red-to-green evidence rather than
+  mirroring implementation details.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Add a cheap local regression test for this off-by-one utility bug before changing the
+    implementation.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-tdd-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/tdd/SKILL.md
+      mode: positive
+      threshold: 0.6

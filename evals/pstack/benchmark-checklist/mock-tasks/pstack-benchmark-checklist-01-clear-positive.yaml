@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-benchmark-checklist-01-clear-positive
+name: Pstack Benchmark Checklist 01 Clear Positive
+description: Check measurement comparability, limiting factors, repeatability and relevance; do not
+  accept the speedup claim from incomparable samples.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: "Vet this benchmark before I report a speedup: one warm-cache sample was compared with one
+    cold-cache sample."
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-benchmark-checklist-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/benchmark-checklist/SKILL.md
+      mode: positive
+      threshold: 0.6

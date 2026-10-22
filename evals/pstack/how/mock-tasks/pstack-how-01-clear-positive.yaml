@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-how-01-clear-positive
+name: Pstack How 01 Clear Positive
+description: Explain the source-backed runtime path, subsystem responsibilities and data transitions
+  rather than guessing design motives.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: How does this request handler reach the storage adapter? Walk through its runtime flow and
+    ownership boundaries.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-how-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/how/SKILL.md
+      mode: positive
+      threshold: 0.6

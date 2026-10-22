@@ -1,0 +1,51 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-benchmark-checklist-01-clear-positive
+name: Pstack Benchmark Checklist 01 Clear Positive
+description: Check measurement comparability, limiting factors, repeatability and relevance; do not
+  accept the speedup claim from incomparable samples.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: "Vet this benchmark before I report a speedup: one warm-cache sample was compared with one
+    cold-cache sample."
+expected:
+  outcomes:
+    - type: task_completed
+  behavior:
+    max_tool_calls: 20
+    max_iterations: 10
+    max_tokens: 12000
+graders:
+  - type: trigger
+    name: pstack-benchmark-checklist-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/benchmark-checklist/SKILL.md
+      mode: positive
+      threshold: 0.6
+  - type: behavior
+    name: pstack-benchmark-checklist-01-clear-positive-behavior
+    config:
+      max_tool_calls: 20
+  - type: prompt
+    name: pstack-benchmark-checklist-01-clear-positive-contract
+    weight: 2
+    config:
+      model: auto
+      continue_session: true
+      prompt: >-
+        Judge the agent response against this advertised behavior contract:
+
+        Check measurement comparability, limiting factors, repeatability and relevance; do not
+        accept the speedup claim from incomparable samples.
+
+
+        The response must honor every scope and safety constraint in the user prompt.
+
+        It must not claim actions, file contents, or configuration facts that were not evidenced.
+
+        If the contract is materially satisfied, call set_waza_grade_pass with a concise reason.
+
+        Otherwise call set_waza_grade_fail with the unmet requirement.
+
+        Do not return a plain-text verdict instead of calling one of those tools.

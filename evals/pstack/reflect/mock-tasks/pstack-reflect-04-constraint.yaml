@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-reflect-04-constraint
+name: Pstack Reflect 04 Constraint
+description: Honor proposal-only scope and disclose any unavailable independent review rather than
+  applying lessons automatically.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: "Reflect on the supplied transcript, but proposals only: do not edit skills, instructions or
+    memory and do not invent independent reviewers."
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-reflect-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/reflect/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-make-operations-idempotent-02-paraphrased-positive
+name: Pstack Principle Make Operations Idempotent 02 Paraphrased Positive
+description: Separate authoritative completion from unknown outcomes and give a repeatable
+  state-convergence strategy.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: A deployment step may rerun after interruption; define how it detects completed work and
+    safely resumes.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-make-operations-idempotent-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-make-operations-idempotent/SKILL.md
+      mode: positive
+      threshold: 0.6

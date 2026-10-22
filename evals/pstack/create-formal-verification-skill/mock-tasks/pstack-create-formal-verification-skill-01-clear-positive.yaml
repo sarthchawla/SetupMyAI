@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-create-formal-verification-skill-01-clear-positive
+name: Pstack Create Formal Verification Skill 01 Clear Positive
+description: Choose a suitable formal method and draft project-local verification guidance around
+  the actual invariant, model and executable tool interface.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Create a project-local formal verification skill for a retry state machine whose invariant
+    is at most one active lease.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-create-formal-verification-skill-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/create-formal-verification-skill/SKILL.md
+      mode: positive
+      threshold: 0.6

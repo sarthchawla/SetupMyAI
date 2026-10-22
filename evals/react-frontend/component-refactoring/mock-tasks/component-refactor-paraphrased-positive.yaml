@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: component-refactor-paraphrased-positive
+name: Component Refactor Paraphrased Positive
+description: Recognize the threshold and address hook extraction and component splitting.
+tags:
+  - positive
+  - hook-extraction
+  - code-splitting
+inputs:
+  prompt: The complexity report is 54. Can we pull the stateful logic into hooks and split this component?
+expected: {}
+graders:
+  - type: trigger
+    name: component-refactor-paraphrased-positive-trigger
+    config:
+      skill_path: packages/react-frontend/skills/component-refactoring/SKILL.md
+      mode: positive
+      threshold: 0.6

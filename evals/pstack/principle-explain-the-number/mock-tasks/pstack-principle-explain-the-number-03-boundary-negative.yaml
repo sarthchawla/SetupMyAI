@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-explain-the-number-03-boundary-negative
+name: Pstack Principle Explain The Number 03 Boundary Negative
+description: Answer the vocabulary request without starting a measurement-validity investigation.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Spell the number seven in French.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-explain-the-number-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-explain-the-number/SKILL.md
+      mode: negative
+      threshold: 0.6

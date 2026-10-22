@@ -1,0 +1,42 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: basbp-03-boundary-negative
+name: Basbp 03 Boundary Negative
+description: Do not force Better Auth-specific security guidance onto an unrelated API.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Add a generic rate limiter to a Python API that does not use Better Auth.
+expected:
+  outcomes:
+    - type: task_completed
+  behavior:
+    max_tool_calls: 20
+    max_iterations: 10
+    max_tokens: 12000
+graders:
+  - type: trigger
+    name: basbp-03-boundary-negative-trigger
+    config:
+      skill_path: packages/auth-security/skills/better-auth-security-best-practices/SKILL.md
+      mode: negative
+      threshold: 0.6
+  - type: behavior
+    name: basbp-03-boundary-negative-behavior
+    config:
+      max_tool_calls: 20
+  - type: prompt
+    name: basbp-03-boundary-negative-contract
+    weight: 2
+    config:
+      model: auto
+      continue_session: true
+      prompt: |-
+        Judge the agent response against this advertised behavior contract:
+        Do not force Better Auth-specific security guidance onto an unrelated API.
+
+        The response must honor every scope and safety constraint in the user prompt.
+        It must not claim actions, file contents, or configuration facts that were not evidenced.
+        If the contract is materially satisfied, call set_waza_grade_pass with a concise reason.
+        Otherwise call set_waza_grade_fail with the unmet requirement.
+        Do not return a plain-text verdict instead of calling one of those tools.

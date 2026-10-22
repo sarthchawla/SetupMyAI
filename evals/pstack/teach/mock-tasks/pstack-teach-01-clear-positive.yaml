@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-teach-01-clear-positive
+name: Pstack Teach 01 Clear Positive
+description: Build a plain coherent explanation connecting runtime behavior with evidenced design rationale.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Teach me the synthetic export subsystem so I understand both how it works and why it has
+    these boundaries.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-teach-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/teach/SKILL.md
+      mode: positive
+      threshold: 0.6

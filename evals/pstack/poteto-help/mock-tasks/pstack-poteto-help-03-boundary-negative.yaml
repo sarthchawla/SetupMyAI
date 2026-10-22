@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-poteto-help-03-boundary-negative
+name: Pstack Poteto Help 03 Boundary Negative
+description: Answer the food question rather than interpreting it as pstack setup assistance.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: How long should potatoes bake in an oven?
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-poteto-help-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/poteto-help/SKILL.md
+      mode: negative
+      threshold: 0.6

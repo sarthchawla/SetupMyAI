@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-maintain-formal-verification-skill-03-boundary-negative
+name: Pstack Maintain Formal Verification Skill 03 Boundary Negative
+description: Recognize initial verification authoring rather than pretending an existing model is
+  being maintained.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Create the first formal model for a new parser with no prior verification assets.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-maintain-formal-verification-skill-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/maintain-formal-verification-skill/SKILL.md
+      mode: negative
+      threshold: 0.6

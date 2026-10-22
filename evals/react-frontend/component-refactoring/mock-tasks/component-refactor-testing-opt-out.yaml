@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: component-refactor-testing-opt-out
+name: Component Refactor Testing Opt Out
+description: Honor the explicit refactor opt-out despite the component size.
+tags:
+  - negative-trigger
+  - boundary
+  - constraint
+  - testing-only
+inputs:
+  prompt: This component is over 300 lines, but I only want tests written; do not refactor it.
+expected: {}
+graders:
+  - type: trigger
+    name: component-refactor-testing-opt-out-trigger
+    config:
+      skill_path: packages/react-frontend/skills/component-refactoring/SKILL.md
+      mode: negative
+      threshold: 0.6

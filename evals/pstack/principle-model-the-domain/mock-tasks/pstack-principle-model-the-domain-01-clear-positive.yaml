@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-model-the-domain-01-clear-positive
+name: Pstack Principle Model The Domain 01 Clear Positive
+description: Represent legitimate domain states and transitions directly rather than repeating
+  implicit shape assumptions.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Replace repeated optional-field checks with an explicit model of pending, completed and
+    failed operations.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-model-the-domain-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-model-the-domain/SKILL.md
+      mode: positive
+      threshold: 0.6

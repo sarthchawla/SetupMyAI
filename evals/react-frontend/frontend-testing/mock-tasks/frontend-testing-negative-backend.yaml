@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: frontend-testing-negative-backend
+name: Frontend Testing Negative Backend
+description: Do not classify a backend route test as frontend testing.
+tags:
+  - negative-trigger
+  - boundary
+  - backend
+inputs:
+  prompt: Write Jest tests for an Express route.
+expected: {}
+graders:
+  - type: trigger
+    name: frontend-testing-negative-backend-trigger
+    config:
+      skill_path: packages/react-frontend/skills/frontend-testing/SKILL.md
+      mode: negative
+      threshold: 0.6

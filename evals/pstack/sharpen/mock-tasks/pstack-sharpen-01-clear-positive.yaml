@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-sharpen-01-clear-positive
+name: Pstack Sharpen 01 Clear Positive
+description: Clarify the real user outcome, expert approach and appropriate level of specification
+  before work begins.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: "/sharpen: help specify an offline-first notes feature before we start implementing it."
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-sharpen-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/sharpen/SKILL.md
+      mode: positive
+      threshold: 0.6

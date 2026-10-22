@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-encode-lessons-in-structure-04-constraint
+name: Pstack Principle Encode Lessons In Structure 04 Constraint
+description: Keep the enforcement scoped to its evidence and avoid overgeneralizing or silently
+  installing new instructions.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Propose enforcement for the repeated mistake without creating a global rule from one
+    repository-specific convention.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-encode-lessons-in-structure-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-encode-lessons-in-structure/SKILL.md
+      mode: positive
+      threshold: 0.6

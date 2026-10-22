@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-automate-me-02-paraphrased-positive
+name: Pstack Automate Me 02 Paraphrased Positive
+description: Revise the existing working-style guidance rather than creating a competing duplicate;
+  retain preferences not superseded by the request.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Refresh my existing -mode guidance so agents use plain prose and explain verification limits.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-automate-me-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/automate-me/SKILL.md
+      mode: positive
+      threshold: 0.6

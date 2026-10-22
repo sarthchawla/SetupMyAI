@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: universal-review-04-constraint
+name: Universal Review 04 Constraint
+description: Preserve prerequisites and evidence limits, do not fabricate specialist execution, and
+  do not modify code or publish comments.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Prepare a review-only report; if the required policy or delegated reviewer is missing,
+    disclose that instead of inventing coverage.
+expected: {}
+graders:
+  - type: trigger
+    name: universal-review-04-constraint-trigger
+    config:
+      skill_path: packages/universal/skills/review/SKILL.md
+      mode: positive
+      threshold: 0.6

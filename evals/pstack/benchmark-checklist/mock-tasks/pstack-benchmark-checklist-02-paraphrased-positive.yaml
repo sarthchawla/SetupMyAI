@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-benchmark-checklist-02-paraphrased-positive
+name: Pstack Benchmark Checklist 02 Paraphrased Positive
+description: Determine whether the intended work actually occurred and distinguish cache effects
+  from measured service throughput.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Is our throughput measurement trustworthy? The timed loop may skip requests when its cache hits.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-benchmark-checklist-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/benchmark-checklist/SKILL.md
+      mode: positive
+      threshold: 0.6

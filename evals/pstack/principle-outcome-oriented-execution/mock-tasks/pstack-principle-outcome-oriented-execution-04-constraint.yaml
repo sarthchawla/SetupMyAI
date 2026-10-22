@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-outcome-oriented-execution-04-constraint
+name: Pstack Principle Outcome Oriented Execution 04 Constraint
+description: Keep external compatibility and deployment constraints intact and report intermediate
+  incompleteness honestly.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Sequence a planned rewrite without breaking published consumers or claiming incomplete
+    phases are production-ready.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-outcome-oriented-execution-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-outcome-oriented-execution/SKILL.md
+      mode: positive
+      threshold: 0.6

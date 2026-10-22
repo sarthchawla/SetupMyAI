@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-test-behavior-not-implementation-02-paraphrased-positive
+name: Pstack Principle Test Behavior Not Implementation 02 Paraphrased Positive
+description: Evaluate the observable contract and expose implementation-coupled assertions without
+  inventing missing behavior.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Review whether these tests fail when the output is wrong rather than when private function
+    structure changes.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-test-behavior-not-implementation-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-test-behavior-not-implementation/SKILL.md
+      mode: positive
+      threshold: 0.6

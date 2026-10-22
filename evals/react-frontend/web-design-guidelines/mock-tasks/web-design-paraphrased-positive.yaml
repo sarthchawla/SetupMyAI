@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: web-design-paraphrased-positive
+name: Web Design Paraphrased Positive
+description: Recognize a UX and interface-practices review without redesigning unless asked.
+tags:
+  - positive
+  - ux-review
+inputs:
+  prompt: Can you sanity-check my site's UX and tell me whether it follows good web interface practices?
+expected: {}
+graders:
+  - type: trigger
+    name: web-design-paraphrased-positive-trigger
+    config:
+      skill_path: packages/react-frontend/skills/web-design-guidelines/SKILL.md
+      mode: positive
+      threshold: 0.6

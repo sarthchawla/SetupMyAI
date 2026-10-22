@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pgtd-03-boundary-negative
+name: Pgtd 03 Boundary Negative
+description: Do not apply PostgreSQL table advice to MongoDB.
+tags:
+  - negative-trigger
+  - boundary
+  - mongodb
+inputs:
+  prompt: Design a MongoDB document model.
+expected: {}
+graders:
+  - type: trigger
+    name: pgtd-03-boundary-negative-trigger
+    config:
+      skill_path: packages/database/skills/postgresql-table-design/SKILL.md
+      mode: negative
+      threshold: 0.6

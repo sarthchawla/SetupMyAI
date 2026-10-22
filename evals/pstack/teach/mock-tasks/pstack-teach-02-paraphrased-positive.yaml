@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-teach-02-paraphrased-positive
+name: Pstack Teach 02 Paraphrased Positive
+description: Explain the mechanism and motivation with concrete examples and acknowledge missing
+  rationale evidence.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Help me really understand this change, including its mental model and tradeoffs rather than
+    just file names.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-teach-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/teach/SKILL.md
+      mode: positive
+      threshold: 0.6

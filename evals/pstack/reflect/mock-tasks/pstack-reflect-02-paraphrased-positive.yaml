@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-reflect-02-paraphrased-positive
+name: Pstack Reflect 02 Paraphrased Positive
+description: Distinguish supported recurrent lessons from speculation and provide concrete
+  destinations and change proposals.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Review how this conversation went, compare independent perspectives and identify specific
+    skill improvements.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-reflect-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/reflect/SKILL.md
+      mode: positive
+      threshold: 0.6

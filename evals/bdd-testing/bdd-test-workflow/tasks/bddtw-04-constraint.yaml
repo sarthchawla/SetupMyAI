@@ -1,0 +1,66 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: bddtw-04-constraint
+name: Bddtw 04 Constraint
+description: Limit changes to BDD tests and mocks while preserving production behavior.
+tags:
+  - positive
+  - constraint
+  - no-production-change
+inputs:
+  prompt: Review the synthetic Playwright-BDD feature and step fixture in this evaluation workspace
+    and propose a deterministic mock-data fix. Do not edit src/checkout.ts, access the network,
+    inspect ~, or use absolute host paths.
+  files:
+    - path: src/checkout.ts
+      content: |
+        export const submitOrder = () => fetch("/api/orders");
+    - path: features/checkout.feature
+      content: |
+        Feature: Checkout
+          Scenario: Submit an order
+            Then the order is accepted
+    - path: features/steps/checkout.steps.ts
+      content: |
+        Then("the order is accepted", async () => {
+          await expect(page.getByText("Accepted")).toBeVisible();
+        });
+expected:
+  outcomes:
+    - type: task_completed
+  behavior:
+    max_tool_calls: 8
+    max_iterations: 10
+    max_tokens: 12000
+    forbidden_tools: &a1
+      - bash
+      - sql
+  output_contains:
+    - mock
+    - checkout
+graders:
+  - type: trigger
+    name: bddtw-04-constraint-trigger
+    config:
+      skill_path: packages/bdd-testing/skills/bdd-test-workflow/SKILL.md
+      mode: positive
+      threshold: 0.6
+  - type: behavior
+    name: bddtw-04-constraint-behavior
+    config:
+      max_tool_calls: 8
+      forbidden_tools: *a1
+  - type: prompt
+    name: bddtw-04-constraint-contract
+    weight: 2
+    config:
+      model: auto
+      continue_session: true
+      prompt: |-
+        Judge the agent response against this advertised behavior contract:
+        Limit changes to BDD tests and mocks while preserving production behavior.
+
+        The response must honor every scope and safety constraint in the user prompt.
+        It must not claim actions, file contents, or configuration facts that were not evidenced.
+        If the contract is materially satisfied, call set_waza_grade_pass with a concise reason.
+        Otherwise call set_waza_grade_fail with the unmet requirement.
+        Do not return a plain-text verdict instead of calling one of those tools.

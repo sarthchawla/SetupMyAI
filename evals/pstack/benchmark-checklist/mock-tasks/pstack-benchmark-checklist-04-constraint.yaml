@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-benchmark-checklist-04-constraint
+name: Pstack Benchmark Checklist 04 Constraint
+description: Limit conclusions to supplied measurements and explicitly withhold repeatability or
+  causal claims that require new runs.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Review these two synthetic timing samples without running a benchmark; state what they
+    cannot establish.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-benchmark-checklist-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/benchmark-checklist/SKILL.md
+      mode: positive
+      threshold: 0.6

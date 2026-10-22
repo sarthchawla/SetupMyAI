@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-laziness-protocol-04-constraint
+name: Pstack Principle Laziness Protocol 04 Constraint
+description: Avoid equating fewer lines with correctness; retain necessary behavior and explain why
+  each remaining piece is required.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Simplify the design but preserve required error handling, compatibility and security checks.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-laziness-protocol-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-laziness-protocol/SKILL.md
+      mode: positive
+      threshold: 0.6

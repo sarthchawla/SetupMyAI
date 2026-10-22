@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-prove-it-works-02-paraphrased-positive
+name: Pstack Principle Prove It Works 02 Paraphrased Positive
+description: Choose direct behavior evidence relevant to the claim and separate it from unrelated
+  successful checks.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: The build passed; determine what evidence still proves the changed retry behavior works.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-prove-it-works-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-prove-it-works/SKILL.md
+      mode: positive
+      threshold: 0.6

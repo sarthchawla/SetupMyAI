@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: tfabp-03-boundary-negative
+name: Tfabp 03 Boundary Negative
+description: Do not apply Better Auth plugin-specific guidance to another provider.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Configure multifactor authentication in an unrelated identity provider that does not use
+    Better Auth.
+expected: {}
+graders:
+  - type: trigger
+    name: tfabp-03-boundary-negative-trigger
+    config:
+      skill_path: packages/auth-security/skills/two-factor-authentication-best-practices/SKILL.md
+      mode: negative
+      threshold: 0.6

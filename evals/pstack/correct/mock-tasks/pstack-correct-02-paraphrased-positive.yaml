@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-correct-02-paraphrased-positive
+name: Pstack Correct 02 Paraphrased Positive
+description: Locate the recurring mistake, choose the smallest effective enforcement layer, and
+  distinguish a proposed failure reproduction from an executed one.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: We keep fixing the same unchecked configuration path; make the recurrence impossible and
+    prove the guard catches the old failure.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-correct-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/correct/SKILL.md
+      mode: positive
+      threshold: 0.6

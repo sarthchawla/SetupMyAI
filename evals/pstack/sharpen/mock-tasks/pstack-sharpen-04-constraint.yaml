@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-sharpen-04-constraint
+name: Pstack Sharpen 04 Constraint
+description: Produce a bounded specification and distinguish required clarification from optional
+  implementation choices.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Sharpen this request with the available facts; label assumptions and do not expand the scope
+    into unrelated features.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-sharpen-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/sharpen/SKILL.md
+      mode: positive
+      threshold: 0.6

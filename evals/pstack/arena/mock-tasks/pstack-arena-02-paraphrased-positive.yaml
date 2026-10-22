@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-arena-02-paraphrased-positive
+name: Pstack Arena 02 Paraphrased Positive
+description: Treat candidates as alternative artifacts and make a reasoned synthesis; do not merely
+  concatenate every suggestion.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Try several independent designs for a search-filter API and synthesize the strongest useful
+    shape.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-arena-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/arena/SKILL.md
+      mode: positive
+      threshold: 0.6

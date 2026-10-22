@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-boundary-discipline-04-constraint
+name: Pstack Principle Boundary Discipline 04 Constraint
+description: Distinguish trusted internal values from external data and preserve required boundary
+  checks and observable errors.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Review the boundary design without removing validation from genuinely untrusted inputs or
+    weakening the error contract.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-boundary-discipline-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-boundary-discipline/SKILL.md
+      mode: positive
+      threshold: 0.6

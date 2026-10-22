@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-boundary-discipline-03-boundary-negative
+name: Pstack Principle Boundary Discipline 03 Boundary Negative
+description: Provide the prose without introducing validation adapters or typed business logic.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Write a short thank-you message for a colleague.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-boundary-discipline-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-boundary-discipline/SKILL.md
+      mode: negative
+      threshold: 0.6

@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-automate-me-01-clear-positive
+name: Pstack Automate Me 01 Clear Positive
+description: Draft a scoped personal working-style skill from supplied preferences without adding
+  unsupported preferences or changing unrelated settings.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: "Automate me: draft a personal -mode skill from these preferences: concise status updates,
+    evidence before claims, and no surprise commits."
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-automate-me-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/automate-me/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-exhaust-the-design-space-02-paraphrased-positive
+name: Pstack Principle Exhaust The Design Space 02 Paraphrased Positive
+description: Explore whole-shape design alternatives and make the selection criteria explicit.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: We are choosing a new ownership model with no local example; evaluate alternatives side by
+    side rather than polishing the first sketch.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-exhaust-the-design-space-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-exhaust-the-design-space/SKILL.md
+      mode: positive
+      threshold: 0.6

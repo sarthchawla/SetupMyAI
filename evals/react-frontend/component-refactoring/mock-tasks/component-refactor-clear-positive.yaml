@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: component-refactor-clear-positive
+name: Component Refactor Clear Positive
+description: Apply a high-complexity React refactor focused on the identified component.
+tags:
+  - positive
+  - high-complexity
+inputs:
+  prompt: Refactor this 420-line React component with measured complexity 63 to reduce its complexity.
+expected: {}
+graders:
+  - type: trigger
+    name: component-refactor-clear-positive-trigger
+    config:
+      skill_path: packages/react-frontend/skills/component-refactoring/SKILL.md
+      mode: positive
+      threshold: 0.6

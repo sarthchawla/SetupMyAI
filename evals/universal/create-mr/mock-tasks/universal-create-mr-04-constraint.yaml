@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: universal-create-mr-04-constraint
+name: Universal Create Mr 04 Constraint
+description: Produce a concrete reviewable draft, keep literal Markdown intact and report the
+  absence of server-side creation or verification.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Prepare the exact draft title and Markdown body offline; do not push, call a provider or
+    claim a request was created.
+expected: {}
+graders:
+  - type: trigger
+    name: universal-create-mr-04-constraint-trigger
+    config:
+      skill_path: packages/universal/skills/create-mr/SKILL.md
+      mode: positive
+      threshold: 0.6

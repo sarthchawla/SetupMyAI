@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-fix-root-causes-04-constraint
+name: Pstack Principle Fix Root Causes 04 Constraint
+description: Use contract evidence to distinguish a real root-cause correction from unsafe removal
+  of supported defensive handling.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Investigate read-only; if the null state is contractually legitimate, do not remove its
+    required recovery path.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-fix-root-causes-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-fix-root-causes/SKILL.md
+      mode: positive
+      threshold: 0.6

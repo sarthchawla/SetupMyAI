@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: universal-review-adjudication-04-constraint
+name: Universal Review Adjudication 04 Constraint
+description: Preserve final-retention and per-remedy history, keep unverified outcomes explicit, and
+  do not edit or resolve the thread.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Adjudicate the comment read-only; the alleged fix was later reverted, so do not count it as
+    a retained correction.
+expected: {}
+graders:
+  - type: trigger
+    name: universal-review-adjudication-04-constraint-trigger
+    config:
+      skill_path: packages/universal/skills/review-adjudication/SKILL.md
+      mode: positive
+      threshold: 0.6

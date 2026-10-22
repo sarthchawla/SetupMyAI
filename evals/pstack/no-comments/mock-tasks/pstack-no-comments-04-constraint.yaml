@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-no-comments-04-constraint
+name: Pstack No Comments 04 Constraint
+description: Do not delete required or justified comments; provide adjudicated suggestions without
+  editing the source.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Review comments read-only; preserve license notices, required tool directives and supported
+    reasons that cannot be encoded in code.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-no-comments-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/no-comments/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-blast-radius-02-paraphrased-positive
+name: Pstack Blast Radius 02 Paraphrased Positive
+description: Follow both consumers and their boundaries; distinguish proven compatibility from
+  untested assumptions.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Assess the blast radius of removing a configuration field used by both a CLI and a worker.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-blast-radius-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/blast-radius/SKILL.md
+      mode: positive
+      threshold: 0.6

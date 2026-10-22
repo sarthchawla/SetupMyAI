@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-type-system-discipline-04-constraint
+name: Pstack Principle Type System Discipline 04 Constraint
+description: Preserve the distinction between compile-time guarantees and untrusted external values;
+  avoid unsound escape hatches.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Strengthen types without using unchecked casts to hide uncertainty or claiming runtime input
+    validation is unnecessary.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-type-system-discipline-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-type-system-discipline/SKILL.md
+      mode: positive
+      threshold: 0.6

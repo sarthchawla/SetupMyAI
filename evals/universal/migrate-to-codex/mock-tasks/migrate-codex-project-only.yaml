@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: migrate-codex-project-only
+name: Migrate Codex Project Only
+description: Migrate project skills only, with no global or MCP changes.
+tags:
+  - positive
+  - constraint
+  - project-only
+inputs:
+  prompt: Migrate only the supported skills into Codex project files; do not touch global files or MCP
+    configuration.
+expected: {}
+graders:
+  - type: trigger
+    name: migrate-codex-project-only-trigger
+    config:
+      skill_path: packages/universal/skills/migrate-to-codex/SKILL.md
+      mode: positive
+      threshold: 0.6

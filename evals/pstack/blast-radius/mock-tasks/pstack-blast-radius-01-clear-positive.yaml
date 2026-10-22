@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-blast-radius-01-clear-positive
+name: Pstack Blast Radius 01 Clear Positive
+description: Inspect affected callers and contracts beyond the diff and identify a concrete
+  executable check for the safety claim.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: What could changing a shared date parser break outside this diff? Trace its callers and
+    identify the key compatibility fact to verify.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-blast-radius-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/blast-radius/SKILL.md
+      mode: positive
+      threshold: 0.6

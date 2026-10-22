@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: universal-fix-mr-comment-03-boundary-negative
+name: Universal Fix Mr Comment 03 Boundary Negative
+description: Use an appropriate initial review path instead of pretending unresolved remote comments exist.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Give an initial review of a new local diff with no reviewer comments.
+expected: {}
+graders:
+  - type: trigger
+    name: universal-fix-mr-comment-03-boundary-negative-trigger
+    config:
+      skill_path: packages/universal/skills/fix-mr-comment/SKILL.md
+      mode: negative
+      threshold: 0.6

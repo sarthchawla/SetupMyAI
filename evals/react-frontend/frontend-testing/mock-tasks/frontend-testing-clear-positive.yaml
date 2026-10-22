@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: frontend-testing-clear-positive
+name: Frontend Testing Clear Positive
+description: Generate frontend tests for the supplied units without drifting into backend testing.
+tags:
+  - positive
+  - vitest
+  - rtl
+inputs:
+  prompt: Write Vitest and React Testing Library tests for this React hook and component.
+expected: {}
+graders:
+  - type: trigger
+    name: frontend-testing-clear-positive-trigger
+    config:
+      skill_path: packages/react-frontend/skills/frontend-testing/SKILL.md
+      mode: positive
+      threshold: 0.6

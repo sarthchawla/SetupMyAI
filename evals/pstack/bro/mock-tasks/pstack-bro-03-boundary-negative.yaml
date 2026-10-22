@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-bro-03-boundary-negative
+name: Pstack Bro 03 Boundary Negative
+description: Address the new query request instead of only paraphrasing the previous message.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Write a new SQL query that counts orders per customer.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-bro-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/bro/SKILL.md
+      mode: negative
+      threshold: 0.6

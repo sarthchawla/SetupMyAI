@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-subtract-before-you-add-02-paraphrased-positive
+name: Pstack Principle Subtract Before You Add 02 Paraphrased Positive
+description: Distinguish dead scaffolding from active behavior and order the simplification coherently.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Sequence a rewrite by removing obsolete stubs and duplicate branches before introducing the
+    replacement.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-subtract-before-you-add-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-subtract-before-you-add/SKILL.md
+      mode: positive
+      threshold: 0.6

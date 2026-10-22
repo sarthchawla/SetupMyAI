@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-prove-it-works-03-boundary-negative
+name: Pstack Principle Prove It Works 03 Boundary Negative
+description: Provide ideas without claiming an implementation has been completed or needs runtime
+  verification now.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Brainstorm possible names for a future feature.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-prove-it-works-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-prove-it-works/SKILL.md
+      mode: negative
+      threshold: 0.6

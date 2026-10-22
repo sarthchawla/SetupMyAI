@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-exhaust-the-design-space-01-clear-positive
+name: Pstack Principle Exhaust The Design Space 01 Clear Positive
+description: Explore two or three structurally distinct alternatives and compare them against the
+  actual interaction goals.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: This novel editor interaction has no precedent here; build competing prototypes and compare
+    them before choosing.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-exhaust-the-design-space-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-exhaust-the-design-space/SKILL.md
+      mode: positive
+      threshold: 0.6

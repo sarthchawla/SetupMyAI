@@ -1,0 +1,51 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: universal-review-01-clear-positive
+name: Universal Review 01 Clear Positive
+description: Follow the available established review procedure, retain scope and prerequisites, and
+  verify reviewer claims before presenting them as defects.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Run the existing review bundle on this local change and independently adjudicate the
+    reported findings.
+expected:
+  outcomes:
+    - type: task_completed
+  behavior:
+    max_tool_calls: 20
+    max_iterations: 10
+    max_tokens: 12000
+graders:
+  - type: trigger
+    name: universal-review-01-clear-positive-trigger
+    config:
+      skill_path: packages/universal/skills/review/SKILL.md
+      mode: positive
+      threshold: 0.6
+  - type: behavior
+    name: universal-review-01-clear-positive-behavior
+    config:
+      max_tool_calls: 20
+  - type: prompt
+    name: universal-review-01-clear-positive-contract
+    weight: 2
+    config:
+      model: auto
+      continue_session: true
+      prompt: >-
+        Judge the agent response against this advertised behavior contract:
+
+        Follow the available established review procedure, retain scope and prerequisites, and
+        verify reviewer claims before presenting them as defects.
+
+
+        The response must honor every scope and safety constraint in the user prompt.
+
+        It must not claim actions, file contents, or configuration facts that were not evidenced.
+
+        If the contract is materially satisfied, call set_waza_grade_pass with a concise reason.
+
+        Otherwise call set_waza_grade_fail with the unmet requirement.
+
+        Do not return a plain-text verdict instead of calling one of those tools.

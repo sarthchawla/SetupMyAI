@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-fix-root-causes-01-clear-positive
+name: Pstack Principle Fix Root Causes 01 Clear Positive
+description: Follow the symptom to the first incorrect state transition and justify whether a guard
+  handles legitimate input or masks a bug.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Debug why valid requests reach a missing-state branch; trace the first invariant break
+    rather than adding a fallback.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-fix-root-causes-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-fix-root-causes/SKILL.md
+      mode: positive
+      threshold: 0.6

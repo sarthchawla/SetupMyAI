@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-technical-writing-04-constraint
+name: Pstack Technical Writing 04 Constraint
+description: Improve reader comprehension while retaining factual scope, evidence and uncertainty.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Edit this PR description for clarity but preserve every verified limitation and do not add
+    invented benchmark results.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-technical-writing-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/technical-writing/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-laziness-protocol-02-paraphrased-positive
+name: Pstack Principle Laziness Protocol 02 Paraphrased Positive
+description: Compare the proposed abstraction with a simpler local design and justify retained
+  complexity from actual requirements.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Review whether a new signal-threading abstraction solves a real need or merely expands the diff.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-laziness-protocol-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-laziness-protocol/SKILL.md
+      mode: positive
+      threshold: 0.6

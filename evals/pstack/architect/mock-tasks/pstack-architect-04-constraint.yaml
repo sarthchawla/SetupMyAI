@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-architect-04-constraint
+name: Pstack Architect 04 Constraint
+description: Honor the requested checkpoint after the design sketch; do not claim implementation or
+  verification occurred.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Architect a cache refresh API, but stop after the type and signature sketch; do not implement it.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-architect-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/architect/SKILL.md
+      mode: positive
+      threshold: 0.6

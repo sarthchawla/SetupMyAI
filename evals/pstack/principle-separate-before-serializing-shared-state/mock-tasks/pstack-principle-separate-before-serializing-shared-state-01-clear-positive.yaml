@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-separate-before-serializing-shared-state-01-clear-positive
+name: Pstack Principle Separate Before Serializing Shared State 01 Clear Positive
+description: Examine whether actor-owned state can remove contention, reserving serialization for a
+  genuine shared-writer invariant.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Two workers write the same temporary report. Can we eliminate the shared path before adding
+    a lock?
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-separate-before-serializing-shared-state-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-separate-before-serializing-shared-state/SKILL.md
+      mode: positive
+      threshold: 0.6

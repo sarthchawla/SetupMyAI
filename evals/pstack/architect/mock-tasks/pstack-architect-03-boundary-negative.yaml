@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-architect-03-boundary-negative
+name: Pstack Architect 03 Boundary Negative
+description: Answer the simple shell question directly without starting a multi-phase architecture workflow.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: What is the command to print the current directory?
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-architect-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/architect/SKILL.md
+      mode: negative
+      threshold: 0.6

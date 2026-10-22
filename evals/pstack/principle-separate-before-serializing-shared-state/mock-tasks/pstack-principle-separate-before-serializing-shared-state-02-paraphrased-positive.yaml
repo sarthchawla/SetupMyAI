@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-separate-before-serializing-shared-state-02-paraphrased-positive
+name: Pstack Principle Separate Before Serializing Shared State 02 Paraphrased Positive
+description: Separate independent task state and define the remaining shared resource explicitly.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Parallel tasks race on a single branch and output key; redesign their ownership before
+    introducing synchronization.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-separate-before-serializing-shared-state-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-separate-before-serializing-shared-state/SKILL.md
+      mode: positive
+      threshold: 0.6

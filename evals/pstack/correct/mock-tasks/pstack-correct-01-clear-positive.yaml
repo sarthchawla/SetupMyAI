@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-correct-01-clear-positive
+name: Pstack Correct 01 Clear Positive
+description: Look for a structural or type-level prevention first, then lint or test evidence; do
+  not stop at repeating a documentation warning.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: "/correct: agents repeatedly omit a required tenant key in this repository. Propose an
+    enforcement change that catches the real past mistake."
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-correct-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/correct/SKILL.md
+      mode: positive
+      threshold: 0.6

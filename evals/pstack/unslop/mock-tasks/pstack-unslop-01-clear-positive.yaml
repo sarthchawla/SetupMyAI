@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-unslop-01-clear-positive
+name: Pstack Unslop 01 Clear Positive
+description: Make the writing direct and natural without changing factual content or inventing a
+  stronger result.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: "Unslop this paragraph: remove canned transitions and inflated claims while keeping its meaning."
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-unslop-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/unslop/SKILL.md
+      mode: positive
+      threshold: 0.6

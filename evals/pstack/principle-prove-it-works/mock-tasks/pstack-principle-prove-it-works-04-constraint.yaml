@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-prove-it-works-04-constraint
+name: Pstack Principle Prove It Works 04 Constraint
+description: Disclose missing outcome verification and do not fabricate successful execution or
+  treat static checks as behavior proof.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: The runtime is unavailable. Report what was checked and what remains unverified instead of
+    calling the feature proven.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-prove-it-works-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-prove-it-works/SKILL.md
+      mode: positive
+      threshold: 0.6

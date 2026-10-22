@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-typescript-best-practices-02-paraphrased-positive
+name: Pstack Typescript Best Practices 02 Paraphrased Positive
+description: Use sound TypeScript types and preserve the component contract rather than silencing
+  errors with broad casts.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Edit a .tsx component so its props and async state are typed without unchecked assertions.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-typescript-best-practices-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/typescript-best-practices/SKILL.md
+      mode: positive
+      threshold: 0.6

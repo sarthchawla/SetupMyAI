@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-ketchup-04-constraint
+name: Pstack Ketchup 04 Constraint
+description: Distinguish completed, pending and unverified actions and avoid invented progress or
+  outside-history access.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Catch me up using only this conversation; do not infer that a pending action completed while
+    I was away.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-ketchup-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/ketchup/SKILL.md
+      mode: positive
+      threshold: 0.6

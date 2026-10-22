@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-prove-it-works-01-clear-positive
+name: Pstack Principle Prove It Works 01 Clear Positive
+description: Verify the actual requested outcome rather than substituting compilation, self-report
+  or a nearby proxy.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Before declaring the feature done, exercise the real export path and inspect the produced
+    artifact.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-prove-it-works-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-prove-it-works/SKILL.md
+      mode: positive
+      threshold: 0.6

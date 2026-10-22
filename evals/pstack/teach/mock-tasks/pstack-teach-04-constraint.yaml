@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-teach-04-constraint
+name: Pstack Teach 04 Constraint
+description: Separate observed mechanics, documented motivation and inference, and avoid unsupported
+  history or external access.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Teach from the supplied source excerpt and decision note only; do not invent a historical
+    rationale.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-teach-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/teach/SKILL.md
+      mode: positive
+      threshold: 0.6

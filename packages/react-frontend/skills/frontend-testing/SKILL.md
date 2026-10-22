@@ -1,6 +1,6 @@
 ---
 name: frontend-testing
-description: Generate Vitest + React Testing Library tests for frontend components, hooks, and utilities. Triggers on testing, spec files, coverage, Vitest, RTL, unit tests, integration tests, or write/review test requests.
+description: 'Generate or review Vitest and React Testing Library tests for frontend components, hooks, and utilities. USE FOR: "write Vitest tests for a React component", "review coverage gaps in a React hook spec", "review an existing frontend Vitest spec". DO NOT USE FOR: backend or API tests, Playwright or Cypress end-to-end tests, or conceptual questions without frontend code context.'
 ---
 
 # Frontend Testing Skill

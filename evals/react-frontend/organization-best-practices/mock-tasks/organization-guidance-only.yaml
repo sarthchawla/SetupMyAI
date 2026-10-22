@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: organization-guidance-only
+name: Organization Guidance Only
+description: Give advice only and make no code or configuration changes.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Using Better Auth's organization plugin, advise on our team and role structure, but do not
+    change code or configuration.
+expected: {}
+graders:
+  - type: trigger
+    name: organization-guidance-only-trigger
+    config:
+      skill_path: packages/react-frontend/skills/organization-best-practices/SKILL.md
+      mode: positive
+      threshold: 0.6

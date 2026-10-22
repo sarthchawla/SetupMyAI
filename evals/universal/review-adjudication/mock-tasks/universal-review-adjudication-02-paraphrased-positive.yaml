@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: universal-review-adjudication-02-paraphrased-positive
+name: Universal Review Adjudication 02 Paraphrased Positive
+description: Ground the disposition in current code, callers and intent, not reviewer confidence or
+  a resolved flag.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: A confident automated review says the guard is wrong; decide whether to fix, defend, discard
+    or clarify it.
+expected: {}
+graders:
+  - type: trigger
+    name: universal-review-adjudication-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/universal/skills/review-adjudication/SKILL.md
+      mode: positive
+      threshold: 0.6

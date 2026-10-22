@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-interrogate-02-paraphrased-positive
+name: Pstack Interrogate 02 Paraphrased Positive
+description: Examine concrete failure sequences and competing explanations, keeping findings
+  grounded in the supplied design.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Stress test the design for blind spots in ownership, failure recovery and hidden coupling.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-interrogate-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/interrogate/SKILL.md
+      mode: positive
+      threshold: 0.6

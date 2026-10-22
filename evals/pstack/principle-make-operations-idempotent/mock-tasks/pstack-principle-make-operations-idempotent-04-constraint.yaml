@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-make-operations-idempotent-04-constraint
+name: Pstack Principle Make Operations Idempotent 04 Constraint
+description: Preserve the original operation identity for uncertain outcomes and do not recommend a
+  fresh duplicate write without evidence.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Plan retry handling without assuming an unknown network failure means no write occurred.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-make-operations-idempotent-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-make-operations-idempotent/SKILL.md
+      mode: positive
+      threshold: 0.6

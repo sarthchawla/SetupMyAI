@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-test-behavior-not-implementation-01-clear-positive
+name: Pstack Principle Test Behavior Not Implementation 01 Clear Positive
+description: Assert the promised behavior so the test catches real regressions while tolerating
+  sound internal refactors.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Replace a test that only checks a helper was called with an assertion on the user-visible result.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-test-behavior-not-implementation-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-test-behavior-not-implementation/SKILL.md
+      mode: positive
+      threshold: 0.6

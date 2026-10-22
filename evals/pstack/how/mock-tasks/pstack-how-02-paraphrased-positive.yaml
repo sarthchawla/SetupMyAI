@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-how-02-paraphrased-positive
+name: Pstack How 02 Paraphrased Positive
+description: Ground placement and layering advice in the provided module responsibilities and runtime behavior.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Which package should own parsing versus persistence in this module layout, and where does
+    the call flow cross that boundary?
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-how-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/how/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-swarm-02-paraphrased-positive
+name: Pstack Swarm 02 Paraphrased Positive
+description: Coordinate parallel responsibilities and synthesize supported results without treating
+  duplicate claims as independent proof.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Fan out independent source readers for parser, storage and CLI behavior, then reconcile
+    their findings.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-swarm-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/swarm/SKILL.md
+      mode: positive
+      threshold: 0.6

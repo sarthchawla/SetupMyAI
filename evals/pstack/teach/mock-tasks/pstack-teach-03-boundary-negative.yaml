@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-teach-03-boundary-negative
+name: Pstack Teach 03 Boundary Negative
+description: Provide the requested value without an unrequested subsystem lesson.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Return only the hexadecimal form of 255.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-teach-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/teach/SKILL.md
+      mode: negative
+      threshold: 0.6

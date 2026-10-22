@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-sequence-verifiable-units-01-clear-positive
+name: Pstack Principle Sequence Verifiable Units 01 Clear Positive
+description: Sequence cohesive changes and verify each unit before continuing, preserving dependency order.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Break a repository-wide API migration into small units that each end with an executable
+    verification check.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-sequence-verifiable-units-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-sequence-verifiable-units/SKILL.md
+      mode: positive
+      threshold: 0.6

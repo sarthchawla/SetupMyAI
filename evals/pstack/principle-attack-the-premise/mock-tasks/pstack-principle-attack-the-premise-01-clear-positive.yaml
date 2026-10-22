@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-attack-the-premise-01-clear-positive
+name: Pstack Principle Attack The Premise 01 Clear Positive
+description: Name and directly test the common premise instead of adding another fix that depends on it.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Two fixes that assume the cache key is unique failed the same gate. Test that shared premise
+    before trying a third patch.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-attack-the-premise-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-attack-the-premise/SKILL.md
+      mode: positive
+      threshold: 0.6

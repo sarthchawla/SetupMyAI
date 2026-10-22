@@ -1,6 +1,9 @@
 ---
 name: email-and-password-best-practices
-description: This skill provides guidance and enforcement rules for implementing secure email and password authentication using Better Auth.
+description: |
+  Secure and review email and password authentication using Better Auth.
+  USE FOR: secure Better Auth email-and-password authentication; review Better Auth sign-up and password flows; reject readable text or plaintext password storage; secure Better Auth password reset and verification flows.
+  DO NOT USE FOR: credential-free sign-in methods.
 ---
 
 ## Email Verification Setup

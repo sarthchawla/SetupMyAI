@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: node-backend-paraphrased-positive
+name: Node Backend Paraphrased Positive
+description: Give production-oriented Node backend structure without assuming a REST-only design.
+tags:
+  - positive
+  - graphql
+  - microservices
+inputs:
+  prompt: Help me structure a Node GraphQL service that can later participate in a microservices
+    architecture.
+expected: {}
+graders:
+  - type: trigger
+    name: node-backend-paraphrased-positive-trigger
+    config:
+      skill_path: packages/react-frontend/skills/nodejs-backend-patterns/SKILL.md
+      mode: positive
+      threshold: 0.6

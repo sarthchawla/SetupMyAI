@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-explain-the-number-02-paraphrased-positive
+name: Pstack Principle Explain The Number 02 Paraphrased Positive
+description: Check cohort, denominator and measurement comparability instead of accepting the higher
+  score at face value.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: The eval score rose after examples changed; determine whether that reflects better behavior
+    or a different denominator.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-explain-the-number-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-explain-the-number/SKILL.md
+      mode: positive
+      threshold: 0.6

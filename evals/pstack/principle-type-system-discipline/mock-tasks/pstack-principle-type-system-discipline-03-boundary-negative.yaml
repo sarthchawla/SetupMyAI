@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-type-system-discipline-03-boundary-negative
+name: Pstack Principle Type System Discipline 03 Boundary Negative
+description: Perform the prose revision without introducing a programming type-system design.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Rewrite this English paragraph for clarity.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-type-system-discipline-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-type-system-discipline/SKILL.md
+      mode: negative
+      threshold: 0.6

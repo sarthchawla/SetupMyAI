@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: migrate-codex-negative-database
+name: Migrate Codex Negative Database
+description: Do not infer Codex involvement from the word migrate alone.
+tags:
+  - negative-trigger
+  - boundary
+  - database
+inputs:
+  prompt: Migrate my PostgreSQL database schema to a new server.
+expected: {}
+graders:
+  - type: trigger
+    name: migrate-codex-negative-database-trigger
+    config:
+      skill_path: packages/universal/skills/migrate-to-codex/SKILL.md
+      mode: negative
+      threshold: 0.6

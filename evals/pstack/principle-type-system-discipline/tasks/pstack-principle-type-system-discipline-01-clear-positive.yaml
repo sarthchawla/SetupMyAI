@@ -1,0 +1,50 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-type-system-discipline-01-clear-positive
+name: Pstack Principle Type System Discipline 01 Clear Positive
+description: Make illegal states unrepresentable using appropriate variants and exhaustiveness,
+  grounded in the domain contract.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Design a typed operation state so completed and failed fields cannot be combined illegally.
+expected:
+  outcomes:
+    - type: task_completed
+  behavior:
+    max_tool_calls: 20
+    max_iterations: 10
+    max_tokens: 12000
+graders:
+  - type: trigger
+    name: pstack-principle-type-system-discipline-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-type-system-discipline/SKILL.md
+      mode: positive
+      threshold: 0.6
+  - type: behavior
+    name: pstack-principle-type-system-discipline-01-clear-positive-behavior
+    config:
+      max_tool_calls: 20
+  - type: prompt
+    name: pstack-principle-type-system-discipline-01-clear-positive-contract
+    weight: 2
+    config:
+      model: auto
+      continue_session: true
+      prompt: >-
+        Judge the agent response against this advertised behavior contract:
+
+        Make illegal states unrepresentable using appropriate variants and exhaustiveness, grounded
+        in the domain contract.
+
+
+        The response must honor every scope and safety constraint in the user prompt.
+
+        It must not claim actions, file contents, or configuration facts that were not evidenced.
+
+        If the contract is materially satisfied, call set_waza_grade_pass with a concise reason.
+
+        Otherwise call set_waza_grade_fail with the unmet requirement.
+
+        Do not return a plain-text verdict instead of calling one of those tools.

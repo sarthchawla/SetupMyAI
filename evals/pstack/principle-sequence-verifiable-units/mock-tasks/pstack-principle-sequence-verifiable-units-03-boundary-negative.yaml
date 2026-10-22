@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-sequence-verifiable-units-03-boundary-negative
+name: Pstack Principle Sequence Verifiable Units 03 Boundary Negative
+description: Answer the one-step calculation without creating a multi-phase delivery plan.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Return the square of 9.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-sequence-verifiable-units-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-sequence-verifiable-units/SKILL.md
+      mode: negative
+      threshold: 0.6

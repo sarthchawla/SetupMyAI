@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-benchmark-checklist-03-boundary-negative
+name: Pstack Benchmark Checklist 03 Boundary Negative
+description: Perform the text operation without starting a performance-measurement audit.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: "Alphabetize these labels: orange, apple, pear."
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-benchmark-checklist-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/benchmark-checklist/SKILL.md
+      mode: negative
+      threshold: 0.6

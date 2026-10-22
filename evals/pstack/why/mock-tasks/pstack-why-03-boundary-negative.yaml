@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-why-03-boundary-negative
+name: Pstack Why 03 Boundary Negative
+description: Recognize a runtime-flow question and prefer mechanism explanation rather than
+  substituting a historical-rationale investigation.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: How does a request move from this handler through the storage adapter?
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-why-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/why/SKILL.md
+      mode: negative
+      threshold: 0.6

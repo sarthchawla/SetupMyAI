@@ -1,0 +1,42 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: epbp-01-clear-positive
+name: Epbp 01 Clear Positive
+description: Give secure Better Auth email and password guidance without insecure credential handling.
+tags:
+  - positive
+  - authentication
+inputs:
+  prompt: Implement secure email-and-password authentication with Better Auth.
+expected:
+  outcomes:
+    - type: task_completed
+  behavior:
+    max_tool_calls: 20
+    max_iterations: 10
+    max_tokens: 12000
+graders:
+  - type: trigger
+    name: epbp-01-clear-positive-trigger
+    config:
+      skill_path: packages/auth-security/skills/email-and-password-best-practices/SKILL.md
+      mode: positive
+      threshold: 0.6
+  - type: behavior
+    name: epbp-01-clear-positive-behavior
+    config:
+      max_tool_calls: 20
+  - type: prompt
+    name: epbp-01-clear-positive-contract
+    weight: 2
+    config:
+      model: auto
+      continue_session: true
+      prompt: |-
+        Judge the agent response against this advertised behavior contract:
+        Give secure Better Auth email and password guidance without insecure credential handling.
+
+        The response must honor every scope and safety constraint in the user prompt.
+        It must not claim actions, file contents, or configuration facts that were not evidenced.
+        If the contract is materially satisfied, call set_waza_grade_pass with a concise reason.
+        Otherwise call set_waza_grade_fail with the unmet requirement.
+        Do not return a plain-text verdict instead of calling one of those tools.

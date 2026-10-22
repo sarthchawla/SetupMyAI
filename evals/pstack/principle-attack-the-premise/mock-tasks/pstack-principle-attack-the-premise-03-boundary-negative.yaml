@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-attack-the-premise-03-boundary-negative
+name: Pstack Principle Attack The Premise 03 Boundary Negative
+description: Handle the straightforward correction without inventing a history of failed premise-sharing fixes.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: A first isolated typo has an obvious one-character correction.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-attack-the-premise-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-attack-the-premise/SKILL.md
+      mode: negative
+      threshold: 0.6

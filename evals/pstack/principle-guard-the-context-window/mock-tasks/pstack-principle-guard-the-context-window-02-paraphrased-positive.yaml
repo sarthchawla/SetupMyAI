@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-guard-the-context-window-02-paraphrased-positive
+name: Pstack Principle Guard The Context Window 02 Paraphrased Positive
+description: Give bounded independent reading assignments and return summaries sufficient for
+  coordination and verification.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Plan parallel source readers for a long migration without pasting every file and transcript
+    into the coordinator.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-guard-the-context-window-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-guard-the-context-window/SKILL.md
+      mode: positive
+      threshold: 0.6

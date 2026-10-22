@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-unslop-02-paraphrased-positive
+name: Pstack Unslop 02 Paraphrased Positive
+description: Remove formulaic filler and improve the actual prose while preserving technical meaning.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Cut the AI tells from this release note and keep it clear, concrete and concise.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-unslop-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/unslop/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: frontend-testing-review-only
+name: Frontend Testing Review Only
+description: Review the existing frontend test only, with no new tests or production changes.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Review this existing Vitest spec, but do not generate new tests or change production code.
+expected: {}
+graders:
+  - type: trigger
+    name: frontend-testing-review-only-trigger
+    config:
+      skill_path: packages/react-frontend/skills/frontend-testing/SKILL.md
+      mode: positive
+      threshold: 0.6

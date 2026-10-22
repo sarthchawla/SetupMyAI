@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-boundary-discipline-01-clear-positive
+name: Pstack Principle Boundary Discipline 01 Clear Positive
+description: Concentrate validation at the external boundary while keeping internal domain logic
+  pure and avoiding redundant guards.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Refactor input validation so malformed network payloads are parsed at the boundary and
+    internal functions receive trusted types.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-boundary-discipline-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-boundary-discipline/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-migrate-callers-then-delete-legacy-apis-04-constraint
+name: Pstack Principle Migrate Callers Then Delete Legacy Apis 04 Constraint
+description: Preserve external promises and evidence gaps; do not recommend deletion merely because
+  the new API exists.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Plan the internal migration, but do not delete an API until every owned caller and required
+    compatibility test is accounted for.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-migrate-callers-then-delete-legacy-apis-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-migrate-callers-then-delete-legacy-apis/SKILL.md
+      mode: positive
+      threshold: 0.6

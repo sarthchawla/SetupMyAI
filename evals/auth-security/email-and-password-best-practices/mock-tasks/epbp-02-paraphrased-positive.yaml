@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: epbp-02-paraphrased-positive
+name: Epbp 02 Paraphrased Positive
+description: Review the email and password flow and limit claims to the supplied context.
+tags:
+  - positive
+  - review
+inputs:
+  prompt: Review our Better Auth sign-up and password login flow for secure implementation.
+expected: {}
+graders:
+  - type: trigger
+    name: epbp-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/auth-security/skills/email-and-password-best-practices/SKILL.md
+      mode: positive
+      threshold: 0.6

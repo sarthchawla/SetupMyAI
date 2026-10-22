@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-create-verification-skill-04-constraint
+name: Pstack Create Verification Skill 04 Constraint
+description: Provide the procedure and expected evidence as a draft, preserving the no-live-session
+  boundary and avoiding invented execution results.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Draft a verification skill for a synthetic upload UI, but do not access a browser, service,
+    or real account.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-create-verification-skill-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/create-verification-skill/SKILL.md
+      mode: positive
+      threshold: 0.6

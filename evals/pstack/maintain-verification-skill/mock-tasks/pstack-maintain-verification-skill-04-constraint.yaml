@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-maintain-verification-skill-04-constraint
+name: Pstack Maintain Verification Skill 04 Constraint
+description: Produce proposed corrections and missing-live-evidence notes without claiming user
+  journeys were exercised or opening a PR.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Audit the existing verify skill from the supplied feature map only; no live session or PR
+    creation is authorized.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-maintain-verification-skill-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/maintain-verification-skill/SKILL.md
+      mode: positive
+      threshold: 0.6

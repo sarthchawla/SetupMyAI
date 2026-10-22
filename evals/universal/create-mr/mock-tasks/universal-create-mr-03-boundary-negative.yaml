@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: universal-create-mr-03-boundary-negative
+name: Universal Create Mr 03 Boundary Negative
+description: Keep the work local and do not create, update or publish a merge/pull request.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Review this local patch without publishing or creating a request.
+expected: {}
+graders:
+  - type: trigger
+    name: universal-create-mr-03-boundary-negative-trigger
+    config:
+      skill_path: packages/universal/skills/create-mr/SKILL.md
+      mode: negative
+      threshold: 0.6

@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-tdd-04-constraint
+name: Pstack Tdd 04 Constraint
+description: Provide a meaningful test proposal and explicitly withhold red or green execution claims.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Draft the regression test but do not run it or claim it failed; the runtime is not available.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-tdd-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/tdd/SKILL.md
+      mode: positive
+      threshold: 0.6
