@@ -1,10 +1,15 @@
 import fs from 'fs-extra';
 import path from 'path';
 import os from 'os';
-import chalk from 'chalk';
 import { mdToMdc, mdFilenameToMdc } from './converter.js';
 import { mergeSettings, mergeMcpConfig } from './merger.js';
-import { SUPPORTED_TOOLS } from './packages.js';
+import {
+  buildManagedRecord,
+  getToolRoot,
+  prepareSettingsConfig,
+  recordInstall,
+  resolveTools,
+} from './inventory.js';
 
 const PACKAGES_ROOT = path.resolve(
   new URL('../../packages', import.meta.url).pathname
@@ -17,48 +22,21 @@ const CONTENT_DIRS = {
   skills: 'skills',
   '{skills}': 'skills',
   '{rules}': 'rules',
+  plugins: 'plugins',
 };
-
-function resolveTools(tools) {
-  if (!tools || tools === 'all') return [...SUPPORTED_TOOLS];
-  if (Array.isArray(tools)) return tools;
-  return tools.split(',').map((t) => t.trim()).filter(Boolean);
-}
-
-function getToolRoot(targetDir, level, tool, homeDir) {
-  if (level === 'user') {
-    return path.join(homeDir, `.${tool}`);
-  }
-  return path.join(targetDir, `.${tool}`);
-}
-
-async function countFiles(dir) {
-  const entries = await fs.readdir(dir, { withFileTypes: true });
-  let count = 0;
-
-  for (const entry of entries) {
-    if (entry.isDirectory()) {
-      count += await countFiles(path.join(dir, entry.name));
-    } else if (entry.isFile()) {
-      count++;
-    }
-  }
-
-  return count;
-}
 
 /**
  * Install a single package into the target directory.
  *
  * @param {string} packageName - Key from PACKAGES registry
  * @param {string} targetDir   - Absolute path to the user's project root
- * @param {object} options      - { tool: string|string[], level: 'user'|'project', homeDir?: string }
+ * @param {object} options      - { tool: string|string[], level: 'user'|'project' }
  */
 export async function installPackage(packageName, targetDir, options = {}) {
   const tools = resolveTools(options.tool || 'all');
   const level = options.level || 'project';
   const homeDir = options.homeDir || os.homedir();
-  const pkgDir = path.join(PACKAGES_ROOT, packageName);
+  const pkgDir = path.join(options.packagesRoot || PACKAGES_ROOT, packageName);
 
   if (!(await fs.pathExists(pkgDir))) {
     throw new Error(`Package "${packageName}" not found at ${pkgDir}`);
@@ -66,115 +44,227 @@ export async function installPackage(packageName, targetDir, options = {}) {
 
   const entries = await fs.readdir(pkgDir, { withFileTypes: true });
   let filesInstalled = 0;
+  const records = [];
+  const installedSkills = new Set();
 
   for (const entry of entries) {
     if (!entry.isDirectory()) continue;
     const dirName = entry.name;
 
     if (dirName === 'hooks') {
-      await installHooks(pkgDir, targetDir, tools, level, homeDir);
-      filesInstalled++;
+      const installed = await installHooks(pkgDir, targetDir, tools, level, packageName, records, homeDir);
+      filesInstalled += installed;
       continue;
     }
 
     if (dirName === 'scripts') {
-      await installScripts(pkgDir, homeDir);
-      filesInstalled++;
+      const installed = await installScripts(
+        pkgDir,
+        targetDir,
+        tools,
+        level,
+        packageName,
+        records,
+        homeDir
+      );
+      filesInstalled += installed;
       continue;
     }
 
     if (dirName === 'mcp') {
-      await installMcp(pkgDir, targetDir, tools, level, homeDir);
-      filesInstalled++;
+      const installed = await installMcp(pkgDir, targetDir, tools, level, packageName, records, homeDir);
+      filesInstalled += installed;
       continue;
     }
 
     const srcDir = path.join(pkgDir, dirName);
-    const files = await fs.readdir(srcDir);
+    const files = await listFiles(srcDir);
 
-    for (const file of files) {
-      const srcFile = path.join(srcDir, file);
-      const stat = await fs.stat(srcFile);
-      const contentDir = CONTENT_DIRS[dirName];
-      if (!contentDir) continue;
-
-      if (stat.isDirectory()) {
-        if (dirName !== 'skills' && dirName !== '{skills}') continue;
-
-        const nestedFileCount = await countFiles(srcFile);
-        for (const tool of tools) {
-          const toolRoot = getToolRoot(targetDir, level, tool, homeDir);
-          const dest = path.join(toolRoot, contentDir, file);
-          await fs.ensureDir(path.dirname(dest));
-          await fs.copy(srcFile, dest);
-          filesInstalled += nestedFileCount;
-        }
-        continue;
-      }
+    const isSkill = CONTENT_DIRS[dirName] === 'skills';
+    for (const srcFile of files) {
+      const relativeFile = path.relative(srcDir, srcFile);
 
       for (const tool of tools) {
-        const toolRoot = getToolRoot(targetDir, level, tool, homeDir);
+        const contentDir = CONTENT_DIRS[dirName];
+        if (!contentDir) continue;
+        if (dirName === 'plugins' && tool !== 'codex') continue;
+
+        const toolRoot = getToolRoot(targetDir, level, tool === 'codex' && isSkill ? 'agents' : tool, homeDir);
         const isRule = dirName === 'rules' || dirName === '{rules}';
-        const isMdFile = file.endsWith('.md');
+        const isMdFile = relativeFile.endsWith('.md');
         const needsMdcConvert = tool === 'cursor' && isRule && isMdFile;
+        const hasExplicitMdcSource = needsMdcConvert
+          && await fs.pathExists(path.join(srcDir, mdFilenameToMdc(relativeFile)));
+
+        if (hasExplicitMdcSource) continue;
 
         if (needsMdcConvert) {
           const content = await fs.readFile(srcFile, 'utf-8');
           const mdcContent = mdToMdc(content);
-          const mdcFilename = mdFilenameToMdc(file);
+          const mdcFilename = mdFilenameToMdc(relativeFile);
           const dest = path.join(toolRoot, contentDir, mdcFilename);
           await fs.ensureDir(path.dirname(dest));
           await fs.writeFile(dest, mdcContent, 'utf-8');
+          records.push(await buildManagedRecord({
+            packageName,
+            tool,
+            level,
+            type: primitiveType(dirName),
+            sourcePath: srcFile,
+            destinationPath: dest,
+            installMode: 'cursor-mdc',
+            targetDir,
+          }));
         } else {
-          const dest = path.join(toolRoot, contentDir, file);
+          const dest = path.join(toolRoot, contentDir, relativeFile);
           await fs.ensureDir(path.dirname(dest));
           await fs.copy(srcFile, dest);
+          records.push(await buildManagedRecord({
+            packageName,
+            tool,
+            level,
+            type: primitiveType(dirName),
+            sourcePath: srcFile,
+            destinationPath: dest,
+            installMode: 'copy',
+            targetDir,
+          }));
         }
-        filesInstalled++;
+        const skillKey = `${tool}:${dirName}:${relativeFile.split(path.sep)[0]}`;
+        if (!isSkill || !installedSkills.has(skillKey)) filesInstalled++;
+        if (isSkill) installedSkills.add(skillKey);
       }
     }
   }
 
+  for (const recordLevel of new Set(records.map((record) => record.level))) {
+    await recordInstall(
+      targetDir,
+      recordLevel,
+      records.filter((record) => record.level === recordLevel),
+      homeDir
+    );
+  }
   return filesInstalled;
 }
 
-async function installHooks(pkgDir, targetDir, tools, level, homeDir) {
+async function listFiles(dir) {
+  const entries = await fs.readdir(dir, { withFileTypes: true });
+  const files = [];
+
+  for (const entry of entries) {
+    const entryPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...await listFiles(entryPath));
+    } else if (entry.isFile()) {
+      files.push(entryPath);
+    }
+  }
+
+  return files;
+}
+
+function primitiveType(dirName) {
+  const normalized = CONTENT_DIRS[dirName] || dirName;
+  return normalized.endsWith('s') ? normalized.slice(0, -1) : normalized;
+}
+
+async function installHooks(pkgDir, targetDir, tools, level, packageName, records, homeDir) {
   const hooksDir = path.join(pkgDir, 'hooks');
   const files = await fs.readdir(hooksDir);
+  let installed = 0;
 
   for (const file of files) {
     if (!file.endsWith('.json')) continue;
-    const hooksConfig = await fs.readJson(path.join(hooksDir, file));
+    const sourcePath = path.join(hooksDir, file);
+    const installMode = level === 'project'
+      ? 'merge-settings-project'
+      : 'merge-settings';
+    const hooksConfig = prepareSettingsConfig(
+      await fs.readJson(path.join(hooksDir, file)),
+      installMode
+    );
 
     for (const tool of tools) {
       if (tool !== 'claude') continue;
       const toolRoot = getToolRoot(targetDir, level, tool, homeDir);
       const settingsPath = path.join(toolRoot, 'settings.json');
       await mergeSettings(settingsPath, hooksConfig);
+      records.push(await buildManagedRecord({
+        packageName,
+        tool,
+        level,
+        type: 'hook',
+        sourcePath,
+        destinationPath: settingsPath,
+        installMode,
+        targetDir,
+      }));
+      installed++;
     }
   }
+
+  return installed;
 }
 
-async function installScripts(pkgDir, homeDir) {
+async function installScripts(pkgDir, targetDir, tools, level, packageName, records, homeDir) {
+  if (!tools.includes('claude')) return 0;
+
   const scriptsDir = path.join(pkgDir, 'scripts');
-  const userScriptsDir = path.join(homeDir, '.claude', 'scripts');
-  await fs.ensureDir(userScriptsDir);
-  await fs.copy(scriptsDir, userScriptsDir, { overwrite: false });
+  const scriptsDestinationDir = path.join(getToolRoot(targetDir, level, 'claude', homeDir), 'scripts');
+  const files = await listFiles(scriptsDir);
+  let installed = 0;
+
+  await fs.ensureDir(scriptsDestinationDir);
+  for (const sourcePath of files) {
+    const relativeFile = path.relative(scriptsDir, sourcePath);
+    const destinationPath = path.join(scriptsDestinationDir, relativeFile);
+    await fs.ensureDir(path.dirname(destinationPath));
+    await fs.copy(sourcePath, destinationPath, { overwrite: false });
+    records.push(await buildManagedRecord({
+      packageName,
+      tool: 'claude',
+      level,
+      type: 'script',
+      sourcePath,
+      destinationPath,
+      installMode: 'copy',
+      targetDir,
+    }));
+    installed++;
+  }
+
+  return installed;
 }
 
-async function installMcp(pkgDir, targetDir, tools, level, homeDir) {
+async function installMcp(pkgDir, targetDir, tools, level, packageName, records, homeDir) {
   const mcpDir = path.join(pkgDir, 'mcp');
   const files = await fs.readdir(mcpDir);
+  let installed = 0;
 
   for (const file of files) {
     if (!file.endsWith('.json')) continue;
-    const mcpConfig = await fs.readJson(path.join(mcpDir, file));
+    const sourcePath = path.join(mcpDir, file);
+    const mcpConfig = await fs.readJson(sourcePath);
 
     for (const tool of tools) {
       if (tool !== 'cursor') continue;
       const toolRoot = getToolRoot(targetDir, level, tool, homeDir);
       const mcpPath = path.join(toolRoot, 'mcp.json');
       await mergeMcpConfig(mcpPath, mcpConfig);
+      records.push(await buildManagedRecord({
+        packageName,
+        tool,
+        level,
+        type: 'mcp',
+        sourcePath,
+        destinationPath: mcpPath,
+        installMode: 'merge-mcp',
+        targetDir,
+      }));
+      installed++;
     }
   }
+
+  return installed;
 }

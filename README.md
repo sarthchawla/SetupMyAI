@@ -16,6 +16,7 @@ https://github.com/user-attachments/assets/eb0838d1-8f75-4e3a-aa86-988c8551fbd1
 | `@setupmyai/bdd-testing` | 2 - Stack | Playwright BDD workflow — 6 commands, 3 agents, skills, rules |
 | `@setupmyai/vercel-nextjs` | 2 - Stack | Vercel deployment debugging and log commands |
 | `@setupmyai/auth-security` | 2 - Stack | Auth best practices (Better Auth, 2FA, email/password security) |
+| `@setupmyai/pstack` | 2 - Optional | 56 pstack engineering skills, playbooks, and principles (MIT, pinned upstream) |
 | `@setupmyai/database` | 2 - Stack | PostgreSQL table design and migration skills |
 
 ## Quick Start
@@ -60,10 +61,34 @@ This launches an interactive picker:
 setupmyai install universal react-frontend bdd-testing
 setupmyai install --tool claude universal    # Claude Code only
 setupmyai install --tool cursor universal    # Cursor only
-setupmyai list                               # Show available & installed
-setupmyai sync                               # Pull latest versions
+setupmyai list                               # Show available packages
+setupmyai list --installed --level all       # Summarize managed installs
+setupmyai status --level all                 # Show drift and unmanaged files
+setupmyai update --dry-run --level all       # Preview managed updates
+setupmyai update --level all                 # Apply safe managed updates
+setupmyai update --check --level all         # Check without writing; exits 1 on drift
+setupmyai update --package universal         # Update one installed package
+setupmyai sync --level all                   # Backwards-compatible update alias
 setupmyai convert                            # Convert .md rules to .mdc and vice versa
 ```
+
+Installed files are tracked in `.setupmyai/installed.yml` at project level or
+`~/.setupmyai/installed.yml` at user level. `update` preserves locally modified
+managed files unless `--force` is supplied; unmanaged files are reported but
+never overwritten. `setupmyai status` also reports whether a newer CLI release
+is available, and a normal update can prompt before running the global CLI
+self-update. `update --check` remains read-only and never prompts or self-updates.
+
+### pstack (optional)
+
+```bash
+setupmyai install pstack --tool codex       # Project: .agents/skills/
+setupmyai install pstack --tool claude      # Project: .claude/skills/
+setupmyai install pstack --tool cursor      # Project: .cursor/skills/
+# Add --level user to install for your user instead of the project.
+```
+
+This bundles [backnotprop/pstack](https://github.com/backnotprop/pstack) at a pinned revision, including all skill support files and MIT notices. Installation copies files; invoke `poteto-help` for guidance, `setup-pstack` to configure models, or `poteto-mode` to start a task. Most upstream skills require explicit invocation; installation does not enable a mode or write model settings. `setupmyai sync` updates only manifest-backed managed installs; unmanaged installations are reported without being overwritten. Use `install <packages...>` to choose bundles. Optional runtime tools and reproducible vendoring are documented in [the bundle README](packages/pstack/README.md).
 
 ## How It Works
 
@@ -78,13 +103,16 @@ SetupMyAi packages  -->  APM resolves & places files  -->  Thin CLI handles the 
 Files are placed into:
 - `.claude/commands/`, `.claude/rules/`, `.claude/agents/`, `.claude/skills/` (Claude Code)
 - `.cursor/commands/`, `.cursor/rules/`, `.cursor/agents/`, `.cursor/skills/` (Cursor)
-- `~/.claude/scripts/` (user-level scripts like statusline)
+- `.codex/commands/`, `.codex/rules/`, `.codex/agents/`, `.agents/skills/`, `.codex/plugins/` (Codex)
+- `.claude/scripts/` or `~/.claude/scripts/` (project- or user-level scripts)
 
 ## Supported Tools
 
 - **Claude Code** — Full support (commands, rules, agents, skills, hooks, scripts)
 - **Cursor** — Full support (commands, rules with .mdc format, agents, skills)
-- **Codex** — Commands and instructions (via APM compatibility)
+- **Codex** — Commands, instructions, skills, and plugins (via APM compatibility)
+
+- **Codex** — Skills in `.agents/skills/`; commands and instructions via APM compatibility
 
 ## Adding Your Own Org Package
 
