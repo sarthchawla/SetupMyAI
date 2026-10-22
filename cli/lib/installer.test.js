@@ -7,12 +7,21 @@ import { installPackage } from './installer.js';
 
 describe('installPackage', () => {
   let tmpDir;
+  let originalHome;
 
-  before(() => {
+  before(async () => {
     tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'setupmyai-test-'));
+    originalHome = process.env.HOME;
+    process.env.HOME = path.join(tmpDir, 'home');
+    await fs.ensureDir(process.env.HOME);
   });
 
   after(async () => {
+    if (originalHome === undefined) {
+      delete process.env.HOME;
+    } else {
+      process.env.HOME = originalHome;
+    }
     await fs.remove(tmpDir);
   });
 
@@ -64,9 +73,9 @@ describe('installPackage', () => {
     const targetDir = path.join(tmpDir, 'md-to-mdc');
     await fs.ensureDir(targetDir);
 
-    await installPackage('kotlin-backend', targetDir, { tool: 'cursor' });
+    await installPackage('bdd-testing', targetDir, { tool: 'cursor' });
 
-    const mdcPath = path.join(targetDir, '.cursor', 'rules', 'kotlin-backend.mdc');
+    const mdcPath = path.join(targetDir, '.cursor', 'rules', 'feature-test-bdd.mdc');
     assert.ok(await fs.pathExists(mdcPath));
 
     const content = await fs.readFile(mdcPath, 'utf-8');
@@ -90,6 +99,54 @@ describe('installPackage', () => {
     await installPackage('kotlin-backend', targetDir, { tool: 'cursor' });
 
     assert.ok(!(await fs.pathExists(path.join(targetDir, '.claude'))));
+  });
+
+  it('does not install Claude-only scripts when Claude is not selected', async () => {
+    const targetDir = path.join(tmpDir, 'codex-no-claude-scripts');
+    await fs.ensureDir(targetDir);
+
+    await installPackage('universal', targetDir, {
+      tool: 'codex',
+      level: 'project',
+    });
+
+    assert.ok(!(await fs.pathExists(path.join(targetDir, '.claude', 'scripts'))));
+    assert.ok(!(await fs.pathExists(path.join(os.homedir(), '.claude', 'scripts'))));
+  });
+
+  it('installs plugin primitives only for Codex', async () => {
+    const packagesRoot = path.join(tmpDir, 'fixture-packages');
+    const pluginSource = path.join(
+      packagesRoot,
+      'plugin-fixture',
+      'plugins',
+      'example',
+      'plugin.json'
+    );
+    await fs.ensureDir(path.dirname(pluginSource));
+    await fs.writeJson(pluginSource, { name: 'example' });
+
+    const codexTarget = path.join(tmpDir, 'plugin-codex');
+    const cursorTarget = path.join(tmpDir, 'plugin-cursor');
+    const codexCount = await installPackage('plugin-fixture', codexTarget, {
+      tool: 'codex',
+      level: 'project',
+      packagesRoot,
+    });
+    const cursorCount = await installPackage('plugin-fixture', cursorTarget, {
+      tool: 'cursor',
+      level: 'project',
+      packagesRoot,
+    });
+
+    assert.equal(codexCount, 1);
+    assert.equal(cursorCount, 0);
+    assert.ok(
+      await fs.pathExists(
+        path.join(codexTarget, '.codex', 'plugins', 'example', 'plugin.json')
+      )
+    );
+    assert.ok(!(await fs.pathExists(path.join(cursorTarget, '.cursor', 'plugins'))));
   });
 
   // ── new tools: codex, opencode, gemini ──────────────────────────────────

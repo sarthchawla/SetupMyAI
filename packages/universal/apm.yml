@@ -4,6 +4,8 @@ description: "Universal agent commands, rules, hooks, and scripts for any repo"
 primitives:
   commands:
     - commands/*.md
+  skills:
+    - skills/*/SKILL.md
   rules:
     - rules/*.md
   hooks:

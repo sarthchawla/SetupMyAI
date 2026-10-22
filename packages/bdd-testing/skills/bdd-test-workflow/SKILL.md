@@ -1,7 +1,8 @@
 ---
 name: bdd-test-workflow
 description: This skill should be used when the user asks to "create bdd tests", "add playwright-bdd scenarios", "mock data for acceptance tests", "fix flaky bdd tests", "write feature and step files", or asks whether cases should be unit tests vs bdd tests.
-version: 0.1.0
+metadata:
+  version: "0.1.0"
 ---
 
 # BDD Test Workflow
@@ -48,6 +49,12 @@ Use a decision table in output:
 - Favor assertions on modal/toast/title/visible action states over brittle DOM shape.
 - Mirror production filtering semantics in mock repositories to avoid wrong-entity status resolution.
 - Verify schema assumptions with `psql` before and after mock-data updates.
+
+## Review of Changed Scenarios and Setup
+
+When reviewing tests claiming reset behavior, supplied-prop effects, scrolling, or no asynchronous request, use the installed `frontend-code-review` skill's `references/scenario-reachability.md` when available. Keep smoke coverage and relevant unit/BDD coverage distinct.
+
+For opt-in E2E URL/token setup, consult any available approved domain review supplement's E2E-prerequisite guidance before its consumers run. Keep the supplement's scope and evidence limits; use `review-adjudication` for review claims. This routing does not add live service access or change the frontend unit-testing scope.
 
 ## Validation Checklist
 

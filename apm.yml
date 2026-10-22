@@ -12,3 +12,4 @@ packages:
   - packages/vercel-nextjs
   - packages/auth-security
   - packages/database
+  - packages/pstack

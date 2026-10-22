@@ -84,7 +84,7 @@ For each unresolved comment:
 
 6. **Push**: `git push`
 
-7. **Reply** to each comment thread and resolve it.
+7. **Reply** to each comment thread and resolve it. End each reply with `*By AI*` on its own line.
 
 ### If no unresolved comments:
 
