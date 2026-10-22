@@ -43,10 +43,13 @@ describe('installed inventory', () => {
     await installPackage('pstack', targetDir, { tool: 'codex', level: 'project' });
     const unmanagedPath = path.join(targetDir, '.agents', 'skills', 'unmanaged', 'SKILL.md');
     await fs.outputFile(unmanagedPath, '# unmanaged\n');
+    const legacyPath = path.join(targetDir, '.codex', 'skills', 'legacy', 'SKILL.md');
+    await fs.outputFile(legacyPath, '# legacy unmanaged\n');
     const inventory = await getInventory(targetDir, { tool: 'codex', level: 'project' });
     assert.ok(inventory.items.some((item) => item.type === 'skill' && item.status === 'current'));
     assert.ok(inventory.items.some((item) => item.destinationPath === unmanagedPath && item.status === 'unmanaged'));
-    assert.ok(!inventory.items.some((item) => item.type === 'skill' && item.destinationPath.includes('/.codex/skills/')));
+    assert.ok(inventory.items.some((item) => item.destinationPath === legacyPath && item.status === 'unmanaged'));
+    assert.equal(new Set(inventory.items.map((item) => item.destinationPath)).size, inventory.items.length);
   });
 
   it('writes a project-level manifest during install', async () => {

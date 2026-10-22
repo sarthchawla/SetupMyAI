@@ -436,11 +436,11 @@ async function scanUnmanaged({ targetDir, levels, tools, managedDestinations }) 
     for (const tool of tools) {
       const toolRoot = getToolRoot(targetDir, level, tool);
       for (const dir of INVENTORY_DIRS) {
-        const contentRoot = tool === 'codex' && dir === 'skills'
-          ? getToolRoot(targetDir, level, 'agents')
-          : toolRoot;
-        const scanDir = path.join(contentRoot, dir);
-        const files = await walkFiles(scanDir);
+        const scanDirs = [path.join(toolRoot, dir)];
+        if (tool === 'codex' && dir === 'skills') {
+          scanDirs.push(path.join(getToolRoot(targetDir, level, 'agents'), dir));
+        }
+        const files = (await Promise.all(scanDirs.map(walkFiles))).flat();
         for (const file of files) {
           const resolved = path.resolve(file);
           if (managedDestinations.has(resolved)) continue;
