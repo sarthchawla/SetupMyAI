@@ -52,6 +52,18 @@ describe('installed inventory', () => {
     assert.equal(new Set(inventory.items.map((item) => item.destinationPath)).size, inventory.items.length);
   });
 
+
+  it('keeps explicit user-home installs and inventory in the same supplied home', async () => {
+    const targetDir = path.join(tmpDir, 'explicit-user-home');
+    const homeDir = path.join(tmpDir, 'supplied-home');
+    await installPackage('kotlin-backend', targetDir, { tool: 'codex', level: 'user', homeDir });
+    const inventory = await getInventory(targetDir, { tool: 'codex', level: 'user', homeDir });
+    assert.ok(inventory.items.length > 0);
+    assert.ok(inventory.items.every((item) => item.destinationPath.startsWith(homeDir + path.sep)));
+    assert.ok(inventory.items.every((item) => item.status === 'current'));
+    assert.ok(await fs.pathExists(path.join(homeDir, '.setupmyai', 'installed.yml')));
+  });
+
   it('writes a project-level manifest during install', async () => {
     const targetDir = path.join(tmpDir, 'project-manifest');
     const tools = ['claude', 'cursor', 'codex'];

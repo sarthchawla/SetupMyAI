@@ -105,15 +105,32 @@ glab api "projects/:fullpath/pipelines?ref=$(git branch --show-current)&per_page
 **GitLab (MCP):**
 Use `mcp__gitlab__list_pipelines` with `ref: current branch`, `per_page: 1`
 
+### GitLab child pipelines
+
+For GitLab, always include child pipelines in the CI decision. After identifying the latest parent pipeline for the branch, inspect bridge jobs and collect every downstream child pipeline:
+
+```bash
+glab api "projects/:fullpath/pipelines/<parent_pipeline_id>/bridges?per_page=100"
+glab api "projects/:fullpath/pipelines/<child_pipeline_id>"
+```
+
+If using MCP and there is no dedicated child-pipeline helper, use the GitLab API endpoint above through `glab api` or the available generic API tool.
+
+Evaluate CI as the aggregate of the parent pipeline plus all child pipelines:
+
+- If any parent or child pipeline is `running`, `pending`, `created`, or `waiting_for_resource`, CI is still in progress.
+- If any parent or child pipeline is `failed`, `canceled`, or `skipped`, CI is not green. Fetch failed jobs from the failing parent/child pipeline with `/fix-ci`.
+- Only report "CI is green!" when the parent pipeline and every child pipeline are `success`.
+
 ### If pipeline/workflow is `running` or `pending`:
-Report it's still in progress. No action needed -- will check on next iteration.
+Report it's still in progress. Include whether the pending/running work is in the parent pipeline or a child pipeline. No action needed -- will check on next iteration.
 
 ### If pipeline/workflow is `success`:
-Report "CI is green!"
+Report "CI is green!" only after confirming all child pipelines are also successful.
 
 ### If pipeline/workflow `failed`:
 
-1. **Get failed jobs** and their logs (see `/fix-ci` command for details).
+1. **Get failed jobs** and their logs from the failing parent or child pipeline (see `/fix-ci` command for details).
 
 2. **Analyze** logs for build errors, test failures, lint errors, runtime errors.
 
@@ -133,7 +150,7 @@ Always end with a status summary:
 | Check | Status |
 |-------|--------|
 | Unresolved Comments | 0 / X fixed |
-| CI Pipeline | green / running / failed |
+| CI Pipeline | green / running / failed, including child pipelines |
 
 Next action: <what will happen next iteration or "All clear - ready to merge">
 ```
@@ -146,4 +163,4 @@ This command is designed to run in a loop. Key principles:
 - **Ask for approval** only if a fix is ambiguous, risky, or changes business logic
 - **Always validate** before committing (build + relevant tests)
 - **Report status** concisely each iteration -- don't repeat context from previous runs
-- **Exit early** if both CI is green and no unresolved comments -- report "All clear"
+- **Exit early** only if CI is green including all child pipelines and no unresolved comments remain -- report "All clear"

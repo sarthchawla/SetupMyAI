@@ -111,16 +111,16 @@ export function resolvePackages(packages) {
   return new Set(packages.split(',').map((packageKey) => packageKey.trim()).filter(Boolean));
 }
 
-export function getToolRoot(targetDir, level, tool) {
+export function getToolRoot(targetDir, level, tool, homeDir = os.homedir()) {
   if (level === 'user') {
-    return path.join(os.homedir(), `.${tool}`);
+    return path.join(homeDir, `.${tool}`);
   }
   return path.join(targetDir, `.${tool}`);
 }
 
-export function getManifestPath(targetDir, level) {
+export function getManifestPath(targetDir, level, homeDir = os.homedir()) {
   if (level === 'user') {
-    return path.join(os.homedir(), MANAGED_DIR, MANIFEST_FILE);
+    return path.join(homeDir, MANAGED_DIR, MANIFEST_FILE);
   }
   return path.join(targetDir, MANAGED_DIR, MANIFEST_FILE);
 }
@@ -143,8 +143,8 @@ function managedRecordKey(item) {
   ].join('\0');
 }
 
-export async function loadManifest(targetDir, level) {
-  const manifestPath = getManifestPath(targetDir, level);
+export async function loadManifest(targetDir, level, homeDir) {
+  const manifestPath = getManifestPath(targetDir, level, homeDir);
   if (!(await fs.pathExists(manifestPath))) {
     return {
       version: MANIFEST_VERSION,
@@ -162,8 +162,8 @@ export async function loadManifest(targetDir, level) {
   };
 }
 
-export async function saveManifest(targetDir, level, manifest) {
-  const manifestPath = getManifestPath(targetDir, level);
+export async function saveManifest(targetDir, level, manifest, homeDir) {
+  const manifestPath = getManifestPath(targetDir, level, homeDir);
   const nextManifest = {
     version: MANIFEST_VERSION,
     generatedAt: nowIso(),
@@ -228,10 +228,10 @@ export async function buildManagedRecord({
   };
 }
 
-export async function recordInstall(targetDir, level, records) {
+export async function recordInstall(targetDir, level, records, homeDir) {
   if (!records.length) return;
 
-  const manifest = await loadManifest(targetDir, level);
+  const manifest = await loadManifest(targetDir, level, homeDir);
   const byManagedRecord = new Map(
     manifest.items.map((item) => [managedRecordKey(item), item])
   );
@@ -243,7 +243,7 @@ export async function recordInstall(targetDir, level, records) {
   manifest.items = [...byManagedRecord.values()].sort((a, b) => {
     return a.destinationPath.localeCompare(b.destinationPath);
   });
-  await saveManifest(targetDir, level, manifest);
+  await saveManifest(targetDir, level, manifest, homeDir);
 }
 
 async function getExpectedContent({ sourcePath, installMode }) {
@@ -429,16 +429,16 @@ async function walkFiles(dir) {
   return files;
 }
 
-async function scanUnmanaged({ targetDir, levels, tools, managedDestinations }) {
+async function scanUnmanaged({ targetDir, levels, tools, managedDestinations, homeDir }) {
   const unmanaged = [];
 
   for (const level of levels) {
     for (const tool of tools) {
-      const toolRoot = getToolRoot(targetDir, level, tool);
+      const toolRoot = getToolRoot(targetDir, level, tool, homeDir);
       for (const dir of INVENTORY_DIRS) {
         const scanDirs = [path.join(toolRoot, dir)];
         if (tool === 'codex' && dir === 'skills') {
-          scanDirs.push(path.join(getToolRoot(targetDir, level, 'agents'), dir));
+          scanDirs.push(path.join(getToolRoot(targetDir, level, 'agents', homeDir), dir));
         }
         const files = (await Promise.all(scanDirs.map(walkFiles))).flat();
         for (const file of files) {
@@ -486,8 +486,8 @@ export async function getInventory(targetDir, options = {}) {
   const manifests = [];
 
   for (const level of levels) {
-    const manifest = await loadManifest(targetDir, level);
-    manifests.push({ level, path: getManifestPath(targetDir, level), manifest });
+    const manifest = await loadManifest(targetDir, level, options.homeDir);
+    manifests.push({ level, path: getManifestPath(targetDir, level, options.homeDir), manifest });
 
     for (const item of manifest.items) {
       if (!requestedTools.includes(item.tool)) continue;
@@ -505,6 +505,7 @@ export async function getInventory(targetDir, options = {}) {
       levels,
       tools: requestedTools,
       managedDestinations,
+      homeDir: options.homeDir,
     });
 
   const items = [...managed, ...unmanaged];
@@ -818,6 +819,7 @@ export async function updateInventory(targetDir, options = {}) {
     tool: options.tool || 'all',
     package: options.package,
     includeUnmanaged: true,
+    homeDir: options.homeDir,
   });
   const results = [];
   const managedState = new Map(
@@ -867,7 +869,7 @@ export async function updateInventory(targetDir, options = {}) {
   if (!options.dryRun) {
     const updatedByLevel = new Map();
     for (const level of resolveLevels(options.level || 'project')) {
-      const manifest = await loadManifest(targetDir, level);
+      const manifest = await loadManifest(targetDir, level, options.homeDir);
       updatedByLevel.set(level, new Map(manifest.items.map((item) => [managedRecordKey(item), item])));
     }
 
@@ -890,7 +892,7 @@ export async function updateInventory(targetDir, options = {}) {
     for (const [level, itemsByDestination] of updatedByLevel) {
       await saveManifest(targetDir, level, {
         items: [...itemsByDestination.values()].sort((a, b) => a.destinationPath.localeCompare(b.destinationPath)),
-      });
+      }, options.homeDir);
     }
   }
 

@@ -62,7 +62,7 @@ Check existing MR/PR description for any links/references to preserve.
 ### Title Format
 
 Auto-detect title style from the branch name:
-- **Ticket-prefixed branches** (e.g., `CWS-2838-add-feature`): `CWS-2838 - Add feature description`
+- **Ticket-prefixed branches** (e.g., `APP-123-add-feature`): `APP-123 - Add feature description`
 - **Conventional branches** (e.g., `feature/add-auth`): `feat: Add auth`
 - **Other branches**: Concise descriptive title
 
