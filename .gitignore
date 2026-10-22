@@ -6,4 +6,5 @@ dist/
 .env.*
 coverage/
 .cache/
+.artifacts/
 sources.yml

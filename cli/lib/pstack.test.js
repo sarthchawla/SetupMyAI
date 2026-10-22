@@ -95,7 +95,7 @@ test('CLI installs pstack for Codex at project and user level with an isolated h
       assert.match(output, /pstack.*56 items/);
       assert.deepEqual(await tree(path.join(level === 'user' ? home : project, '.agents/skills')), await tree(path.join(bundle, 'skills')));
     }
-    assert.deepEqual(await fs.readdir(home), ['.agents']);
+    assert.deepEqual((await fs.readdir(home)).sort(), ['.agents', '.setupmyai']);
   } finally {
     await fs.remove(sandbox);
   }

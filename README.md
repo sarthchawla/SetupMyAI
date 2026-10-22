@@ -61,10 +61,23 @@ This launches an interactive picker:
 setupmyai install universal react-frontend bdd-testing
 setupmyai install --tool claude universal    # Claude Code only
 setupmyai install --tool cursor universal    # Cursor only
-setupmyai list                               # Show available & installed
-setupmyai sync                               # Pull latest versions
+setupmyai list                               # Show available packages
+setupmyai list --installed --level all       # Summarize managed installs
+setupmyai status --level all                 # Show drift and unmanaged files
+setupmyai update --dry-run --level all       # Preview managed updates
+setupmyai update --level all                 # Apply safe managed updates
+setupmyai update --check --level all         # Check without writing; exits 1 on drift
+setupmyai update --package universal         # Update one installed package
+setupmyai sync --level all                   # Backwards-compatible update alias
 setupmyai convert                            # Convert .md rules to .mdc and vice versa
 ```
+
+Installed files are tracked in `.setupmyai/installed.yml` at project level or
+`~/.setupmyai/installed.yml` at user level. `update` preserves locally modified
+managed files unless `--force` is supplied; unmanaged files are reported but
+never overwritten. `setupmyai status` also reports whether a newer CLI release
+is available, and a normal update can prompt before running the global CLI
+self-update. `update --check` remains read-only and never prompts or self-updates.
 
 ### pstack (optional)
 
@@ -75,7 +88,7 @@ setupmyai install pstack --tool cursor      # Project: .cursor/skills/
 # Add --level user to install for your user instead of the project.
 ```
 
-This bundles [backnotprop/pstack](https://github.com/backnotprop/pstack) at a pinned revision, including all skill support files and MIT notices. Installation copies files; invoke `poteto-help` for guidance, `setup-pstack` to configure models, or `poteto-mode` to start a task. Most upstream skills require explicit invocation; installation does not enable a mode or write model settings. `setupmyai sync` reinstalls every registered package, including pstack; use `install <packages...>` to choose bundles. Optional runtime tools and reproducible vendoring are documented in [the bundle README](packages/pstack/README.md).
+This bundles [backnotprop/pstack](https://github.com/backnotprop/pstack) at a pinned revision, including all skill support files and MIT notices. Installation copies files; invoke `poteto-help` for guidance, `setup-pstack` to configure models, or `poteto-mode` to start a task. Most upstream skills require explicit invocation; installation does not enable a mode or write model settings. `setupmyai sync` updates only manifest-backed managed installs; unmanaged installations are reported without being overwritten. Use `install <packages...>` to choose bundles. Optional runtime tools and reproducible vendoring are documented in [the bundle README](packages/pstack/README.md).
 
 ## How It Works
 
@@ -90,12 +103,15 @@ SetupMyAi packages  -->  APM resolves & places files  -->  Thin CLI handles the 
 Files are placed into:
 - `.claude/commands/`, `.claude/rules/`, `.claude/agents/`, `.claude/skills/` (Claude Code)
 - `.cursor/commands/`, `.cursor/rules/`, `.cursor/agents/`, `.cursor/skills/` (Cursor)
-- `~/.claude/scripts/` (user-level scripts like statusline)
+- `.codex/commands/`, `.codex/rules/`, `.codex/agents/`, `.agents/skills/`, `.codex/plugins/` (Codex)
+- `.claude/scripts/` or `~/.claude/scripts/` (project- or user-level scripts)
 
 ## Supported Tools
 
 - **Claude Code** — Full support (commands, rules, agents, skills, hooks, scripts)
 - **Cursor** — Full support (commands, rules with .mdc format, agents, skills)
+- **Codex** — Commands, instructions, skills, and plugins (via APM compatibility)
+
 - **Codex** — Skills in `.agents/skills/`; commands and instructions via APM compatibility
 
 ## Adding Your Own Org Package
