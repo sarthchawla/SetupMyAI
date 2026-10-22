@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-encode-lessons-in-structure-02-paraphrased-positive
+name: Pstack Principle Encode Lessons In Structure 02 Paraphrased Positive
+description: Bind the supported-value rule to authoritative data and explain how a violation will be caught.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Prevent another unsupported configuration value by turning the lesson into machine-checked
+    metadata.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-encode-lessons-in-structure-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-encode-lessons-in-structure/SKILL.md
+      mode: positive
+      threshold: 0.6

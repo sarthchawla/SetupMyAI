@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: universal-review-adjudication-03-boundary-negative
+name: Universal Review Adjudication 03 Boundary Negative
+description: Complete formatting without inventing reviewer claims or an adjudication ledger.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Format this supplied JSON document without analyzing review findings.
+expected: {}
+graders:
+  - type: trigger
+    name: universal-review-adjudication-03-boundary-negative-trigger
+    config:
+      skill_path: packages/universal/skills/review-adjudication/SKILL.md
+      mode: negative
+      threshold: 0.6

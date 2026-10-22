@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-guard-the-context-window-01-clear-positive
+name: Pstack Principle Guard The Context Window 01 Clear Positive
+description: Keep raw bulk outside the main context and preserve concise, attributable findings and
+  unresolved questions.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: This audit has large logs and repeated reads; delegate bulk inspection and keep a compact
+    evidence summary in the main conversation.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-guard-the-context-window-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-guard-the-context-window/SKILL.md
+      mode: positive
+      threshold: 0.6

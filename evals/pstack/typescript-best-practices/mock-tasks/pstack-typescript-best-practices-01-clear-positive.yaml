@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-typescript-best-practices-01-clear-positive
+name: Pstack Typescript Best Practices 01 Clear Positive
+description: Apply TypeScript-specific type and control-flow guidance grounded in the supplied code.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Review this TypeScript discriminated union and the exhaustiveness of its switch.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-typescript-best-practices-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/typescript-best-practices/SKILL.md
+      mode: positive
+      threshold: 0.6

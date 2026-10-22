@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-exhaust-the-design-space-04-constraint
+name: Pstack Principle Exhaust The Design Space 04 Constraint
+description: Provide meaningful contrasting designs and label their untested assumptions without
+  editing or fabricating test results.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Compare alternatives as sketches only, with no implementation or claim that user testing has
+    happened.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-exhaust-the-design-space-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-exhaust-the-design-space/SKILL.md
+      mode: positive
+      threshold: 0.6

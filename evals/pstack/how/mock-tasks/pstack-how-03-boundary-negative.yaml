@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-how-03-boundary-negative
+name: Pstack How 03 Boundary Negative
+description: Recognize a motivation/rationale question and route toward rationale evidence rather
+  than substituting only a runtime walkthrough.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Why did the team choose a queue over polling in the original design?
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-how-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/how/SKILL.md
+      mode: negative
+      threshold: 0.6

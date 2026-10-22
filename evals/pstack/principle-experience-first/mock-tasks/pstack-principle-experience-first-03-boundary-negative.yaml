@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-experience-first-03-boundary-negative
+name: Pstack Principle Experience First 03 Boundary Negative
+description: Perform the calculation without introducing a product-scope or UX tradeoff.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Compute the bitwise AND of 12 and 10.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-experience-first-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-experience-first/SKILL.md
+      mode: negative
+      threshold: 0.6

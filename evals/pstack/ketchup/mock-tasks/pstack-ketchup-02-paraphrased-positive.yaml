@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-ketchup-02-paraphrased-positive
+name: Pstack Ketchup 02 Paraphrased Positive
+description: Produce a concise current conversation update with evidence, outstanding work and
+  explicit decision context.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: I have returned to this conversation. What happened, what is still uncertain, and what do
+    you need me to decide?
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-ketchup-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/ketchup/SKILL.md
+      mode: positive
+      threshold: 0.6

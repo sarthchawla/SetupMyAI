@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-recall-03-boundary-negative
+name: Pstack Recall 03 Boundary Negative
+description: Answer the factual question without searching personal working history.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: What is the capital of Canada?
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-recall-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/recall/SKILL.md
+      mode: negative
+      threshold: 0.6

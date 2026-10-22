@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-build-the-lever-03-boundary-negative
+name: Pstack Principle Build The Lever 03 Boundary Negative
+description: Answer the trivial arithmetic directly rather than building automation.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: What is 2 plus 2?
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-build-the-lever-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-build-the-lever/SKILL.md
+      mode: negative
+      threshold: 0.6

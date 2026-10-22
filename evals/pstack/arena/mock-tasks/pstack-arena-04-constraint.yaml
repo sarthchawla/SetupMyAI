@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-arena-04-constraint
+name: Pstack Arena 04 Constraint
+description: Disclose unavailable independent runners and distinguish any local alternatives from
+  actual external model executions.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Arena two designs for an offline editor, but no external models are available; report that
+    limit and do not invent their responses.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-arena-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/arena/SKILL.md
+      mode: positive
+      threshold: 0.6

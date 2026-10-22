@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: universal-monitor-mr-03-boundary-negative
+name: Universal Monitor Mr 03 Boundary Negative
+description: Give the definition without creating a monitor or initiating repeated provider polling.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Explain what a pull request is in one sentence.
+expected: {}
+graders:
+  - type: trigger
+    name: universal-monitor-mr-03-boundary-negative-trigger
+    config:
+      skill_path: packages/universal/skills/monitor-mr/SKILL.md
+      mode: negative
+      threshold: 0.6

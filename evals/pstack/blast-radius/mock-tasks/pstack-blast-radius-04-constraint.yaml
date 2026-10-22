@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-blast-radius-04-constraint
+name: Pstack Blast Radius 04 Constraint
+description: Keep the assessment read-only and report the missing execution evidence rather than
+  replacing it with a proven-safe conclusion.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Assess this parser change read-only; a runtime is unavailable, so provide the exact proposed
+    safety check without claiming it ran.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-blast-radius-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/blast-radius/SKILL.md
+      mode: positive
+      threshold: 0.6

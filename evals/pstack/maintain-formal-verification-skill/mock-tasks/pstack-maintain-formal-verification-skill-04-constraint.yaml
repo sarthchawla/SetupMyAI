@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-maintain-formal-verification-skill-04-constraint
+name: Pstack Maintain Formal Verification Skill 04 Constraint
+description: Keep maintenance analysis grounded in supplied changes and do not claim proof or a
+  successful rerun.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Review model drift after these synthetic commits without running the solver; report proposed
+    changes and unverified properties.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-maintain-formal-verification-skill-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/maintain-formal-verification-skill/SKILL.md
+      mode: positive
+      threshold: 0.6

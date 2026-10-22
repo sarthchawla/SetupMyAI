@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-sharpen-02-paraphrased-positive
+name: Pstack Sharpen 02 Paraphrased Positive
+description: Replace vague activity with decision-relevant goals and constraints without prematurely
+  choosing implementation details.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: "This task is vague: make search better. Turn it into a useful scoped problem and identify
+    what needs clarification."
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-sharpen-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/sharpen/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -401,25 +401,28 @@ describe('loadEvaluationCoverage', () => {
     );
   });
 
-  it('matches all 60 canonical cases exactly in both execution modes', async () => {
+  it('matches the entire current skill inventory and every canonical case in both execution modes', async () => {
     const caseSet = YAML.parse(
       fs.readFileSync(path.join(REPOSITORY_ROOT, 'evals', 'cases.yaml'), 'utf8')
     );
     const canonicalBySkill = new Map(
       caseSet.skills.map((skill) => [skill.name, skill.tasks])
     );
-    assert.equal(caseSet.skills.length, 15);
+    const inventory = await loadSkillInventory(REPOSITORY_ROOT);
+    assert.deepEqual(caseSet.skills.map((skill) => skill.name).sort(), inventory.map((skill) => skill.name).sort());
+    assert.ok(caseSet.skills.every((skill) => skill.tasks.length === 4));
+    const expectedTasks = inventory.length * 4;
     assert.equal(
       caseSet.skills.reduce((total, skill) => total + skill.tasks.length, 0),
-      60
+      expectedTasks
     );
 
     for (const mode of ['model', 'offline']) {
       const suites = await loadEvaluationCoverage(REPOSITORY_ROOT, { mode });
-      assert.equal(suites.length, 15);
+      assert.equal(suites.length, inventory.length);
       assert.equal(
         suites.reduce((total, suite) => total + suite.tasks.length, 0),
-        60
+        expectedTasks
       );
 
       for (const suite of suites) {

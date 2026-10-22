@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-ketchup-03-boundary-negative
+name: Pstack Ketchup 03 Boundary Negative
+description: Address the food-history request rather than interpreting it as a conversation catch-up command.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Research the history of tomato sauce.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-ketchup-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/ketchup/SKILL.md
+      mode: negative
+      threshold: 0.6

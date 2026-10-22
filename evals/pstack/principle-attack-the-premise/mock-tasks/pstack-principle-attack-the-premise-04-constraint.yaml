@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-attack-the-premise-04-constraint
+name: Pstack Principle Attack The Premise 04 Constraint
+description: State a falsifiable premise and proposed check while separating log-based inference
+  from an executed experiment.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Challenge the shared cache assumption from these supplied logs only; do not claim a premise
+    test was executed.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-attack-the-premise-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-attack-the-premise/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-foundational-thinking-04-constraint
+name: Pstack Principle Foundational Thinking 04 Constraint
+description: Make the representation choices reviewable while respecting compatibility and
+  unexecuted-validation limits.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Sketch foundational types only; preserve the supplied public API contract and do not claim
+    the scaffold compiles.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-foundational-thinking-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-foundational-thinking/SKILL.md
+      mode: positive
+      threshold: 0.6

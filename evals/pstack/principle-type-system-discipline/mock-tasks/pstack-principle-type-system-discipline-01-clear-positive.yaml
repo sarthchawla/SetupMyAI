@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-type-system-discipline-01-clear-positive
+name: Pstack Principle Type System Discipline 01 Clear Positive
+description: Make illegal states unrepresentable using appropriate variants and exhaustiveness,
+  grounded in the domain contract.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Design a typed operation state so completed and failed fields cannot be combined illegally.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-type-system-discipline-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-type-system-discipline/SKILL.md
+      mode: positive
+      threshold: 0.6

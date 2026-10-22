@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-minimize-reader-load-01-clear-positive
+name: Pstack Principle Minimize Reader Load 01 Clear Positive
+description: Identify unnecessary indirection and hidden mutable state, then propose a smaller
+  understandable path.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Simplify a call chain with six one-caller wrappers and state that readers must remember
+    across functions.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-minimize-reader-load-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-minimize-reader-load/SKILL.md
+      mode: positive
+      threshold: 0.6

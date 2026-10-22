@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: universal-review-03-boundary-negative
+name: Universal Review 03 Boundary Negative
+description: Handle implementation rather than automatically invoking a user-only review bundle.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Implement a new endpoint from this specification; no review has been requested.
+expected: {}
+graders:
+  - type: trigger
+    name: universal-review-03-boundary-negative-trigger
+    config:
+      skill_path: packages/universal/skills/review/SKILL.md
+      mode: negative
+      threshold: 0.6

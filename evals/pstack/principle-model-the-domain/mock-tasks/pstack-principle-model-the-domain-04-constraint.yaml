@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-model-the-domain-04-constraint
+name: Pstack Principle Model The Domain 04 Constraint
+description: Preserve semantically different states and label missing domain information instead of
+  collapsing it into a convenient default.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Model the operation states from this contract only; keep unknown outcomes distinct from
+    proven failure.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-model-the-domain-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-model-the-domain/SKILL.md
+      mode: positive
+      threshold: 0.6

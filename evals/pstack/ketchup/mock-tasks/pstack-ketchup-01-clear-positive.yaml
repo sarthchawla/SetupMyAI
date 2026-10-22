@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-ketchup-01-clear-positive
+name: Pstack Ketchup 01 Clear Positive
+description: Summarize the relevant chat changes plainly and make each pending decision
+  understandable from the response alone.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: "/ketchup: catch me up on what changed in this chat since my last message and list decisions
+    waiting on me."
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-ketchup-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/ketchup/SKILL.md
+      mode: positive
+      threshold: 0.6

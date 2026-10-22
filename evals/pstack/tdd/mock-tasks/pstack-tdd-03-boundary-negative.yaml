@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-tdd-03-boundary-negative
+name: Pstack Tdd 03 Boundary Negative
+description: Do not force a red-green workflow onto an unclear expensive integration path;
+  investigate the uncertainty first.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Explore this expensive end-to-end failure; the test path is unclear and I have not asked for
+    test-driven development.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-tdd-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/tdd/SKILL.md
+      mode: negative
+      threshold: 0.6

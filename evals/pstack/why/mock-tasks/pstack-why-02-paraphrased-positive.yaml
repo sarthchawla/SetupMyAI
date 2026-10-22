@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-why-02-paraphrased-positive
+name: Pstack Why 02 Paraphrased Positive
+description: Trace the rationale and measurement basis, noting absent evidence instead of inventing
+  justification.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Explain the design rationale behind this retry threshold and whether the recorded
+    measurements support it.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-why-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/why/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-build-the-lever-02-paraphrased-positive
+name: Pstack Principle Build The Lever 02 Paraphrased Positive
+description: Capture the repeatable operation or proof in a bounded tool without turning it into an
+  unnecessary framework.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: We need a nontrivial configuration audit that reviewers can rerun; build the check as an
+    artifact instead of a one-off manual checklist.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-build-the-lever-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-build-the-lever/SKILL.md
+      mode: positive
+      threshold: 0.6

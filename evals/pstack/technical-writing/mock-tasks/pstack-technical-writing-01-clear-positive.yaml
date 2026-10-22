@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-technical-writing-01-clear-positive
+name: Pstack Technical Writing 01 Clear Positive
+description: Choose an appropriate document structure and revise sentences and steps for the
+  intended reader without changing technical facts.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Review this README for structure, clear developer prose and precise instructions.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-technical-writing-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/technical-writing/SKILL.md
+      mode: positive
+      threshold: 0.6

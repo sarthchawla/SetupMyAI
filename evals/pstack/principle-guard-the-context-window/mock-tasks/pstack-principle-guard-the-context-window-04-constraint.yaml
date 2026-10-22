@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-guard-the-context-window-04-constraint
+name: Pstack Principle Guard The Context Window 04 Constraint
+description: Reduce volume while retaining decisive failures, coverage limits and traceable evidence references.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Summarize large synthetic logs without dropping the one failure or claiming omitted logs
+    were clean.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-guard-the-context-window-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-guard-the-context-window/SKILL.md
+      mode: positive
+      threshold: 0.6

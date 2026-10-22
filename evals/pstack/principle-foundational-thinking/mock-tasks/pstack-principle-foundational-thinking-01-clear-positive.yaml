@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-foundational-thinking-01-clear-positive
+name: Pstack Principle Foundational Thinking 01 Clear Positive
+description: Establish domain representation and ownership before layering business logic onto an
+  unsuitable structure.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Before implementing the ledger, choose data structures and core types that make ownership
+    and transitions explicit.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-foundational-thinking-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-foundational-thinking/SKILL.md
+      mode: positive
+      threshold: 0.6

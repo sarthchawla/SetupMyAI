@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-sequence-verifiable-units-02-paraphrased-positive
+name: Pstack Principle Sequence Verifiable Units 02 Paraphrased Positive
+description: Make dependencies and per-step evidence explicit instead of producing unverifiable
+  intermediate bundles.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Stack these related PRs so a reviewer can see what each step proves and which base it requires.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-sequence-verifiable-units-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-sequence-verifiable-units/SKILL.md
+      mode: positive
+      threshold: 0.6

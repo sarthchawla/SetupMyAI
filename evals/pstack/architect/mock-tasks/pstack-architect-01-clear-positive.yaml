@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-architect-01-clear-positive
+name: Pstack Architect 01 Clear Positive
+description: Sketch caller usage, types, signatures and module boundaries before implementation;
+  ground the design in the supplied import requirements.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: /architect a resumable CSV import service before implementing it.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-architect-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/architect/SKILL.md
+      mode: positive
+      threshold: 0.6

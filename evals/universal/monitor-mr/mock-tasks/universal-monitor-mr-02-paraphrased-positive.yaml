@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: universal-monitor-mr-02-paraphrased-positive
+name: Universal Monitor Mr 02 Paraphrased Positive
+description: Track CI and per-remedy readiness without resolving uncertain claims or treating
+  incomplete checks as green.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Keep checking the merge request until its required checks and review issues are settled;
+    distinguish pending work from success.
+expected: {}
+graders:
+  - type: trigger
+    name: universal-monitor-mr-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/universal/skills/monitor-mr/SKILL.md
+      mode: positive
+      threshold: 0.6

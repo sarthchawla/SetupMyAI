@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-create-formal-verification-skill-04-constraint
+name: Pstack Create Formal Verification Skill 04 Constraint
+description: Draft a bounded model and procedure, disclose that the solver has not run, and do not
+  present the invariant as proven.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Draft a formal verification skill for a two-state lock from the supplied transition table;
+    no solver may run and no proof may be claimed.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-create-formal-verification-skill-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/create-formal-verification-skill/SKILL.md
+      mode: positive
+      threshold: 0.6

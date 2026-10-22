@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-experience-first-02-paraphrased-positive
+name: Pstack Principle Experience First 02 Paraphrased Positive
+description: Center understandable user outcomes while acknowledging implementation cost and
+  supplied constraints.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: The easiest implementation leaves confusing retry feedback. Compare the product impact
+    before deciding.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-experience-first-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-experience-first/SKILL.md
+      mode: positive
+      threshold: 0.6

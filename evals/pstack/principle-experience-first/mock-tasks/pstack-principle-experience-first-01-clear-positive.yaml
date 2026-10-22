@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-experience-first-01-clear-positive
+name: Pstack Principle Experience First 01 Clear Positive
+description: Evaluate the actual user experience and scope choices instead of selecting solely for
+  implementation convenience.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Choose whether to ship one polished export journey or three rough ones; prioritize the user
+    experience tradeoff.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-experience-first-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-experience-first/SKILL.md
+      mode: positive
+      threshold: 0.6

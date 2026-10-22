@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-setup-pstack-03-boundary-negative
+name: Pstack Setup Pstack 03 Boundary Negative
+description: Handle the document setting without modifying pstack model selection.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Change the default font size in a document.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-setup-pstack-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/setup-pstack/SKILL.md
+      mode: negative
+      threshold: 0.6

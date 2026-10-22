@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "echo 'No build step needed'",
-    "test": "node --test cli/**/*.test.js",
+    "test": "node --test cli/**/*.test.js scripts/skill-eval/*.test.js scripts/mr-learning/*.test.mjs",
     "test:eval": "node --test evals/**/*.test.js",
     "test:waza-schema": "node evals/lib/schema.js",
     "test:bats": "bats tests/bats/*.bats",
@@ -18,7 +18,9 @@
     "eval:check-generated": "node scripts/check-generated-evals.js",
     "eval:run:offline": "node scripts/waza-evals.js run --mode offline",
     "eval:run:model": "node scripts/waza-evals.js run --mode model",
-    "lint": "eslint cli/"
+    "lint": "eslint cli/",
+    "release:pack": "rm -rf .artifacts && mkdir -p .artifacts && pnpm pack --pack-destination .artifacts && node scripts/verify-pack.js .artifacts/*.tgz",
+    "release:publish": "pnpm publish .artifacts/*.tgz --access public --no-git-checks"
   },
   "dependencies": {
     "chalk": "^5.3.0",
@@ -32,7 +34,10 @@
     "cli/",
     "packages/",
     "apm.yml",
-    "README.md"
+    "README.md",
+    "scripts/skill-eval/",
+    "scripts/mr-learning/",
+    "scripts/skill-reconcile.mjs"
   ],
   "repository": {
     "type": "git",

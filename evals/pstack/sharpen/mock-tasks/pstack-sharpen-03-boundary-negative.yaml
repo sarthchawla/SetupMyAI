@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-sharpen-03-boundary-negative
+name: Pstack Sharpen 03 Boundary Negative
+description: Handle the fully specified routine instruction without an unnecessary task-discovery exercise.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Execute the already specified command exactly as supplied.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-sharpen-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/sharpen/SKILL.md
+      mode: negative
+      threshold: 0.6

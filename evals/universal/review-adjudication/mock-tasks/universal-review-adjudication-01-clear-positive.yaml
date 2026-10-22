@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: universal-review-adjudication-01-clear-positive
+name: Universal Review Adjudication 01 Clear Positive
+description: Judge each remedy independently with concrete evidence and preserve a supported defense
+  rather than accepting every suggestion.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: "Verify this reviewer claim before fixing it: split its two remedies and look for
+    counterevidence in the current contract."
+expected: {}
+graders:
+  - type: trigger
+    name: universal-review-adjudication-01-clear-positive-trigger
+    config:
+      skill_path: packages/universal/skills/review-adjudication/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-automate-me-03-boundary-negative
+name: Pstack Automate Me 03 Boundary Negative
+description: Handle the operational scheduling request rather than turning it into a personal
+  working-style skill.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Schedule a nightly database backup with an existing shell script.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-automate-me-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/automate-me/SKILL.md
+      mode: negative
+      threshold: 0.6

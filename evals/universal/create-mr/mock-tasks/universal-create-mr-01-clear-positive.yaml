@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: universal-create-mr-01-clear-positive
+name: Universal Create Mr 01 Clear Positive
+description: Create or prepare a draft by default, verify branch and existing-request identity, and
+  preserve the documented title and body requirements.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Create a pull request for this approved branch using the repository title policy and a
+    concise description.
+expected: {}
+graders:
+  - type: trigger
+    name: universal-create-mr-01-clear-positive-trigger
+    config:
+      skill_path: packages/universal/skills/create-mr/SKILL.md
+      mode: positive
+      threshold: 0.6

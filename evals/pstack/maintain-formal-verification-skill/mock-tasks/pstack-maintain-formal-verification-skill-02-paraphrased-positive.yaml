@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-maintain-formal-verification-skill-02-paraphrased-positive
+name: Pstack Maintain Formal Verification Skill 02 Paraphrased Positive
+description: Trace model-to-implementation correspondence and identify which harness or property
+  needs renewed verification.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Is the concurrency model still true to the code after the lease API changed?
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-maintain-formal-verification-skill-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/maintain-formal-verification-skill/SKILL.md
+      mode: positive
+      threshold: 0.6

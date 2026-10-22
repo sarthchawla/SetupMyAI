@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-typescript-best-practices-03-boundary-negative
+name: Pstack Typescript Best Practices 03 Boundary Negative
+description: Use the relevant database workflow rather than forcing TypeScript advice onto unrelated source.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Review an SQL migration with no TypeScript code.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-typescript-best-practices-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/typescript-best-practices/SKILL.md
+      mode: negative
+      threshold: 0.6

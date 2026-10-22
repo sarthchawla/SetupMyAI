@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-guard-the-context-window-03-boundary-negative
+name: Pstack Principle Guard The Context Window 03 Boundary Negative
+description: Answer the small fact directly without unnecessary delegation or context-management machinery.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: What is the filename extension for a JSON file?
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-guard-the-context-window-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-guard-the-context-window/SKILL.md
+      mode: negative
+      threshold: 0.6

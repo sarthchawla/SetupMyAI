@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-no-comments-02-paraphrased-positive
+name: Pstack No Comments 02 Paraphrased Positive
+description: Use the specialized comment review purpose and retain only grounded, scope-appropriate changes.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Have the comment specialist review these explanatory notes and suggest code-level encodings
+    for the real invariants.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-no-comments-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/no-comments/SKILL.md
+      mode: positive
+      threshold: 0.6

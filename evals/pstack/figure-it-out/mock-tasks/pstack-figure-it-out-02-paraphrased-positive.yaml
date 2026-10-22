@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-figure-it-out-02-paraphrased-positive
+name: Pstack Figure It Out 02 Paraphrased Positive
+description: Organize autonomous work with an evidence-backed hypothesis loop and reviewable
+  decisions, within the authorized scope.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: I will be away while this multi-package migration is investigated; design a plan that
+    records evidence and decisions.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-figure-it-out-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/figure-it-out/SKILL.md
+      mode: positive
+      threshold: 0.6

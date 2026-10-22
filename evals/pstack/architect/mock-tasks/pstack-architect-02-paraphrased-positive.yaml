@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-architect-02-paraphrased-positive
+name: Pstack Architect 02 Paraphrased Positive
+description: Compare structurally distinct design sketches and synthesize an explicit interface and
+  ownership rationale rather than jumping straight to code.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: "Design the shape of a job scheduler first: show competing interfaces and explain the chosen
+    ownership boundaries."
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-architect-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/architect/SKILL.md
+      mode: positive
+      threshold: 0.6

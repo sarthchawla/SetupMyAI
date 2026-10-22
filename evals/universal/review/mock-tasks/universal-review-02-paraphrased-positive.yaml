@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: universal-review-02-paraphrased-positive
+name: Universal Review 02 Paraphrased Positive
+description: Use the existing review tier and bounded change scope, disclose unavailable reviewers
+  and keep the request read-only.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Review the staged diff with the configured specialists and consolidate supported findings
+    without applying fixes.
+expected: {}
+graders:
+  - type: trigger
+    name: universal-review-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/universal/skills/review/SKILL.md
+      mode: positive
+      threshold: 0.6

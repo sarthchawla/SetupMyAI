@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-in-your-own-words-03-boundary-negative
+name: Pstack In Your Own Words 03 Boundary Negative
+description: Answer the calculation rather than reframing it as a product-goal discussion.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Calculate the median of 3, 7, and 8.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-in-your-own-words-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/in-your-own-words/SKILL.md
+      mode: negative
+      threshold: 0.6

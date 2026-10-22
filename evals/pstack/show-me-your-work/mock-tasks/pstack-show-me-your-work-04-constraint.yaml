@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-show-me-your-work-04-constraint
+name: Pstack Show Me Your Work 04 Constraint
+description: Provide an auditable minimal record shape while preserving local-only, no-commit and
+  privacy constraints.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Draft the TSV format and sample synthetic rows only; do not commit logs or include secrets
+    and raw transcripts.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-show-me-your-work-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/show-me-your-work/SKILL.md
+      mode: positive
+      threshold: 0.6

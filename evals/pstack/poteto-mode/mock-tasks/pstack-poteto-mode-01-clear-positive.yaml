@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-poteto-mode-01-clear-positive
+name: Pstack Poteto Mode 01 Clear Positive
+description: Use concise clear prose and concrete evidence, with subagents only when appropriate to the task.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: "/poteto-mode: explain the proposed parser change in your concise, evidence-backed working
+    style."
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-poteto-mode-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/poteto-mode/SKILL.md
+      mode: positive
+      threshold: 0.6

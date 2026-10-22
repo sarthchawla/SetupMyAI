@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-make-bot-ui-01-clear-positive
+name: Pstack Make Bot Ui 01 Clear Positive
+description: Design the UI-to-webhook interaction and identify required sender-key configuration
+  without exposing credentials.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Build a small status page whose button wakes a Grok Bot over a webhook.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-make-bot-ui-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/make-bot-ui/SKILL.md
+      mode: positive
+      threshold: 0.6

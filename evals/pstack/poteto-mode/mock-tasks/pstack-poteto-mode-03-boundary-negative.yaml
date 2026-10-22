@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-poteto-mode-03-boundary-negative
+name: Pstack Poteto Mode 03 Boundary Negative
+description: Answer the botanical question without activating a named agent working style.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: List three facts about a potato plant.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-poteto-mode-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/poteto-mode/SKILL.md
+      mode: negative
+      threshold: 0.6

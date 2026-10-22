@@ -7,7 +7,8 @@ description: >-
   cases, mock data for acceptance tests, fix flaky Playwright-BDD tests.
   DO NOT USE FOR: isolated unit tests for pure calculation functions, unit-only
   work with no end-to-end user journey.
-version: 0.1.0
+metadata:
+  version: "0.1.0"
 ---
 
 # BDD Test Workflow
@@ -54,6 +55,12 @@ Use a decision table in output:
 - Favor assertions on modal/toast/title/visible action states over brittle DOM shape.
 - Mirror production filtering semantics in mock repositories to avoid wrong-entity status resolution.
 - Verify schema assumptions with `psql` before and after mock-data updates.
+
+## Review of Changed Scenarios and Setup
+
+When reviewing tests claiming reset behavior, supplied-prop effects, scrolling, or no asynchronous request, use the installed `frontend-code-review` skill's `references/scenario-reachability.md` when available. Keep smoke coverage and relevant unit/BDD coverage distinct.
+
+For opt-in E2E URL/token setup, consult any available approved domain review supplement's E2E-prerequisite guidance before its consumers run. Keep the supplement's scope and evidence limits; use `review-adjudication` for review claims. This routing does not add live service access or change the frontend unit-testing scope.
 
 ## Validation Checklist
 

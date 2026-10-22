@@ -6,6 +6,7 @@ import path from 'node:path';
 import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
 import fs from 'fs-extra';
+import { loadSkillInventory } from './inventory.js';
 import {
   outputFilenameForSuite,
   runWazaEvals,
@@ -14,6 +15,8 @@ import {
 const execFileAsync = promisify(execFile);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPOSITORY_ROOT = path.resolve(__dirname, '../..');
+const SUITE_COUNT = (await loadSkillInventory(REPOSITORY_ROOT)).length;
+const TASK_COUNT = SUITE_COUNT * 4;
 const temporaryRoots = [];
 const RESULT_MANIFEST_NAME = '.waza-results-manifest.json';
 
@@ -137,7 +140,7 @@ describe('waza-evals CLI', () => {
       .trim()
       .split('\n')
       .map((line) => JSON.parse(line));
-    assert.equal(invocations.length, 16);
+    assert.equal(invocations.length, SUITE_COUNT + 1);
     assert.deepEqual(invocations[0], ['--version']);
 
     for (const args of invocations.slice(1)) {
@@ -151,7 +154,7 @@ describe('waza-evals CLI', () => {
       .trim()
       .split('\n')
       .map((line) => JSON.parse(line));
-    assert.equal(environments.length, 16);
+    assert.equal(environments.length, SUITE_COUNT + 1);
     for (const environment of environments) {
       assert.notEqual(environment.home, os.homedir());
       assert.match(environment.home, /setupmyai-waza-home-/);
@@ -176,8 +179,8 @@ describe('waza-evals CLI', () => {
     assert.equal(summary.mode, 'offline');
     assert.equal(summary.modelTransmissionAcknowledged, false);
     assert.deepEqual(summary.tasks, {
-      total: 60,
-      succeeded: 60,
+      total: TASK_COUNT,
+      succeeded: TASK_COUNT,
       failed: 0,
       errors: 0,
       skipped: 0,
@@ -188,8 +191,8 @@ describe('waza-evals CLI', () => {
     assert.equal(manifest.owner, '@setupmyai/cli:waza-results');
     assert.equal(manifest.version, 1);
     assert.equal(manifest.summary, 'summary.json');
-    assert.equal(manifest.artifacts.length, 15);
-    assert.equal(new Set(manifest.artifacts).size, 15);
+    assert.equal(manifest.artifacts.length, SUITE_COUNT);
+    assert.equal(new Set(manifest.artifacts).size, SUITE_COUNT);
   });
 
   it('removes stale artifacts and fails closed when Waza writes no result', async () => {
@@ -260,8 +263,8 @@ describe('waza-evals CLI', () => {
 
     assert.equal(result.exitCode, 1);
     assert.equal(result.report.passed, 0);
-    assert.equal(result.report.failed, 15);
-    assert.equal(result.report.artifactErrors, 15);
+    assert.equal(result.report.failed, SUITE_COUNT);
+    assert.equal(result.report.artifactErrors, SUITE_COUNT);
     assert.equal(await fs.pathExists(stalePath), false);
   });
 

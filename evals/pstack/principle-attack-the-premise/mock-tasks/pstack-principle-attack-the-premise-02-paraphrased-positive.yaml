@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-attack-the-premise-02-paraphrased-positive
+name: Pstack Principle Attack The Premise 02 Paraphrased Positive
+description: Challenge the repeated underlying assumption using evidence from the contract and
+  failure mechanism.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Three retry tweaks failed identically; investigate whether the operation is retryable in the
+    first place.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-attack-the-premise-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-attack-the-premise/SKILL.md
+      mode: positive
+      threshold: 0.6

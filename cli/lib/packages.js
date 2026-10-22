@@ -31,6 +31,11 @@ export const PACKAGES = {
     tier: 2,
     description: 'Auth & security best practices',
   },
+  pstack: {
+    name: '@setupmyai/pstack',
+    tier: 2,
+    description: 'pstack engineering skills, playbooks, and principles',
+  },
   database: {
     name: '@setupmyai/database',
     tier: 2,

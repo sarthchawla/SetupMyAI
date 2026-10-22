@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-technical-writing-02-paraphrased-positive
+name: Pstack Technical Writing 02 Paraphrased Positive
+description: Separate explanation from procedural material and preserve explicit evidence and
+  unresolved questions.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Turn these engineering notes into a concise RFC with a clear decision, rationale and
+    executable instructions.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-technical-writing-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/technical-writing/SKILL.md
+      mode: positive
+      threshold: 0.6

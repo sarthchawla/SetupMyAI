@@ -21,9 +21,9 @@ describe('packages', () => {
   });
 
   describe('listPackages', () => {
-    it('returns all 7 packages', () => {
+    it('returns all 8 packages', () => {
       const packages = listPackages();
-      assert.equal(packages.length, 7);
+      assert.equal(packages.length, 8);
     });
 
     it('returns packages sorted by tier (tier 1 first, then 2, then 3)', () => {

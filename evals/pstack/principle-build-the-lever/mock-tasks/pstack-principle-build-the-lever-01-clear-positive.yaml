@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-build-the-lever-01-clear-positive
+name: Pstack Principle Build The Lever 01 Clear Positive
+description: Propose a repeatable tool whose preview and validation make the transformation auditable.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Migrate imports across fifty modules with a rerunnable codemod rather than hand-editing each
+    call site.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-build-the-lever-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-build-the-lever/SKILL.md
+      mode: positive
+      threshold: 0.6

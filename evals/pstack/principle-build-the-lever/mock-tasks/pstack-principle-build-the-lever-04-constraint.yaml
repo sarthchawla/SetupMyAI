@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-build-the-lever-04-constraint
+name: Pstack Principle Build The Lever 04 Constraint
+description: Specify conservative transformation boundaries, preview behavior and verification
+  without executing source mutations.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Design a codemod dry run only; preserve unrecognized syntax and do not modify source files.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-build-the-lever-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-build-the-lever/SKILL.md
+      mode: positive
+      threshold: 0.6

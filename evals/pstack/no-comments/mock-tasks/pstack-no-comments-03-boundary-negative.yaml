@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-no-comments-03-boundary-negative
+name: Pstack No Comments 03 Boundary Negative
+description: Answer the language-syntax question without running a comment-removal review.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Explain how comment syntax differs between Python and JavaScript.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-no-comments-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/no-comments/SKILL.md
+      mode: negative
+      threshold: 0.6

@@ -110,6 +110,6 @@ waza coverage . \
   --format json
 ```
 
-The repository test suite additionally verifies the exact 15-skill inventory,
-all 60 canonical cases, the generated grader schema, and resolvable skill
+The repository test suite additionally verifies the exact current skill inventory,
+all four canonical cases per skill, the generated grader schema, and resolvable skill
 directories.

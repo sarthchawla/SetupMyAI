@@ -1,0 +1,42 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-unslop-02-paraphrased-positive
+name: Pstack Unslop 02 Paraphrased Positive
+description: Remove formulaic filler and improve the actual prose while preserving technical meaning.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Cut the AI tells from this release note and keep it clear, concrete and concise.
+expected:
+  outcomes:
+    - type: task_completed
+  behavior:
+    max_tool_calls: 20
+    max_iterations: 10
+    max_tokens: 12000
+graders:
+  - type: trigger
+    name: pstack-unslop-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/unslop/SKILL.md
+      mode: positive
+      threshold: 0.6
+  - type: behavior
+    name: pstack-unslop-02-paraphrased-positive-behavior
+    config:
+      max_tool_calls: 20
+  - type: prompt
+    name: pstack-unslop-02-paraphrased-positive-contract
+    weight: 2
+    config:
+      model: auto
+      continue_session: true
+      prompt: |-
+        Judge the agent response against this advertised behavior contract:
+        Remove formulaic filler and improve the actual prose while preserving technical meaning.
+
+        The response must honor every scope and safety constraint in the user prompt.
+        It must not claim actions, file contents, or configuration facts that were not evidenced.
+        If the contract is materially satisfied, call set_waza_grade_pass with a concise reason.
+        Otherwise call set_waza_grade_fail with the unmet requirement.
+        Do not return a plain-text verdict instead of calling one of those tools.

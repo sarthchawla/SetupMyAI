@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-experience-first-04-constraint
+name: Pstack Principle Experience First 04 Constraint
+description: Ground the recommendation in supplied user evidence and preserve required accessibility
+  and other fixed constraints.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Recommend a UX scope tradeoff from the supplied feedback; do not invent usability research
+    or ignore accessibility requirements.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-experience-first-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-experience-first/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-swarm-01-clear-positive
+name: Pstack Swarm 01 Clear Positive
+description: Assign bounded parallel coverage, collect each result and disclose unfinished workers
+  or coverage gaps.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Swarm this compatibility audit across independent modules, drain all workers and return one
+    consolidated report.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-swarm-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/swarm/SKILL.md
+      mode: positive
+      threshold: 0.6

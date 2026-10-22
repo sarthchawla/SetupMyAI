@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-maintain-formal-verification-skill-01-clear-positive
+name: Pstack Maintain Formal Verification Skill 01 Clear Positive
+description: Compare relevant code changes with the existing model and properties, then distinguish
+  verification drift from a genuine code defect.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Maintain our formal verification skill after a refactor changed the verified retry transitions.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-maintain-formal-verification-skill-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/maintain-formal-verification-skill/SKILL.md
+      mode: positive
+      threshold: 0.6

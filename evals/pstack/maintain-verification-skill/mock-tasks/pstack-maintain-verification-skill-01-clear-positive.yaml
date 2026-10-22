@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-maintain-verification-skill-01-clear-positive
+name: Pstack Maintain Verification Skill 01 Clear Positive
+description: Compare existing verification guidance with current features and identify
+  evidence-backed omissions or stale instructions.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Audit the verify skill and feature map after a new export journey was added.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-maintain-verification-skill-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/maintain-verification-skill/SKILL.md
+      mode: positive
+      threshold: 0.6

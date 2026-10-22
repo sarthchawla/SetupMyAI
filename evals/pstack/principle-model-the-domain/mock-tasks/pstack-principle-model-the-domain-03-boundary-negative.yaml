@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-model-the-domain-03-boundary-negative
+name: Pstack Principle Model The Domain 03 Boundary Negative
+description: Complete the prose request without constructing a stateful domain model.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Write a greeting for a conference email.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-model-the-domain-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-model-the-domain/SKILL.md
+      mode: negative
+      threshold: 0.6

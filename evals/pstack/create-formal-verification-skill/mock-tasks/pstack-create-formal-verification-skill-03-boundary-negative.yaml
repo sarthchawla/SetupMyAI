@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-create-formal-verification-skill-03-boundary-negative
+name: Pstack Create Formal Verification Skill 03 Boundary Negative
+description: Handle the styling task without inventing a formal verification project.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Write a CSS rule that centers a heading.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-create-formal-verification-skill-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/create-formal-verification-skill/SKILL.md
+      mode: negative
+      threshold: 0.6

@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-explain-the-number-04-constraint
+name: Pstack Principle Explain The Number 04 Constraint
+description: Distinguish arithmetic from causal evidence and disclose the limits of the supplied measurements.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Analyze these synthetic throughput totals without rerunning anything; state which causal
+    conclusions remain unsupported.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-explain-the-number-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-explain-the-number/SKILL.md
+      mode: positive
+      threshold: 0.6

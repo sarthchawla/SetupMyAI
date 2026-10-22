@@ -1,0 +1,6 @@
+name: "@setupmyai/pstack"
+version: 1.0.0
+description: "Pinned pstack skills and supporting workflows"
+primitives:
+  skills:
+    - skills/*/SKILL.md

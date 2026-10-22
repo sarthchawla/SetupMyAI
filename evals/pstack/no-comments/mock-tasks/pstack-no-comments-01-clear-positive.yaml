@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-no-comments-01-clear-positive
+name: Pstack No Comments 01 Clear Positive
+description: Inspect and judge comment findings before applying accepted changes; distinguish
+  valuable constraint encodings from indiscriminate deletion.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Run /no-comments on this diff and adjudicate which comments should become clearer code or
+    explicit constraints.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-no-comments-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/no-comments/SKILL.md
+      mode: positive
+      threshold: 0.6

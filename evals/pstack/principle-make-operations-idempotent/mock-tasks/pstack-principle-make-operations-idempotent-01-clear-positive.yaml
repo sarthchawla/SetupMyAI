@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-make-operations-idempotent-01-clear-positive
+name: Pstack Principle Make Operations Idempotent 01 Clear Positive
+description: Model partial progress and retries so repeated execution reaches the intended state
+  without duplicating completed effects.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Design an import command that can restart after a crash and converge without duplicate records.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-make-operations-idempotent-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-make-operations-idempotent/SKILL.md
+      mode: positive
+      threshold: 0.6

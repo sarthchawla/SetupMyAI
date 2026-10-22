@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-technical-writing-03-boundary-negative
+name: Pstack Technical Writing 03 Boundary Negative
+description: Address the implementation task without treating it as a technical-document rewrite.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Implement a binary-search function; no documentation changes are requested.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-technical-writing-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/technical-writing/SKILL.md
+      mode: negative
+      threshold: 0.6

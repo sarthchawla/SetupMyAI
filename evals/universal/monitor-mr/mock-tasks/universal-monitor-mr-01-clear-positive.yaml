@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: universal-monitor-mr-01-clear-positive
+name: Universal Monitor Mr 01 Clear Positive
+description: Inspect the current request and complete CI scope, adjudicate findings and act only
+  within the authorized workflow.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Monitor this pull request for new review findings and CI failures, using the existing
+    authorization for scoped fixes.
+expected: {}
+graders:
+  - type: trigger
+    name: universal-monitor-mr-01-clear-positive-trigger
+    config:
+      skill_path: packages/universal/skills/monitor-mr/SKILL.md
+      mode: positive
+      threshold: 0.6

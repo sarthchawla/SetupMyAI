@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-laziness-protocol-03-boundary-negative
+name: Pstack Principle Laziness Protocol 03 Boundary Negative
+description: Answer the translation without conducting a software-refactoring exercise.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Translate hello into Spanish.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-laziness-protocol-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-laziness-protocol/SKILL.md
+      mode: negative
+      threshold: 0.6

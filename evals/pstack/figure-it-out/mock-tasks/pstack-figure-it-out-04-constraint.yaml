@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-figure-it-out-04-constraint
+name: Pstack Figure It Out 04 Constraint
+description: Produce a scoped, auditable plan from the note and keep proposed experiments separate
+  from completed work.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Figure out a migration strategy from this supplied design note only; do not execute commands
+    or commit changes.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-figure-it-out-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/figure-it-out/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-minimize-reader-load-02-paraphrased-positive
+name: Pstack Principle Minimize Reader Load 02 Paraphrased Positive
+description: Tighten state scope and make ownership and data flow explicit without erasing
+  meaningful module boundaries.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: This function is hard to trace because values change far from their use; reduce the context
+    a maintainer must hold.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-minimize-reader-load-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-minimize-reader-load/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-laziness-protocol-01-clear-positive
+name: Pstack Principle Laziness Protocol 01 Clear Positive
+description: Challenge accidental abstraction and prefer the smallest complete solution that preserves behavior.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: This refactor adds three layers for one caller; look for the smallest change and unnecessary
+    code to delete.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-laziness-protocol-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-laziness-protocol/SKILL.md
+      mode: positive
+      threshold: 0.6

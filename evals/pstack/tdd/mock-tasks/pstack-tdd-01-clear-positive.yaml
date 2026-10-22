@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-tdd-01-clear-positive
+name: Pstack Tdd 01 Clear Positive
+description: Start from a meaningful failing local test, implement the smallest correction and
+  verify the tested behavior.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: "Use TDD to fix the pure parseCount function: first write a failing regression test for
+    negative input."
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-tdd-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/tdd/SKILL.md
+      mode: positive
+      threshold: 0.6

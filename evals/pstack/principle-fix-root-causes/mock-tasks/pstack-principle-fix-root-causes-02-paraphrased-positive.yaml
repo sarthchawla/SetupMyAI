@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-fix-root-causes-02-paraphrased-positive
+name: Pstack Principle Fix Root Causes 02 Paraphrased Positive
+description: Investigate the shared origin and propose the smallest cause-level fix rather than
+  duplicating symptom patches.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Several handlers need the same workaround after object construction; find and correct the
+    originating defect.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-fix-root-causes-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-fix-root-causes/SKILL.md
+      mode: positive
+      threshold: 0.6

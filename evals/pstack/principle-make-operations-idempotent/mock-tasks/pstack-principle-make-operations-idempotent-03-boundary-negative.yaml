@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-make-operations-idempotent-03-boundary-negative
+name: Pstack Principle Make Operations Idempotent 03 Boundary Negative
+description: Answer the language question rather than introducing retry or state-convergence design.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Define the grammatical difference between past and present tense.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-make-operations-idempotent-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-make-operations-idempotent/SKILL.md
+      mode: negative
+      threshold: 0.6

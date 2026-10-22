@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-in-your-own-words-02-paraphrased-positive
+name: Pstack In Your Own Words 02 Paraphrased Positive
+description: Separate the intended user outcome from assumed implementation choices and identify
+  material ambiguity.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Before planning, tell me what you think I am trying to accomplish with this offline editing
+    feature.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-in-your-own-words-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/in-your-own-words/SKILL.md
+      mode: positive
+      threshold: 0.6

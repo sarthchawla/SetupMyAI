@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-separate-before-serializing-shared-state-03-boundary-negative
+name: Pstack Principle Separate Before Serializing Shared State 03 Boundary Negative
+description: Perform the pure operation without inventing concurrent shared state or locking.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Add two numbers in a local pure function.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-separate-before-serializing-shared-state-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-separate-before-serializing-shared-state/SKILL.md
+      mode: negative
+      threshold: 0.6

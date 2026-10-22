@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: universal-create-mr-02-paraphrased-positive
+name: Universal Create Mr 02 Paraphrased Positive
+description: Retain default draft state and distinguish creation authorization from explicit
+  permission to create ready.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Open a merge request for the completed change; passing CI does not mean I asked for ready state.
+expected: {}
+graders:
+  - type: trigger
+    name: universal-create-mr-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/universal/skills/create-mr/SKILL.md
+      mode: positive
+      threshold: 0.6

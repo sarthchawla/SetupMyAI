@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-bro-04-constraint
+name: Pstack Bro 04 Constraint
+description: Use plain language and preserve the qualification that results are preliminary.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Bro, simplify the last message without dropping its warning that the results are preliminary.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-bro-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/bro/SKILL.md
+      mode: positive
+      threshold: 0.6

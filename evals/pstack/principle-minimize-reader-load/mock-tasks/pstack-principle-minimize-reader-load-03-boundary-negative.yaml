@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-minimize-reader-load-03-boundary-negative
+name: Pstack Principle Minimize Reader Load 03 Boundary Negative
+description: Perform the bounded text operation without proposing a code-structure refactor.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Count the words in this sentence.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-minimize-reader-load-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-minimize-reader-load/SKILL.md
+      mode: negative
+      threshold: 0.6

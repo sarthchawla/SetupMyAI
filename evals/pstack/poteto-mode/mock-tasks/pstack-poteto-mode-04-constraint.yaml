@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-poteto-mode-04-constraint
+name: Pstack Poteto Mode 04 Constraint
+description: Honor the task authorization and report verification limits rather than letting a style
+  preference imply edits or proven results.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Use poteto style, but keep this task read-only and preserve the uncertainty that no tests
+    have run.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-poteto-mode-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/poteto-mode/SKILL.md
+      mode: positive
+      threshold: 0.6

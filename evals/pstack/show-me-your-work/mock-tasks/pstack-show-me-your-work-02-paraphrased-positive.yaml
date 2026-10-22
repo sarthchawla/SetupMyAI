@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-show-me-your-work-02-paraphrased-positive
+name: Pstack Show Me Your Work 02 Paraphrased Positive
+description: Keep concise durable decisions rather than raw unfiltered logs and distinguish local
+  records from committed artifacts.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: I will review this multi-phase task later; make the important decisions and their supporting
+    checks auditable.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-show-me-your-work-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/show-me-your-work/SKILL.md
+      mode: positive
+      threshold: 0.6

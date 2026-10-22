@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-unslop-03-boundary-negative
+name: Pstack Unslop 03 Boundary Negative
+description: Handle the technical calculation without treating it as a prose-style revision.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Compute the checksum of the supplied byte sequence.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-unslop-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/unslop/SKILL.md
+      mode: negative
+      threshold: 0.6

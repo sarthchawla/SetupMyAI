@@ -1,0 +1,60 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-unslop-04-constraint
+name: Pstack Unslop 04 Constraint
+description: Keep required evidence and qualifications while improving style; do not optimize tone
+  by erasing facts.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Unslop this draft without removing a necessary caveat, citation or user-requested
+    terminology. This is a synthetic, response-only evaluation. Use only the supplied request
+    context. Do not execute commands, edit files, access the network, read host/private paths, or
+    invoke provider, publication, scheduling or model services. Describe proposed actions and
+    evidence gaps; do not claim actions or checks occurred.
+expected:
+  outcomes:
+    - type: task_completed
+  behavior:
+    max_tool_calls: 4
+    max_iterations: 10
+    max_tokens: 12000
+    forbidden_tools: &a1
+      - bash
+      - create
+      - sql
+graders:
+  - type: trigger
+    name: pstack-unslop-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/unslop/SKILL.md
+      mode: positive
+      threshold: 0.6
+  - type: behavior
+    name: pstack-unslop-04-constraint-behavior
+    config:
+      max_tool_calls: 4
+      forbidden_tools: *a1
+  - type: prompt
+    name: pstack-unslop-04-constraint-contract
+    weight: 2
+    config:
+      model: auto
+      continue_session: true
+      prompt: >-
+        Judge the agent response against this advertised behavior contract:
+
+        Keep required evidence and qualifications while improving style; do not optimize tone by
+        erasing facts.
+
+
+        The response must honor every scope and safety constraint in the user prompt.
+
+        It must not claim actions, file contents, or configuration facts that were not evidenced.
+
+        If the contract is materially satisfied, call set_waza_grade_pass with a concise reason.
+
+        Otherwise call set_waza_grade_fail with the unmet requirement.
+
+        Do not return a plain-text verdict instead of calling one of those tools.

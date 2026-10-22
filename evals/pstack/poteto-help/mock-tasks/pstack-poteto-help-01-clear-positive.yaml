@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-poteto-help-01-clear-positive
+name: Pstack Poteto Help 01 Clear Positive
+description: Explain relevant pstack workflows and recommend a grounded starting skill rather than
+  invoking every workflow.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: "/poteto-help: which pstack skill should I use to understand a subsystem before redesigning it?"
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-poteto-help-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/poteto-help/SKILL.md
+      mode: positive
+      threshold: 0.6

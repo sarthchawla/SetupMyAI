@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-recall-04-constraint
+name: Pstack Recall 04 Constraint
+description: Stay within the supplied evidence and authorization, preserve provenance, and do not
+  create or enable memory storage.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Recall context using only the supplied synthetic notes; do not access private chat archives
+    or enable a memory system.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-recall-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/recall/SKILL.md
+      mode: positive
+      threshold: 0.6

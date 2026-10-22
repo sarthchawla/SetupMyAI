@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-make-bot-ui-02-paraphrased-positive
+name: Pstack Make Bot Ui 02 Paraphrased Positive
+description: Address the private UI exposure and webhook contract rather than treating it as an
+  ordinary static dashboard.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Create a dashboard on Tailscale that lets an operator trigger the bot through an
+    authenticated webhook.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-make-bot-ui-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/make-bot-ui/SKILL.md
+      mode: positive
+      threshold: 0.6

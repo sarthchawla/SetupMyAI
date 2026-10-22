@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-encode-lessons-in-structure-03-boundary-negative
+name: Pstack Principle Encode Lessons In Structure 03 Boundary Negative
+description: Summarize the announcement without inventing a recurring engineering correction or
+  enforcement tool.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Summarize a one-time workshop announcement.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-encode-lessons-in-structure-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-encode-lessons-in-structure/SKILL.md
+      mode: negative
+      threshold: 0.6

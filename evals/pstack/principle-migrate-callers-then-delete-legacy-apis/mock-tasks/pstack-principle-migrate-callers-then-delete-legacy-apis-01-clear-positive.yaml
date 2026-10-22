@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-migrate-callers-then-delete-legacy-apis-01-clear-positive
+name: Pstack Principle Migrate Callers Then Delete Legacy Apis 01 Clear Positive
+description: Identify caller coverage and complete the internal migration rather than leaving
+  unnecessary dual APIs.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Replace an internal parser API, migrate every in-repo caller and remove the obsolete API in
+    the same wave.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-migrate-callers-then-delete-legacy-apis-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-migrate-callers-then-delete-legacy-apis/SKILL.md
+      mode: positive
+      threshold: 0.6

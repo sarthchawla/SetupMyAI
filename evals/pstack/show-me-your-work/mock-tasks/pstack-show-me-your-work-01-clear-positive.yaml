@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-show-me-your-work-01-clear-positive
+name: Pstack Show Me Your Work 01 Clear Positive
+description: Define or maintain the requested decision record with attributable evidence and actual outcomes.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: For this unattended migration, keep a reviewable TSV decision trail with what, why, evidence
+    and result.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-show-me-your-work-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/show-me-your-work/SKILL.md
+      mode: positive
+      threshold: 0.6

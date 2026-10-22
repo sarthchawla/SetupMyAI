@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-model-the-domain-02-paraphrased-positive
+name: Pstack Principle Model The Domain 02 Paraphrased Positive
+description: Derive the representation from actual states and consumers, reducing duplicated
+  assumptions without inventing unsupported variants.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Several files branch on the same loose record shape; propose a domain representation that
+    explains the cases.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-model-the-domain-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-model-the-domain/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: universal-fix-mr-comment-01-clear-positive
+name: Universal Fix Mr Comment 01 Clear Positive
+description: Adjudicate the claims, apply only authorized valid remedies and preserve evidence for
+  defense or clarification.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Fix the unresolved review comments on this branch after verifying each claim against current
+    code.
+expected: {}
+graders:
+  - type: trigger
+    name: universal-fix-mr-comment-01-clear-positive-trigger
+    config:
+      skill_path: packages/universal/skills/fix-mr-comment/SKILL.md
+      mode: positive
+      threshold: 0.6

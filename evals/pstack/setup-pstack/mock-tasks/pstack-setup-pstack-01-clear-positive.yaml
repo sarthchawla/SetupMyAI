@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-setup-pstack-01-clear-positive
+name: Pstack Setup Pstack 01 Clear Positive
+description: Detect supported local options and propose or write the appropriate role overrides
+  within authorization rather than assuming all providers exist.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Configure pstack models and reasoning budgets for the roles available in my harness.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-setup-pstack-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/setup-pstack/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-foundational-thinking-03-boundary-negative
+name: Pstack Principle Foundational Thinking 03 Boundary Negative
+description: Perform the prose task without inventing core data structures or concurrent actors.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Proofread the spelling of this product announcement.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-foundational-thinking-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-foundational-thinking/SKILL.md
+      mode: negative
+      threshold: 0.6

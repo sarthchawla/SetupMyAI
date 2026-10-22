@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-setup-pstack-02-paraphrased-positive
+name: Pstack Setup Pstack 02 Paraphrased Positive
+description: Address role-specific model settings using the actual available options and existing
+  override mechanism.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Change which model pstack uses for arena versus synthesis and explain the budget tradeoff.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-setup-pstack-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/setup-pstack/SKILL.md
+      mode: positive
+      threshold: 0.6

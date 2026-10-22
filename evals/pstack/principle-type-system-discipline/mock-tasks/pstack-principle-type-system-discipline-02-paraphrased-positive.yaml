@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-type-system-discipline-02-paraphrased-positive
+name: Pstack Principle Type System Discipline 02 Paraphrased Positive
+description: Consider semantic types and boundary parsing, deriving data shapes from authoritative
+  schemas where available.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Review this statically typed function signature for ambiguous identifiers and unchecked
+    external data.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-type-system-discipline-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-type-system-discipline/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-subtract-before-you-add-03-boundary-negative
+name: Pstack Principle Subtract Before You Add 03 Boundary Negative
+description: Provide the message rather than inventing source-code deletions.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: Compose a congratulatory message for a release.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-subtract-before-you-add-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-subtract-before-you-add/SKILL.md
+      mode: negative
+      threshold: 0.6

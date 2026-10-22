@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-interrogate-01-clear-positive
+name: Pstack Interrogate 01 Clear Positive
+description: Challenge assumptions from distinct perspectives and adjudicate the resulting claims
+  rather than counting reviewer agreement as proof.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Interrogate this cache invalidation design with independent adversarial reviewers and
+    consolidate the supported findings.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-interrogate-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/interrogate/SKILL.md
+      mode: positive
+      threshold: 0.6

@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-poteto-help-02-paraphrased-positive
+name: Pstack Poteto Help 02 Paraphrased Positive
+description: Give setup and workflow-selection guidance appropriate to the user need and available environment.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Help me get started with pstack and choose between its playbooks for design, review and
+    verification.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-poteto-help-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/poteto-help/SKILL.md
+      mode: positive
+      threshold: 0.6

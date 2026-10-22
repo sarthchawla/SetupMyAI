@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-migrate-callers-then-delete-legacy-apis-02-paraphrased-positive
+name: Pstack Principle Migrate Callers Then Delete Legacy Apis 02 Paraphrased Positive
+description: Trace all affected call sites and plan verified removal only after their migration.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: We added a new internal storage interface while old callers remain; sequence migration and
+    deletion coherently.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-migrate-callers-then-delete-legacy-apis-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-migrate-callers-then-delete-legacy-apis/SKILL.md
+      mode: positive
+      threshold: 0.6

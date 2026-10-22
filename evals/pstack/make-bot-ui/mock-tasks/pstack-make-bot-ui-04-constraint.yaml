@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-make-bot-ui-04-constraint
+name: Pstack Make Bot Ui 04 Constraint
+description: Keep sender credentials out of client-visible code and outputs, and disclose the
+  configuration needed before any live trigger.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Draft the bot-trigger UI without a real webhook sender key; use a placeholder and do not
+    print or store real credentials.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-make-bot-ui-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/make-bot-ui/SKILL.md
+      mode: positive
+      threshold: 0.6

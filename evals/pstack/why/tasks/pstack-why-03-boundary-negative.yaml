@@ -1,0 +1,50 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-why-03-boundary-negative
+name: Pstack Why 03 Boundary Negative
+description: Recognize a runtime-flow question and prefer mechanism explanation rather than
+  substituting a historical-rationale investigation.
+tags:
+  - negative-trigger
+  - boundary
+inputs:
+  prompt: How does a request move from this handler through the storage adapter?
+expected:
+  outcomes:
+    - type: task_completed
+  behavior:
+    max_tool_calls: 20
+    max_iterations: 10
+    max_tokens: 12000
+graders:
+  - type: trigger
+    name: pstack-why-03-boundary-negative-trigger
+    config:
+      skill_path: packages/pstack/skills/why/SKILL.md
+      mode: negative
+      threshold: 0.6
+  - type: behavior
+    name: pstack-why-03-boundary-negative-behavior
+    config:
+      max_tool_calls: 20
+  - type: prompt
+    name: pstack-why-03-boundary-negative-contract
+    weight: 2
+    config:
+      model: auto
+      continue_session: true
+      prompt: >-
+        Judge the agent response against this advertised behavior contract:
+
+        Recognize a runtime-flow question and prefer mechanism explanation rather than substituting
+        a historical-rationale investigation.
+
+
+        The response must honor every scope and safety constraint in the user prompt.
+
+        It must not claim actions, file contents, or configuration facts that were not evidenced.
+
+        If the contract is materially satisfied, call set_waza_grade_pass with a concise reason.
+
+        Otherwise call set_waza_grade_fail with the unmet requirement.
+
+        Do not return a plain-text verdict instead of calling one of those tools.

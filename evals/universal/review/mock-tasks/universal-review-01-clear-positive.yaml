@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: universal-review-01-clear-positive
+name: Universal Review 01 Clear Positive
+description: Follow the available established review procedure, retain scope and prerequisites, and
+  verify reviewer claims before presenting them as defects.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Run the existing review bundle on this local change and independently adjudicate the
+    reported findings.
+expected: {}
+graders:
+  - type: trigger
+    name: universal-review-01-clear-positive-trigger
+    config:
+      skill_path: packages/universal/skills/review/SKILL.md
+      mode: positive
+      threshold: 0.6

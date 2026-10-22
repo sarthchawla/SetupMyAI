@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: universal-fix-mr-comment-04-constraint
+name: Universal Fix Mr Comment 04 Constraint
+description: Provide per-remedy evidence and proposed corrections while honoring all no-mutation and
+  no-posting constraints.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Analyze this review thread and propose fixes only; do not edit, reply, push or resolve it.
+expected: {}
+graders:
+  - type: trigger
+    name: universal-fix-mr-comment-04-constraint-trigger
+    config:
+      skill_path: packages/universal/skills/fix-mr-comment/SKILL.md
+      mode: positive
+      threshold: 0.6

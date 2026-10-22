@@ -1,0 +1,20 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-separate-before-serializing-shared-state-04-constraint
+name: Pstack Principle Separate Before Serializing Shared State 04 Constraint
+description: Do not remove necessary serialization from truly shared authoritative state; justify
+  the boundary from the invariant.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Evaluate separate state ownership, but preserve ordering where one authoritative shared
+    ledger is required by contract.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-separate-before-serializing-shared-state-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-separate-before-serializing-shared-state/SKILL.md
+      mode: positive
+      threshold: 0.6

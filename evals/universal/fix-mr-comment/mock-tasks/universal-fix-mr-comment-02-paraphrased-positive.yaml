@@ -1,0 +1,17 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: universal-fix-mr-comment-02-paraphrased-positive
+name: Universal Fix Mr Comment 02 Paraphrased Positive
+description: Split mixed remedies and distinguish real fixes, counterevidence, duplicates and missing intent.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: Triage these reviewer requests and correct the ones supported by the implementation and contract.
+expected: {}
+graders:
+  - type: trigger
+    name: universal-fix-mr-comment-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/universal/skills/fix-mr-comment/SKILL.md
+      mode: positive
+      threshold: 0.6

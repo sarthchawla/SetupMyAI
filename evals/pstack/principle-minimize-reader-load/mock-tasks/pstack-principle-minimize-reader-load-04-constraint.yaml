@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-minimize-reader-load-04-constraint
+name: Pstack Principle Minimize Reader Load 04 Constraint
+description: Distinguish accidental wrappers from meaningful encapsulation and preserve required contracts.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Improve readability without inlining a reused security boundary or changing observable behavior.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-minimize-reader-load-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-minimize-reader-load/SKILL.md
+      mode: positive
+      threshold: 0.6

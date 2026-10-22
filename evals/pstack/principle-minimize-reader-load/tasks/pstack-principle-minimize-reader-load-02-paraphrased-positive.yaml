@@ -1,0 +1,51 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-minimize-reader-load-02-paraphrased-positive
+name: Pstack Principle Minimize Reader Load 02 Paraphrased Positive
+description: Tighten state scope and make ownership and data flow explicit without erasing
+  meaningful module boundaries.
+tags:
+  - positive
+  - paraphrase
+inputs:
+  prompt: This function is hard to trace because values change far from their use; reduce the context
+    a maintainer must hold.
+expected:
+  outcomes:
+    - type: task_completed
+  behavior:
+    max_tool_calls: 20
+    max_iterations: 10
+    max_tokens: 12000
+graders:
+  - type: trigger
+    name: pstack-principle-minimize-reader-load-02-paraphrased-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-minimize-reader-load/SKILL.md
+      mode: positive
+      threshold: 0.6
+  - type: behavior
+    name: pstack-principle-minimize-reader-load-02-paraphrased-positive-behavior
+    config:
+      max_tool_calls: 20
+  - type: prompt
+    name: pstack-principle-minimize-reader-load-02-paraphrased-positive-contract
+    weight: 2
+    config:
+      model: auto
+      continue_session: true
+      prompt: >-
+        Judge the agent response against this advertised behavior contract:
+
+        Tighten state scope and make ownership and data flow explicit without erasing meaningful
+        module boundaries.
+
+
+        The response must honor every scope and safety constraint in the user prompt.
+
+        It must not claim actions, file contents, or configuration facts that were not evidenced.
+
+        If the contract is materially satisfied, call set_waza_grade_pass with a concise reason.
+
+        Otherwise call set_waza_grade_fail with the unmet requirement.
+
+        Do not return a plain-text verdict instead of calling one of those tools.

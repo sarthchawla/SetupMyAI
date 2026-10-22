@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-encode-lessons-in-structure-01-clear-positive
+name: Pstack Principle Encode Lessons In Structure 01 Clear Positive
+description: Choose a structural enforcement mechanism for the recurring mistake rather than adding
+  another copy of the instruction.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: We have repeated the same missing-timeout instruction twice; encode the invariant in
+    configuration validation or a test.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-encode-lessons-in-structure-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-encode-lessons-in-structure/SKILL.md
+      mode: positive
+      threshold: 0.6

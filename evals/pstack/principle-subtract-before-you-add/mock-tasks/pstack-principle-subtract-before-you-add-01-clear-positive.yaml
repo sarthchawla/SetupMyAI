@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-subtract-before-you-add-01-clear-positive
+name: Pstack Principle Subtract Before You Add 01 Clear Positive
+description: Identify safe deletions first and build the addition on a simpler supported structure.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: Before adding the new configuration path, remove dead flags and redundant validators that
+    obscure the base.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-subtract-before-you-add-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-subtract-before-you-add/SKILL.md
+      mode: positive
+      threshold: 0.6

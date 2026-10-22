@@ -1,0 +1,18 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-subtract-before-you-add-04-constraint
+name: Pstack Principle Subtract Before You Add 04 Constraint
+description: Require evidence that deletions are safe and do not treat active required behavior as clutter.
+tags:
+  - positive
+  - constraint
+  - read-only
+inputs:
+  prompt: Simplify before adding, but keep live compatibility paths until their consumers have migrated.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-subtract-before-you-add-04-constraint-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-subtract-before-you-add/SKILL.md
+      mode: positive
+      threshold: 0.6

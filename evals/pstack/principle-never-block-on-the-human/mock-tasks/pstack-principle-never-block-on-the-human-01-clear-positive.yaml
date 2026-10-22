@@ -1,0 +1,19 @@
+# Generated from evals/cases.yaml. Edit the canonical case file, then regenerate.
+id: pstack-principle-never-block-on-the-human-01-clear-positive
+name: Pstack Principle Never Block On The Human 01 Clear Positive
+description: Use existing authorization for routine reversible work rather than introducing an
+  unnecessary approval checkpoint.
+tags:
+  - positive
+  - clear-positive
+inputs:
+  prompt: You are considering whether to ask before a routine reversible formatting fix already within
+    my authorized task. Proceed and verify it.
+expected: {}
+graders:
+  - type: trigger
+    name: pstack-principle-never-block-on-the-human-01-clear-positive-trigger
+    config:
+      skill_path: packages/pstack/skills/principle-never-block-on-the-human/SKILL.md
+      mode: positive
+      threshold: 0.6
