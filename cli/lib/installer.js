@@ -79,13 +79,14 @@ export async function installPackage(packageName, targetDir, options = {}) {
     for (const file of files) {
       const srcFile = path.join(srcDir, file);
       const stat = await fs.stat(srcFile);
-      if (!stat.isFile()) continue;
+      const isSkill = CONTENT_DIRS[dirName] === 'skills';
+      if (!stat.isFile() && !(isSkill && stat.isDirectory())) continue;
 
       for (const tool of tools) {
         const contentDir = CONTENT_DIRS[dirName];
         if (!contentDir) continue;
 
-        const toolRoot = getToolRoot(targetDir, level, tool);
+        const toolRoot = getToolRoot(targetDir, level, tool === 'codex' && isSkill ? 'agents' : tool);
         const isRule = dirName === 'rules' || dirName === '{rules}';
         const isMdFile = file.endsWith('.md');
         const needsMdcConvert = tool === 'cursor' && isRule && isMdFile;
